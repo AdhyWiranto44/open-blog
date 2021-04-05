@@ -14,6 +14,10 @@ app.get("/documentation", (req, res) => {
     res.sendFile(__dirname + "/documentation/index.html");
 })
 
+app.get("/post/post-title", (req, res) => {
+    res.render("post-page");
+})
+
 app.listen(3000, () => {
-    console.log("https://localhost:3000");
+    console.log("http://localhost:3000");
 })
