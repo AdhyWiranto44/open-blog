@@ -10,7 +10,6 @@ Open-Blog ini dapat melakukan operasi CRUDS, memiliki fitur tag untuk setiap pos
 # Stack Teknologi
 - MongoDB
 - Express.js
-- React.js
 - Node.js
 
 
@@ -38,4 +37,4 @@ Model bisnis yang dilakukan pada aplikasi Open-Blog ini adalah melakukan pengelo
 
 
 # Business Use Case Diagram
-![Business Use Case Diagram](https://github.com/AdhyWiranto44/open-blog/blob/main/public/business-use-case-diagram.jpg)
+![Business Use Case Diagram](https://github.com/AdhyWiranto44/open-blog/blob/main/public/img/documentation/business-use-case-diagram.jpg)
