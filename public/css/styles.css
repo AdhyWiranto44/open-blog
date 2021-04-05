@@ -1,0 +1,33 @@
+.navbar-form input, .container-form input {
+    border-radius: 13px;
+}
+
+.card {
+    border-radius: 20px;
+    position: relative;
+}
+
+.card-img-top {
+    border-radius: 10px;
+}
+
+@media(min-width: 768px) {
+    .navbar-form {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .container-form {
+        display: none;
+    }
+}
+
+@media(max-width: 768px) {
+    .navbar-form {
+        display: none;
+    }
+    .navbar-nav a {
+        margin: auto;
+    }
+}
