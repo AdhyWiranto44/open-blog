@@ -2,39 +2,47 @@
 
         <div class="row mt-3">
             <div class="col-lg-6 offset-lg-3">
-                <h6>Latest Post</h6>
+                <% if (tag === "") { %>
+                    <h6>Latest Post</h6>
+                <% } else { %>
+                    <h5>#<%= tag %></h5>
+                <% } %>
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
-                <div class="card px-3 mb-3 shadow-sm border-0">
-                    <img src="img/post/post-img.jpg" class="card-img-top mt-3" alt="post" />
-                    <div class="card-body px-0">
-                      <a class="text-dark text-underline-dark" href="/post/post-title"><h4 class="card-title mb-0">Post Title</h4></a>
-                      <small>30 minutes ago</small><br>
-                      <div class="tag-list my-2">
-                          <a class="text-dark" href="#"><span class="badge badge-light p-2"># nodejs</span></a>
-                          <a class="text-dark" href="#"><span class="badge badge-light p-2"># todayilearn</span></a>
-                          <a class="text-dark" href="#"><span class="badge badge-light p-2"># blog</span></a>
-                          <a class="text-dark" href="#"><span class="badge badge-light p-2"># bootstrap</span></a>
-                      </div>
-                      <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna... <a href="/post/post-title">read more</a></p>
+                <a href="/post/post-title">
+                    <div class="card px-3 mb-3 shadow-sm border-0">
+                        <img src="../img/post/post-img.jpg" class="card-img-top mt-3" alt="post" />
+                        <div class="card-body px-0">
+                        <a class="text-dark text-underline-dark" href="/post/post-title"><h4 class="card-title mb-0">Post Title</h4></a>
+                        <small>30 minutes ago</small><br>
+                        <div class="tag-list my-2">
+                            <a class="text-dark" href="/tag/post-tag"><span class="badge badge-light p-2">#nodejs</span></a>
+                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#todayilearn</span></a>
+                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#blog</span></a>
+                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#bootstrap</span></a>
+                        </div>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna... <a href="/post/post-title">read more</a></p>
+                        </div>
                     </div>
-                </div>
-                <div class="card px-3 mb-3 shadow-sm border-0">
-                    <div class="card-body px-0">
-                      <a class="text-dark text-underline-dark" href="/post/post-title"><h4 class="card-title mb-0">Post Title</h4></a>
-                      <small>30 minutes ago</small><br>
-                      <div class="tag-list my-2">
-                          <a class="text-dark" href="#"><span class="badge badge-light p-2"># nodejs</span></a>
-                          <a class="text-dark" href="#"><span class="badge badge-light p-2"># todayilearn</span></a>
-                          <a class="text-dark" href="#"><span class="badge badge-light p-2"># blog</span></a>
-                          <a class="text-dark" href="#"><span class="badge badge-light p-2"># bootstrap</span></a>
-                      </div>
-                      <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna... <a href="/post/post-title">read more</a></p>
+                </a>
+                <a href="/post/post-title">
+                    <div class="card px-3 mb-3 shadow-sm border-0">
+                        <div class="card-body px-0">
+                        <a class="text-dark text-underline-dark" href="/post/post-title"><h4 class="card-title mb-0">Post Title</h4></a>
+                        <small>30 minutes ago</small><br>
+                        <div class="tag-list my-2">
+                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#nodejs</span></a>
+                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#todayilearn</span></a>
+                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#blog</span></a>
+                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#bootstrap</span></a>
+                        </div>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna... <a href="/post/post-title">read more</a></p>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
 
