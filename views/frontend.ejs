@@ -12,37 +12,29 @@
 
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
-                <a href="/post/post-title">
-                    <div class="card px-3 mb-3 shadow-sm border-0">
-                        <img src="../img/post/post-img.jpg" class="card-img-top mt-3" alt="post" />
-                        <div class="card-body px-0">
-                        <a class="text-dark text-underline-dark" href="/post/post-title"><h4 class="card-title mb-0">Post Title</h4></a>
-                        <small>30 minutes ago</small><br>
-                        <div class="tag-list my-2">
-                            <a class="text-dark" href="/tag/post-tag"><span class="badge badge-light p-2">#nodejs</span></a>
-                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#todayilearn</span></a>
-                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#blog</span></a>
-                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#bootstrap</span></a>
+                <% posts.forEach(post => { %>
+                    <a href="/post/<%= post.slug %>">
+                        <div class="card px-3 mb-3 shadow-sm border-0">
+                            <img src="../img/post/<%= post.img %>" class="card-img-top mt-3 <%= post.img === "" ? "d-none" : "" %>" alt="post" />
+                            <div class="card-body px-0">
+                            <a class="text-dark text-underline-dark" href="/post/<%= post.slug %>"><h4 class="card-title mb-0"><%= post.title %></h4></a>
+                            <small>
+                                <%= arrDay[new Date(post.created_at).getDay()] %>, 
+                                <%= new Date(post.created_at).getDate() %> 
+                                <%= arrMonth[new Date(post.created_at).getMonth()] %> 
+                                <%= new Date(post.created_at).getFullYear() %> 
+                                <%= new Date(post.created_at).getHours() %>.<%= new Date(post.created_at).getMinutes() %>
+                            </small><br>
+                            <div class="tag-list my-2">
+                                <% post.tag.forEach(tag => { %>
+                                    <a class="text-dark" href="/tag/<%= tag %>"><span class="badge badge-light p-2">#<%= tag %></span></a>
+                                <% }) %>
+                            </div>
+                            <p class="card-text"><%= post.content.substring(0, 100) + "..." %><a href="/post/<%= post.slug %>">read more</a></p>
+                            </div>
                         </div>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna... <a href="/post/post-title">read more</a></p>
-                        </div>
-                    </div>
-                </a>
-                <a href="/post/post-title">
-                    <div class="card px-3 mb-3 shadow-sm border-0">
-                        <div class="card-body px-0">
-                        <a class="text-dark text-underline-dark" href="/post/post-title"><h4 class="card-title mb-0">Post Title</h4></a>
-                        <small>30 minutes ago</small><br>
-                        <div class="tag-list my-2">
-                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#nodejs</span></a>
-                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#todayilearn</span></a>
-                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#blog</span></a>
-                            <a class="text-dark" href="#"><span class="badge badge-light p-2">#bootstrap</span></a>
-                        </div>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna... <a href="/post/post-title">read more</a></p>
-                        </div>
-                    </div>
-                </a>
+                    </a>
+                <% }) %>
             </div>
         </div>
 
