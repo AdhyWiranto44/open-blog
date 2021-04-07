@@ -7,7 +7,7 @@
     position: relative;
 }
 
-.card-img-top {
+.card-img-top, .breadcrumb {
     border-radius: 10px;
 }
 

@@ -94,12 +94,28 @@ app.get("/documentation", (req, res) => {
     res.sendFile(__dirname + "/documentation/index.html");
 })
 
-app.get("/post/post-title", (req, res) => {
-    res.render("post-page", {title: "Open Blog: Post"});
+app.get("/post/:postSlug", (req, res) => {
+    const postSlug = req.params.postSlug;
+
+    Post.findOne({slug: postSlug}, (err, foundPost) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render("post-page", {title: foundPost.title, post: foundPost, arrDay, arrMonth});
+        }
+    })
 })
 
-app.get("/tag/post-tag", (req, res) => {
-    res.render("frontend", {title: "Open Blog: Post Tag", tag: "nodejs"});
+app.get("/tag/:postTag", (req, res) => {
+    const postTag = req.params.postTag;
+
+    Post.find({tag: postTag}, (err, foundPosts) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render("frontend", {title: "Open Blog: " + postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth});
+        }
+    })
 })
 
 app.get("/auth/login", (req, res) => {

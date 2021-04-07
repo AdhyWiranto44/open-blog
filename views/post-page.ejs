@@ -1,24 +1,36 @@
 <%- include('frontend-templates/frontend-header') %>
 
 <div class="row">
+  <div class="col-lg-8 offset-lg-2">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-transparent p-0">
+        <li class="breadcrumb-item"><a class="text-dark" href="/">Home</a></li>
+        <li class="breadcrumb-item active font-weight-bold" aria-current="page"><%= post.title %></li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="row">
     <div class="col-lg-8 offset-lg-2">
         <div class="card p-3 mb-3 shadow-sm border-0">
             <img src="../img/post/post-img.jpg" class="card-img-top" alt="post" />
             <div class="card-body px-0">
-              <a class="text-dark text-underline-dark" href="/post/post-title"><h4 class="card-title mb-0">Post Title</h4></a>
-              <small>25 minutes ago</small><br>
+              <h4 class="card-title mb-0"><%= post.title %></h4>
+              <small>
+                <%= arrDay[new Date(post.created_at).getDay()] %>, 
+                <%= new Date(post.created_at).getDate() %> 
+                <%= arrMonth[new Date(post.created_at).getMonth()] %> 
+                <%= new Date(post.created_at).getFullYear() %> 
+                <%= new Date(post.created_at).getHours() %>.<%= new Date(post.created_at).getMinutes() %>
+              </small><br>
               <div class="tag-list my-2">
-                  <a class="text-dark" href="#"><span class="badge badge-light p-2">#nodejs</span></a>
-                  <a class="text-dark" href="#"><span class="badge badge-light p-2">#todayilearn</span></a>
-                  <a class="text-dark" href="#"><span class="badge badge-light p-2">#blog</span></a>
-                  <a class="text-dark" href="#"><span class="badge badge-light p-2">#bootstrap</span></a>
+                <% post.tag.forEach((tag) => { %>
+                  <a class="text-dark" href="/tag/<%= tag %>"><span class="badge badge-light p-2">#<%= tag %></span></a>
+                <% }) %>
               </div>
               <p class="card-text mt-3">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut tellus elementum sagittis vitae et leo duis ut. Amet massa vitae tortor condimentum lacinia quis. Velit aliquet sagittis id consectetur purus ut faucibus pulvinar. Enim praesent elementum facilisis leo vel fringilla. Tempor orci eu lobortis elementum. Non diam phasellus vestibulum lorem sed risus ultricies tristique. Mi quis hendrerit dolor magna eget est lorem. Mollis aliquam ut porttitor leo. Massa sed elementum tempus egestas. Sit amet cursus sit amet. Eros donec ac odio tempor orci dapibus ultrices. Facilisi morbi tempus iaculis urna id volutpat. Massa tempor nec feugiat nisl pretium. Ut eu sem integer vitae justo eget magna fermentum iaculis. Enim ut sem viverra aliquet eget sit. Leo vel fringilla est ullamcorper. Interdum velit laoreet id donec ultrices.
-                <br><br>
-                Vitae congue eu consequat ac felis donec. Urna molestie at elementum eu. Enim nulla aliquet porttitor lacus luctus. Nullam vehicula ipsum a arcu cursus vitae congue mauris. Purus ut faucibus pulvinar elementum integer. Enim facilisis gravida neque convallis a cras semper. Tincidunt nunc pulvinar sapien et ligula ullamcorper malesuada. Dolor sit amet consectetur adipiscing. In fermentum et sollicitudin ac orci. Gravida dictum fusce ut placerat orci.
-                <br><br>
-                Egestas purus viverra accumsan in nisl nisi. Lacinia at quis risus sed vulputate odio ut enim. Maecenas pharetra convallis posuere morbi leo urna molestie at. Vitae congue mauris rhoncus aenean vel elit scelerisque. Faucibus turpis in eu mi bibendum. Eget mi proin sed libero enim sed faucibus turpis. Justo nec ultrices dui sapien eget. Morbi tempus iaculis urna id volutpat lacus laoreet non. Leo in vitae turpis massa sed elementum tempus egestas. Sollicitudin ac orci phasellus egestas tellus. Phasellus egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Leo integer malesuada nunc vel risus commodo viverra maecenas accumsan. Ultrices vitae auctor eu augue ut lectus.
+                <%= post.content %>
               </p>
             </div>
         </div>
