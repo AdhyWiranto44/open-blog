@@ -85,9 +85,22 @@ app.get("/", (req, res) => {
 
             res.redirect("/");
         } else {
-            res.render("frontend", {title: "Open Blog", tag: "", posts: foundPosts, arrDay, arrMonth});
+            res.render("frontend", {title: "Open Blog", tag: "", posts: foundPosts, arrDay, arrMonth, search: ""});
         }
     });
+})
+
+app.post("/", (req, res) => {
+    const search = req.body.search;
+    
+    Post.find({title: search}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
+
+        if (err) {
+            console.log(err);
+        } else {
+            res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search});
+        }
+    })
 })
 
 app.get("/documentation", (req, res) => {
@@ -101,7 +114,7 @@ app.get("/post/:postSlug", (req, res) => {
         if (err) {
             console.log(err);
         } else {
-            res.render("post-page", {title: foundPost.title, post: foundPost, arrDay, arrMonth});
+            res.render("post-page", {title: foundPost.title, post: foundPost, arrDay, arrMonth, search: ""});
         }
     })
 })
@@ -113,7 +126,7 @@ app.get("/tag/:postTag", (req, res) => {
         if (err) {
             console.log(err);
         } else {
-            res.render("frontend", {title: "Open Blog: " + postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth});
+            res.render("frontend", {title: "Open Blog: " + postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: ""});
         }
     })
 })
