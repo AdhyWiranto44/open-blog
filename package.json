@@ -8,11 +8,12 @@
   },
   "author": "Adhy Wiranto",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "crypto-js": "^4.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
+    "md5": "^2.3.0",
     "mongoose": "^5.12.3"
   }
 }

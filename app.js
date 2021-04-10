@@ -1,6 +1,7 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const { encrypt, decrypt } = require('./crypto.js');
 
 const app = express();
 
@@ -14,7 +15,10 @@ mongoose.connect("mongodb://localhost:27017/openblogDB", {useNewUrlParser: true,
 // DB Schema
 const userSchema = {
     username: String,
-    password: String,
+    password: {
+        iv: String,
+        content: String
+    },
     created_at: Number,
     updated_at: Number
 }
@@ -59,18 +63,16 @@ const post2 = new Post({
     updated_at: new Date().getTime()
 })
 
-// const user1 = new User({
-//     id: 1,
-//     username: "admin",
-//     password: "123",
-//     created_at: new Date().getTime(),
-//     updated_at: 0
-// })
+const default_user = new User({
+    id: 1,
+    username: "admin",
+    password: encrypt("1234"),
+    created_at: new Date().getTime(),
+    updated_at: new Date().getTime()
+})
 
-// // Add sample user data
-// user1.save({user1});
-
-// console.log(User.findOne({id: 1}));
+// // Add default user
+// default_user.save();
 
 app.get("/", (req, res) => {
     Post.find((err, foundPosts) => {
@@ -135,6 +137,23 @@ app.get("/auth/login", (req, res) => {
     res.render("login", {title: "Open Blog: Login"})
 })
 
+app.post("/auth/login", (req, res) => {
+    const searchUsername = req.body.username;
+    const searchPassword = encrypt(req.body.password);
+    
+    User.findOne({username: searchUsername, password: searchPassword}, (err, foundUser) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (foundUser === null) {
+                res.redirect("/auth/login");
+            } else {
+                res.send("login success!");
+            }
+        }
+    })
+})
+
 app.get("/auth/register", (req, res) => {
     res.render("register", {title:"Open Blog: Register"})
 })
@@ -144,7 +163,6 @@ app.get("/auth/reset-password", (req, res) => {
 })
 
 
-
-app.listen(4000, () => {
-    console.log("http://localhost:4000");
+app.listen(3000, () => {
+    console.log("http://localhost:3000");
 })
