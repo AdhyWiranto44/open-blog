@@ -201,7 +201,7 @@ app.get("/auth/reset-password", (req, res) => {
 })
 
 app.get("/admin/dashboard", (req, res) => {
-    res.render("dashboard", {title: "Admin: Dashboard"});
+    res.render("dashboard", {title: "Open Blog: Dashboard"});
 })
 
 
