@@ -138,17 +138,23 @@ app.get("/auth/login", (req, res) => {
 })
 
 app.post("/auth/login", (req, res) => {
-    const searchUsername = req.body.username;
-    const searchPassword = encrypt(req.body.password);
+    const findUsername = req.body.username;
+    const findPassword = req.body.password;
     
-    User.findOne({username: searchUsername, password: searchPassword}, (err, foundUser) => {
+    User.findOne({username: findUsername}, (err, foundUser) => {
         if (err) {
             console.log(err);
         } else {
             if (foundUser === null) {
                 res.redirect("/auth/login");
             } else {
-                res.send("login success!");
+		const decryptedPassword = decrypt(foundUser.password);
+		if (decryptedPassword === findPassword) {
+	                res.send("login success!");
+		} else {
+			res.redirect("/auth/login");
+		}
+
             }
         }
     })
