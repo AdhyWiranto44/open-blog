@@ -164,6 +164,38 @@ app.get("/auth/register", (req, res) => {
     res.render("register", {title:"Open Blog: Register"})
 })
 
+app.post("/auth/register", (req, res) => {
+    const regUsername = req.body.username;
+    const regPassword = req.body.password;
+    const regConfirm_password = req.body.confirm_password;
+
+    User.findOne({username: regUsername}, (err, foundUser) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (foundUser === null) { // jika belum ada user yang terdaftar
+                if (regPassword === regConfirm_password) { // jika password cocok dengan confirm_password
+                    const newUser = new User({
+                        username: regUsername,
+                        password: encrypt(regPassword),
+                        created_at: new Date().getTime(),
+                        updated_at: new Date().getTime()
+                    })
+
+                    newUser.save();
+                    res.send("user berhasil terdaftar :)");
+                } else {
+                    console.log("password tidak cocok dengan confirm_password!");
+                    res.redirect("/auth/register");
+                }
+            } else {
+                console.log("sudah pernah ada user yang mendaftar dengan username tersebut!");
+                res.redirect("/auth/register");
+            }
+        }
+    })
+})
+
 app.get("/auth/reset-password", (req, res) => {
     res.render("reset-password", {title: "Open Blog: Reset Password"})
 })
