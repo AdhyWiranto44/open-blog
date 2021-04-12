@@ -148,12 +148,12 @@ app.post("/auth/login", (req, res) => {
             if (foundUser === null) {
                 res.redirect("/auth/login");
             } else {
-		const decryptedPassword = decrypt(foundUser.password);
-		if (decryptedPassword === findPassword) {
-	                res.send("login success!");
-		} else {
-			res.redirect("/auth/login");
-		}
+                const decryptedPassword = decrypt(foundUser.password);
+                if (decryptedPassword === findPassword) {
+                    res.redirect("/admin/dashboard");
+                } else {
+                    res.redirect("/auth/login");
+                }
 
             }
         }
@@ -161,7 +161,7 @@ app.post("/auth/login", (req, res) => {
 })
 
 app.get("/auth/register", (req, res) => {
-    res.render("register", {title:"Open Blog: Register"})
+    res.render("register", {title:"Open Blog: Register"});
 })
 
 app.post("/auth/register", (req, res) => {
@@ -198,6 +198,10 @@ app.post("/auth/register", (req, res) => {
 
 app.get("/auth/reset-password", (req, res) => {
     res.render("reset-password", {title: "Open Blog: Reset Password"})
+})
+
+app.get("/admin/dashboard", (req, res) => {
+    res.render("dashboard", {title: "Admin: Dashboard"});
 })
 
 

@@ -11,6 +11,11 @@
     border-radius: 10px;
 }
 
+.alert {
+    border-radius: 20px;
+    border: 0;
+}
+
 @media(min-width: 768px) {
     .navbar-form {
         position: absolute;
