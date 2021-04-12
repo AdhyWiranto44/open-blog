@@ -50,8 +50,8 @@
     color: #f3f3f3;
 }
 
-.sidebar-menu-section li:hover {
-    background-color: #000000;
+.sidebar-menu-section .menu-active {
+    background-color: #3159BF;
 }
 
 header a:hover {
@@ -86,4 +86,13 @@ header a:hover {
 main {
     padding-top: 100px;
     padding-left: 30px;
+}
+
+.card {
+    border-radius: 20px;
+    position: relative;
+}
+
+.card-img-top {
+    border-radius: 10px;
 }

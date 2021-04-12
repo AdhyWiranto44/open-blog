@@ -128,13 +128,13 @@ app.get("/tag/:postTag", (req, res) => {
         if (err) {
             console.log(err);
         } else {
-            res.render("frontend", {title: "Open Blog: " + postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: ""});
+            res.render("frontend", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: ""});
         }
     })
 })
 
 app.get("/auth/login", (req, res) => {
-    res.render("login", {title: "Open Blog: Login"})
+    res.render("login", {title: "Login"})
 })
 
 app.post("/auth/login", (req, res) => {
@@ -161,7 +161,7 @@ app.post("/auth/login", (req, res) => {
 })
 
 app.get("/auth/register", (req, res) => {
-    res.render("register", {title:"Open Blog: Register"});
+    res.render("register", {title:"Register"});
 })
 
 app.post("/auth/register", (req, res) => {
@@ -197,11 +197,33 @@ app.post("/auth/register", (req, res) => {
 })
 
 app.get("/auth/reset-password", (req, res) => {
-    res.render("reset-password", {title: "Open Blog: Reset Password"})
+    res.render("reset-password", {title: "Reset Password"});
 })
 
 app.get("/admin/dashboard", (req, res) => {
-    res.render("dashboard", {title: "Open Blog: Dashboard"});
+    res.render("dashboard", {title: "Dashboard"});
+})
+
+app.get("/admin/tambah-post-baru", (req, res) => {
+    res.render("tambah-post-baru", {title: "Tambah Post Baru"});
+})
+
+app.get("/admin/tampil-semua-post", (req, res) => {
+    Post.find((err, foundPosts) => {
+        if (foundPosts.length === 0) {
+            Post.insertMany([post1, post2], function(err){
+                if(err) {
+                    console.log(err);
+                } else {
+                    console.log("Data added successfully");
+                }
+            });
+
+            res.redirect("/admin/tampil-semua-post");
+        } else {
+            res.render("tampil-semua-post", {title: "Tampil Semua Post", posts: foundPosts, arrDay, arrMonth});
+        }
+    });
 })
 
 

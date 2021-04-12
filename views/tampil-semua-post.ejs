@@ -1,0 +1,31 @@
+<%- include("backend-templates/backend-header") %>
+
+<div class="row">
+    <% posts.forEach(post => { %>
+        <div class="col-lg-3">
+            <a href="/post/<%= post.slug %>">
+                <div class="card px-3 mb-3 shadow-sm border-0">
+                    <img src="../img/post/<%= post.img %>" class="card-img-top mt-3 <%= post.img === "" ? "d-none" : "" %>" alt="post" />
+                    <div class="card-body px-0">
+                    <a class="text-dark text-underline-dark" href="/post/<%= post.slug %>"><h4 class="card-title mb-0"><%= post.title %></h4></a>
+                    <small>
+                        <%= arrDay[new Date(post.created_at).getDay()] %>, 
+                        <%= new Date(post.created_at).getDate() %> 
+                        <%= arrMonth[new Date(post.created_at).getMonth()] %> 
+                        <%= new Date(post.created_at).getFullYear() %> 
+                        <%= new Date(post.created_at).getHours() %>.<%= new Date(post.created_at).getMinutes() %>
+                    </small><br>
+                    <div class="tag-list my-2">
+                        <% post.tag.forEach(tag => { %>
+                            <a class="text-dark" href="/tag/<%= tag %>"><span class="badge badge-light p-2 mb-1">#<%= tag %></span></a>
+                        <% }) %>
+                    </div>
+                    <p class="card-text"><%= post.content.substring(0, 50) + "..." %></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    <% }) %>
+</div>
+
+<%- include("backend-templates/backend-footer") %>

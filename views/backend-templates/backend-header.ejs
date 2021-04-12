@@ -6,14 +6,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
     <link rel="stylesheet" href="../css/backend-styles.css">
 
-    <title><%= title %></title>
+    <title>Open Blog: <%= title %></title>
 </head>
-<body>
+<body class="bg-light">
 
     <div class="sidebar">
         <div class="sidebar-header">
             <h4>
-                <span>Open Blog</span>
+                <a class="text-light" href="/"><span>Open Blog</span></a>
             </h4>
         </div>
 
@@ -22,40 +22,46 @@
                 <li class="sidebar-menu-section">
                     <h5>Admin</h5>
                     <ul>
-                        <li><span class="ti-dashboard"></span><a href="">Dashboard</a></li>
+                        <li class="<%= title === "Dashboard" ? "menu-active" : ""; %>"><span class="ti-dashboard"></span><a href="/admin/dashboard">Dashboard</a></li>
                     </ul>
                 </li>
                 <li class="sidebar-menu-section">
                     <h5>Post</h5>
                     <ul>
-                        <li><span class="ti-plus"></span><a href="">Tambah Post Baru</a></li>
-                        <li><span class="ti-list"></span><a href="">Tampil Semua Post</a></li>
-                        <li><span class="ti-archive"></span><a href="">Arsip Post</a></li>
+                        <li class="<%= title === "Tambah Post Baru" ? "menu-active" : ""; %>"><span class="ti-plus"></span><a href="/admin/tambah-post-baru">Tambah Post Baru</a></li>
+                        <li class="<%= title === "Tampil Semua Post" ? "menu-active" : ""; %>"><span class="ti-list"></span><a href="/admin/tampil-semua-post">Tampil Semua Post</a></li>
+                        <li><span class="ti-archive"></span><a href="/admin/arsip-post">Arsip Post</a></li>
                     </ul>
                 </li>
                 <li class="sidebar-menu-section">
                     <h5>Settings</h5>
                     <ul>
-                        <li><span class="ti-pencil-alt"></span><a href="">Ubah Password</a></li>
-                        <li><span class="ti-key"></span><a href="">Reset Password</a></li>
+                        <li><span class="ti-pencil-alt"></span><a href="/admin/ubah-password">Ubah Password</a></li>
+                        <li><span class="ti-key"></span><a href="/admin/reset-password">Reset Password</a></li>
                     </ul>
                 </li>
                 <li class="sidebar-menu-section">
                     <ul>
-                        <li><span class="ti-arrow-left"></span><a href="">Logout</a></li>
+                        <li><span class="ti-arrow-left"></span><a href="/auth/login">Logout</a></li>
                     </ul>
                 </li>
             </ul>
         </div>
-    </div>    
+    </div>
 
     <div class="main-content">
 
         <header>
             <div class="header-content">
-                <a href=""><span class="ti-arrow-left"></span> Logout</a>
+                <a href="/auth/login"><span class="ti-arrow-left"></span> Logout</a>
                 <div class="header-img"></div>
             </div>
         </header>
 
         <main>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-transparent pl-0">
+                    <li class="breadcrumb-item active" aria-current="page">Admin</li>
+                    <li class="breadcrumb-item" aria-current="page"><%= title %></li>
+                </ol>
+            </nav>
