@@ -41,6 +41,11 @@ const Post = mongoose.model("Post", postSchema);
 const arrDay = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
 const arrMonth = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
+const showAlert = function(color, message) {
+    return `<div class="alert ${color} alert-dismissible fade show shadow-sm" role="alert">${message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
+}
+
+
 const post1 = new Post({
     title: "Post 1",
     slug: "post-1",
@@ -134,7 +139,7 @@ app.get("/tag/:postTag", (req, res) => {
 })
 
 app.get("/auth/login", (req, res) => {
-    res.render("login", {title: "Login"})
+    res.render("login", {title: "Login", alert: ""})
 })
 
 app.post("/auth/login", (req, res) => {
@@ -146,13 +151,13 @@ app.post("/auth/login", (req, res) => {
             console.log(err);
         } else {
             if (foundUser === null) {
-                res.redirect("/auth/login");
+                res.render("login", {title: "Login", alert: showAlert("alert-danger", "username tidak terdaftar, silahkan coba lagi.")});
             } else {
                 const decryptedPassword = decrypt(foundUser.password);
                 if (decryptedPassword === findPassword) {
                     res.redirect("/admin/dashboard");
                 } else {
-                    res.redirect("/auth/login");
+                    res.render("login", {title: "Login", alert: showAlert("alert-danger", "password salah, silahkan coba lagi.")});
                 }
 
             }
@@ -161,7 +166,7 @@ app.post("/auth/login", (req, res) => {
 })
 
 app.get("/auth/register", (req, res) => {
-    res.render("register", {title:"Register"});
+    res.render("register", {title:"Register", alert: ""});
 })
 
 app.post("/auth/register", (req, res) => {
@@ -183,14 +188,12 @@ app.post("/auth/register", (req, res) => {
                     })
 
                     newUser.save();
-                    res.send("user berhasil terdaftar :)");
+                    res.render("login", {title: "Login", alert: showAlert("alert-success", "akun berhasil didaftarkan, silakan login.")});
                 } else {
-                    console.log("password tidak cocok dengan confirm_password!");
-                    res.redirect("/auth/register");
+                    res.render("register", {title: "Register", alert: showAlert("alert-danger", "password tidak cocok dengan confirm_password!")});
                 }
             } else {
-                console.log("sudah pernah ada user yang mendaftar dengan username tersebut!");
-                res.redirect("/auth/register");
+                res.render("register", {title: "Register", alert: showAlert("alert-danger", "sudah pernah ada akun dengan username tersebut!")});
             }
         }
     })
