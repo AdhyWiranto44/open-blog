@@ -3,6 +3,7 @@
 <div class="row">
     <% posts.forEach(post => { %>
         <div class="col-lg-3 col-md-6">
+            <%- alert %>
             <a href="/post/<%= post.slug %>">
                 <div class="card px-3 mb-3 shadow-sm border-0">
                     <img src="../img/post/<%= post.img %>" class="card-img-top mt-3 <%= post.img === "" ? "d-none" : "" %>" alt="post" />
@@ -21,6 +22,10 @@
                         <% }) %>
                     </div>
                     <p class="card-text"><%= post.content.substring(0, 50) + "..." %></p>
+                    <form action="/admin/hapus-post/<%= post.slug %>" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-outline-danger mr-2" onClick="return confirm('Yakin ingin menghapus data?');"><span class="ti-trash"></span> Hapus</button>
+                    </form>
+                    <a href="/admin/ubah-post" class="btn btn-warning"><span class="ti-pencil-alt"></span> Ubah</a>
                     </div>
                 </div>
             </a>

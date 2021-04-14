@@ -218,25 +218,34 @@ app.post("/admin/tambah-post-baru", (req, res) => {
     const tags = req.body.tags.split(", ") || req.body.tags.split(",") || req.body.tags.split(" ");
     const img = req.body.image;
 
-    const newPost = new Post({
-        title,
-        slug,
-        content,
-        img,
-        tags,
-        author: "Admin",
-        created_at: new Date().getTime(),
-        updated_at: new Date().getTime()
+    Post.find({title}, (err, foundPost) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (foundPost === null) {
+                const newPost = new Post({
+                    title,
+                    slug,
+                    content,
+                    img,
+                    tags,
+                    author: "Admin",
+                    created_at: new Date().getTime(),
+                    updated_at: new Date().getTime()
+                })
+            
+                if (title !== "" && content !== "" && tags !== "") {
+                    newPost.save();
+            
+                    res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-success", "post baru berhasil ditambahkan.")});
+                } else {
+                    res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-warning", "data tidak boleh kosong!")});
+                }
+            } else {
+                res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-danger", "judul post sudah ada!")});
+            }
+        }
     })
-
-    if (title !== "" && content !== "" && tags !== "") {
-        newPost.save();
-    } else {
-        res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-warning", "data tidak boleh kosong!")});
-    }
-    
-
-    res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-success", "post baru berhasil ditambahkan.")});
 })
 
 app.get("/admin/tampil-semua-post", (req, res) => {
@@ -252,9 +261,28 @@ app.get("/admin/tampil-semua-post", (req, res) => {
 
             res.redirect("/admin/tampil-semua-post");
         } else {
-            res.render("tampil-semua-post", {title: "Tampil Semua Post", posts: foundPosts, arrDay, arrMonth});
+            res.render("tampil-semua-post", {title: "Tampil Semua Post", posts: foundPosts, arrDay, arrMonth, alert: ""});
         }
     });
+})
+
+app.post("/admin/hapus-post/:postSlug", (req, res) => {
+    const postSlug = req.params.postSlug;
+    
+    Post.findOne({slug: postSlug}, (err, foundPost) => {
+        if (err) {
+            console.log(err);
+        } else {
+            Post.findByIdAndRemove({_id: foundPost._id}, (err) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.redirect("/admin/tampil-semua-post");
+                }
+            })
+        }
+    })
+    
 })
 
 
