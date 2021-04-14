@@ -30,6 +30,7 @@ const postSchema = {
     img: String,
     tags: [String],
     author: String,
+    active: Number,
     created_at: Number,
     updated_at: Number
 }
@@ -53,6 +54,7 @@ const post1 = new Post({
     img: "post-img.jpg",
     tags: ["nodejs", "express", "bootstrap", "todayilearn"],
     author: "Admin",
+    active: 1,
     created_at: new Date().getTime(),
     updated_at: new Date().getTime()
 })
@@ -64,6 +66,7 @@ const post2 = new Post({
     img: "",
     tags: ["blog", "react"],
     author: "Admin",
+    active: 1,
     created_at: new Date().getTime(),
     updated_at: new Date().getTime()
 })
@@ -80,7 +83,7 @@ const default_user = new User({
 //    default_user.save();
 
 app.get("/", (req, res) => {
-    Post.find((err, foundPosts) => {
+    Post.find({active: 1}, (err, foundPosts) => {
         if (foundPosts.length === 0) {
             Post.insertMany([post1, post2], function(err){
                 if(err) {
@@ -100,7 +103,7 @@ app.get("/", (req, res) => {
 app.post("/", (req, res) => {
     const search = req.body.search;
     
-    Post.find({title: search}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
+    Post.find({title: search, active: 1}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
 
         if (err) {
             console.log(err);
@@ -218,7 +221,7 @@ app.post("/admin/tambah-post-baru", (req, res) => {
     const tags = req.body.tags.split(", ") || req.body.tags.split(",") || req.body.tags.split(" ");
     const img = req.body.image;
 
-    Post.find({title}, (err, foundPost) => {
+    Post.findOne({title}, (err, foundPost) => {
         if (err) {
             console.log(err);
         } else {
@@ -230,6 +233,7 @@ app.post("/admin/tambah-post-baru", (req, res) => {
                     img,
                     tags,
                     author: "Admin",
+                    active: 1,
                     created_at: new Date().getTime(),
                     updated_at: new Date().getTime()
                 })
@@ -249,24 +253,24 @@ app.post("/admin/tambah-post-baru", (req, res) => {
 })
 
 app.get("/admin/tampil-semua-post", (req, res) => {
-    Post.find((err, foundPosts) => {
-        if (foundPosts.length === 0) {
-            Post.insertMany([post1, post2], function(err){
-                if(err) {
-                    console.log(err);
-                } else {
-                    console.log("Data added successfully");
-                }
-            });
-
-            res.redirect("/admin/tampil-semua-post");
-        } else {
+    Post.find({active: 1}, (err, foundPosts) => {
             res.render("tampil-semua-post", {title: "Tampil Semua Post", posts: foundPosts, arrDay, arrMonth, alert: ""});
-        }
     });
 })
 
-app.post("/admin/hapus-post/:postSlug", (req, res) => {
+app.post("/admin/mengarsipkan-post/:postSlug", (req, res) => {
+    const postSlug = req.params.postSlug;
+
+    Post.findOneAndUpdate({slug: postSlug}, {active: 0}, (err, postChanged) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.redirect("/admin/tampil-semua-post");
+        }
+    })
+})
+
+app.post("/admin/menghapus-post/:postSlug", (req, res) => {
     const postSlug = req.params.postSlug;
     
     Post.findOne({slug: postSlug}, (err, foundPost) => {
@@ -277,7 +281,7 @@ app.post("/admin/hapus-post/:postSlug", (req, res) => {
                 if (err) {
                     console.log(err);
                 } else {
-                    res.redirect("/admin/tampil-semua-post");
+                    res.redirect("/admin/arsip-post");
                 }
             })
         }
@@ -285,6 +289,11 @@ app.post("/admin/hapus-post/:postSlug", (req, res) => {
     
 })
 
+app.get("/admin/arsip-post", (req, res) => {
+    Post.find({active: 0}, (err, foundPosts) => {
+        res.render("arsip-post", {title: "Arsip Post", posts: foundPosts, arrDay, arrMonth, alert: ""});
+    });
+})
 
 app.listen(3000, () => {
     console.log("http://localhost:3000");
