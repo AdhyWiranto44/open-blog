@@ -28,13 +28,13 @@ const postSchema = {
     slug: String,
     content: String,
     img: String,
-    tag: [String],
+    tags: [String],
     author: String,
     created_at: Number,
     updated_at: Number
 }
 
-// // DB Model
+// DB Model
 const User = mongoose.model("User", userSchema);
 const Post = mongoose.model("Post", postSchema);
 
@@ -51,7 +51,7 @@ const post1 = new Post({
     slug: "post-1",
     content: "Vehicula ipsum a arcu cursus vitae congue mauris rhoncus aenean. Venenatis lectus magna fringilla urna porttitor rhoncus dolor purus non. Scelerisque eleifend donec pretium vulputate sapien nec sagittis aliquam. Nullam vehicula ipsum a arcu cursus vitae congue mauris. Cum sociis natoque penatibus et magnis dis. Nunc consequat interdum varius sit amet. Quisque egestas diam in arcu cursus euismod. Scelerisque felis imperdiet proin fermentum leo. Netus et malesuada fames ac turpis egestas integer eget. Vel fringilla est ullamcorper eget nulla facilisi etiam dignissim. Id interdum velit laoreet id donec ultrices tincidunt.",
     img: "post-img.jpg",
-    tag: ["nodejs", "express", "bootstrap", "todayilearn"],
+    tags: ["nodejs", "express", "bootstrap", "todayilearn"],
     author: "Admin",
     created_at: new Date().getTime(),
     updated_at: new Date().getTime()
@@ -62,7 +62,7 @@ const post2 = new Post({
     slug: "post-2",
     content: "Orci nulla pellentesque dignissim enim sit amet venenatis. Nec tincidunt praesent semper feugiat nibh sed. Nisi porta lorem mollis aliquam ut porttitor leo a. At augue eget arcu dictum varius duis at consectetur lorem. Nibh mauris cursus mattis molestie a iaculis at erat. Ut consequat semper viverra nam libero. Semper quis lectus nulla at volutpat. Rhoncus urna neque viverra justo nec ultrices dui sapien. Gravida rutrum quisque non tellus orci ac auctor augue. Felis imperdiet proin fermentum leo vel orci. Id semper risus in hendrerit gravida rutrum. Lorem donec massa sapien faucibus et molestie ac feugiat.",
     img: "",
-    tag: ["blog", "react"],
+    tags: ["blog", "react"],
     author: "Admin",
     created_at: new Date().getTime(),
     updated_at: new Date().getTime()
@@ -76,8 +76,8 @@ const default_user = new User({
     updated_at: new Date().getTime()
 })
 
-// // Add default user
-// default_user.save();
+// Add default user
+//    default_user.save();
 
 app.get("/", (req, res) => {
     Post.find((err, foundPosts) => {
@@ -129,7 +129,7 @@ app.get("/post/:postSlug", (req, res) => {
 app.get("/tag/:postTag", (req, res) => {
     const postTag = req.params.postTag;
 
-    Post.find({tag: postTag}, (err, foundPosts) => {
+    Post.find({tags: postTag}, (err, foundPosts) => {
         if (err) {
             console.log(err);
         } else {
@@ -208,7 +208,35 @@ app.get("/admin/dashboard", (req, res) => {
 })
 
 app.get("/admin/tambah-post-baru", (req, res) => {
-    res.render("tambah-post-baru", {title: "Tambah Post Baru"});
+    res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: ""});
+})
+
+app.post("/admin/tambah-post-baru", (req, res) => {
+    const title = req.body.title;
+    const slug = title.replace(/\s+/g, '-').toLowerCase();
+    const content = req.body.content;
+    const tags = req.body.tags.split(", ") || req.body.tags.split(",") || req.body.tags.split(" ");
+    const img = req.body.image;
+
+    const newPost = new Post({
+        title,
+        slug,
+        content,
+        img,
+        tags,
+        author: "Admin",
+        created_at: new Date().getTime(),
+        updated_at: new Date().getTime()
+    })
+
+    if (title !== "" && content !== "" && tags !== "") {
+        newPost.save();
+    } else {
+        res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-warning", "data tidak boleh kosong!")});
+    }
+    
+
+    res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-success", "post baru berhasil ditambahkan.")});
 })
 
 app.get("/admin/tampil-semua-post", (req, res) => {

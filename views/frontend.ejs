@@ -28,7 +28,7 @@
                                 <%= new Date(post.created_at).getHours() %>.<%= new Date(post.created_at).getMinutes() %>
                             </small><br>
                             <div class="tag-list my-2">
-                                <% post.tag.forEach(tag => { %>
+                                <% post.tags.forEach(tag => { %>
                                     <a class="text-dark" href="/tag/<%= tag %>"><span class="badge badge-light p-2 mb-1">#<%= tag %></span></a>
                                 <% }) %>
                             </div>

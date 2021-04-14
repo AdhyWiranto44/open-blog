@@ -2,7 +2,7 @@
 
 <div class="row">
     <% posts.forEach(post => { %>
-        <div class="col-lg-3">
+        <div class="col-lg-3 col-md-6">
             <a href="/post/<%= post.slug %>">
                 <div class="card px-3 mb-3 shadow-sm border-0">
                     <img src="../img/post/<%= post.img %>" class="card-img-top mt-3 <%= post.img === "" ? "d-none" : "" %>" alt="post" />
@@ -16,7 +16,7 @@
                         <%= new Date(post.created_at).getHours() %>.<%= new Date(post.created_at).getMinutes() %>
                     </small><br>
                     <div class="tag-list my-2">
-                        <% post.tag.forEach(tag => { %>
+                        <% post.tags.forEach(tag => { %>
                             <a class="text-dark" href="/tag/<%= tag %>"><span class="badge badge-light p-2 mb-1">#<%= tag %></span></a>
                         <% }) %>
                     </div>

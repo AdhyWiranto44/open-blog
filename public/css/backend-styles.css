@@ -93,6 +93,6 @@ main {
     position: relative;
 }
 
-.card-img-top {
+.card-img-top, .form-group input, .form-group textarea, .btn, .alert {
     border-radius: 10px;
 }
