@@ -23,10 +23,10 @@
                             <% }) %>
                         </div>
                         <p class="card-text"><%= post.content.substring(0, 50) + "..." %></p>
+                        <a href="/admin/ubah-post" class="btn btn-warning mr-2"><span class="ti-pencil-alt"></span> Ubah</a>
                         <form action="/admin/mengarsipkan-post/<%= post.slug %>" method="POST" class="d-inline">
-                            <button type="submit" class="btn btn-outline-danger mr-2" onClick="return confirm('Yakin ingin mengarsipkan post ini? <%= post.title %>');"><span class="ti-archive"></span> Arsip</button>
+                            <button type="submit" class="btn btn-outline-danger" onClick="return confirm('Yakin ingin mengarsipkan post ini? <%= post.title %>');"><span class="ti-archive"></span> Arsip</button>
                         </form>
-                        <a href="/admin/ubah-post" class="btn btn-warning"><span class="ti-pencil-alt"></span> Ubah</a>
                         </div>
                     </div>
                 </a>

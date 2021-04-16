@@ -295,6 +295,18 @@ app.get("/admin/arsip-post", (req, res) => {
     });
 })
 
+app.post("/admin/mengaktifkan-post/:postSlug", (req, res) => {
+    const postSlug = req.params.postSlug;
+
+    Post.findOneAndUpdate({slug: postSlug}, {active: 1}, (err, postChanged) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.redirect("/admin/tampil-semua-post");
+        }
+    })
+})
+
 app.listen(3000, () => {
     console.log("http://localhost:3000");
 })
