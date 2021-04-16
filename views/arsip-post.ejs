@@ -27,7 +27,7 @@
                                 <% }) %>
                             </div>
                             <p class="card-text"><%= post.content.substring(0, 50) + "..." %></p>
-                            <a href="/admin/mengubah-post" class="btn btn-warning mr-2"><span class="ti-pencil-alt"></span> Ubah</a>
+                            <a href="/admin/mengubah-post/<%= post.slug %>" class="btn btn-warning mr-2"><span class="ti-pencil-alt"></span> Ubah</a>
                             <form action="/admin/mengaktifkan-post/<%= post.slug %>" method="POST" class="d-inline">
                                 <button type="submit" class="btn btn-primary" onClick="return confirm('Aktifkan post ini? <%= post.title %>');"><span class="ti-plus"></span> Aktifkan</button>
                             </form>

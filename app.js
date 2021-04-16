@@ -218,7 +218,7 @@ app.post("/admin/tambah-post-baru", (req, res) => {
     const title = req.body.title;
     const slug = title.replace(/\s+/g, '-').toLowerCase();
     const content = req.body.content;
-    const tags = req.body.tags.split(", ") || req.body.tags.split(",") || req.body.tags.split(" ");
+    const tags = req.body.tags.split(",");
     const img = req.body.image;
 
     Post.findOne({title}, (err, foundPost) => {
@@ -299,6 +299,35 @@ app.post("/admin/mengaktifkan-post/:postSlug", (req, res) => {
     const postSlug = req.params.postSlug;
 
     Post.findOneAndUpdate({slug: postSlug}, {active: 1}, (err, postChanged) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.redirect("/admin/tampil-semua-post");
+        }
+    })
+})
+
+app.get("/admin/mengubah-post/:postSlug", (req, res) => {
+    const postSlug = req.params.postSlug;
+
+    Post.findOne({slug: postSlug}, (err, foundPost) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render("ubah-post", {title: "Ubah Post", post: foundPost, alert: ""});
+        }
+    })
+})
+
+app.post("/admin/mengubah-post", (req, res) => {
+    const title = req.body.title;
+    const slug = req.body.slug;
+    const content = req.body.content;
+    const tags = req.body.tags.split(",");
+    const img = req.body.image;
+    const updated_at = new Date().getTime();
+
+    Post.findOneAndUpdate({slug}, {title, content, tags, img, updated_at}, (err, postChanged) => {
         if (err) {
             console.log(err);
         } else {
