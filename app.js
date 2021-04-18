@@ -277,8 +277,37 @@ app.post("/admin/tambah-post-baru", (req, res) => {
 
 app.get("/admin/tampil-semua-post", (req, res) => {
     Post.find({active: 1}, (err, foundPosts) => {
-            res.render("tampil-semua-post", {title: "Tampil Semua Post", posts: foundPosts, arrDay, arrMonth, alert: ""});
+        res.render("tampil-semua-post", {title: "Tampil Semua Post", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", alert: ""});
     });
+})
+
+app.post("/admin/tampil-semua-post", (req, res) => {
+    const search = req.body.search;
+    
+    if (search === "") {
+        res.redirect("/admin/tampil-semua-post");
+    } else {
+        Post.find({title: search, active: 1}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
+    
+            if (err) {
+                console.log(err);
+            } else {
+                res.render("tampil-semua-post", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, alert: ""});
+            }
+        })
+    }
+})
+
+app.get("/admin/tag/:postTag", (req, res) => {
+    const postTag = req.params.postTag;
+
+    Post.find({tags: postTag}, (err, foundPosts) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render("tampil-semua-post", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: "", alert: ""});
+        }
+    })
 })
 
 app.post("/admin/mengarsipkan-post/:postSlug", (req, res) => {
@@ -314,8 +343,25 @@ app.post("/admin/menghapus-post/:postSlug", (req, res) => {
 
 app.get("/admin/arsip-post", (req, res) => {
     Post.find({active: 0}, (err, foundPosts) => {
-        res.render("arsip-post", {title: "Arsip Post", posts: foundPosts, arrDay, arrMonth, alert: ""});
+        res.render("arsip-post", {title: "Arsip Post", posts: foundPosts, arrDay, arrMonth, tag: "", search: "", alert: ""});
     });
+})
+
+app.post("/admin/arsip-post", (req, res) => {
+    const search = req.body.search;
+    
+    if (search === "") {
+        res.redirect("/admin/arsip-post");
+    } else {
+        Post.find({title: search, active: 0}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
+    
+            if (err) {
+                console.log(err);
+            } else {
+                res.render("arsip-post", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, alert: ""});
+            }
+        })
+    }
 })
 
 app.post("/admin/mengaktifkan-post/:postSlug", (req, res) => {

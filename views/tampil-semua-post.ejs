@@ -1,35 +1,51 @@
 <%- include("backend-templates/backend-header") %>
 
+<div class="row my-3">
+    <div class="col-md-4">
+        <form action="/admin/tampil-semua-post" method="POST" class="container-form w-100 mx-auto">
+            <input class="form-control mr-sm-2 py-4 shadow-sm border-0" type="search" placeholder="Search" aria-label="Search" name="search">
+        </form>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-lg-6">
+        <% if (tag !== "") { %>
+            <h5>#<%= tag %></h5>
+        <% } else if (tag === "" && search) { %>
+            <h5>Search item: <%= search %></h5>
+        <% } %>
+    </div>
+</div>
+
 <div class="row">
     <%- alert %>
     <% if (posts.length !== 0) { %>
         <% posts.forEach(post => { %>
             <div class="col-lg-3 col-md-6">
-                <a href="/post/<%= post.slug %>">
-                    <div class="card px-3 mb-3 shadow-sm border-0">
-                        <img src="../img/post/<%= post.img %>" class="card-img-top mt-3 <%= post.img === "" ? "d-none" : "" %>" alt="post" />
-                        <div class="card-body px-0">
-                        <a class="text-dark text-underline-dark" href="/post/<%= post.slug %>"><h4 class="card-title mb-0"><%= post.title %></h4></a>
-                        <small>
-                            <%= arrDay[new Date(post.created_at).getDay()] %>, 
-                            <%= new Date(post.created_at).getDate() %> 
-                            <%= arrMonth[new Date(post.created_at).getMonth()] %> 
-                            <%= new Date(post.created_at).getFullYear() %> 
-                            <%= new Date(post.created_at).getHours() %>.<%= new Date(post.created_at).getMinutes() %>
-                        </small><br>
-                        <div class="tag-list my-2">
-                            <% post.tags.forEach(tag => { %>
-                                <a class="text-dark" href="/tag/<%= tag %>"><span class="badge badge-light p-2 mb-1">#<%= tag %></span></a>
-                            <% }) %>
-                        </div>
-                        <p class="card-text"><%= post.content.substring(0, 50) + "..." %></p>
-                        <a href="/admin/mengubah-post/<%= post.slug %>" class="btn btn-warning mr-2"><span class="ti-pencil-alt"></span> Ubah</a>
-                        <form action="/admin/mengarsipkan-post/<%= post.slug %>" method="POST" class="d-inline">
-                            <button type="submit" class="btn btn-outline-danger" onClick="return confirm('Yakin ingin mengarsipkan post ini? <%= post.title %>');"><span class="ti-archive"></span> Arsip</button>
-                        </form>
-                        </div>
+                <div class="card px-3 mb-3 shadow-sm border-0">
+                    <img src="/img/post/<%= post.img %>" class="card-img-top mt-3 <%= post.img === "" ? "d-none" : "" %>" alt="post" />
+                    <div class="card-body px-0">
+                    <a class="text-dark text-underline-dark" href="/post/<%= post.slug %>"><h4 class="card-title mb-0"><%= post.title %></h4></a>
+                    <small>
+                        <%= arrDay[new Date(post.created_at).getDay()] %>, 
+                        <%= new Date(post.created_at).getDate() %> 
+                        <%= arrMonth[new Date(post.created_at).getMonth()] %> 
+                        <%= new Date(post.created_at).getFullYear() %> 
+                        <%= new Date(post.created_at).getHours() %>.<%= new Date(post.created_at).getMinutes() %>
+                    </small><br>
+                    <div class="tag-list my-2">
+                        <% post.tags.forEach(tag => { %>
+                            <a class="text-dark" href="/admin/tag/<%= tag %>"><span class="badge badge-light p-2 mb-1">#<%= tag %></span></a>
+                        <% }) %>
                     </div>
-                </a>
+                    <p class="card-text"><%= post.content.substring(0, 50) + "..." %></p>
+                    <a href="/admin/mengubah-post/<%= post.slug %>" class="btn btn-warning mr-2"><span class="ti-pencil-alt"></span> Ubah</a>
+                    <form action="/admin/mengarsipkan-post/<%= post.slug %>" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-outline-danger" onClick="return confirm('Yakin ingin mengarsipkan post ini? <%= post.title %>');"><span class="ti-archive"></span> Arsip</button>
+                    </form>
+                    </div>
+                </div>
             </div>
         <% }) %>
     <% } else { %>
