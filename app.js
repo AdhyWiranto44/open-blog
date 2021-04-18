@@ -103,14 +103,18 @@ app.get("/", (req, res) => {
 app.post("/", (req, res) => {
     const search = req.body.search;
     
-    Post.find({title: search, active: 1}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
-
-        if (err) {
-            console.log(err);
-        } else {
-            res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search});
-        }
-    })
+    if (search === "") {
+        res.redirect("/");
+    } else {
+        Post.find({title: search, active: 1}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
+    
+            if (err) {
+                console.log(err);
+            } else {
+                res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search});
+            }
+        })
+    }
 })
 
 app.get("/documentation", (req, res) => {

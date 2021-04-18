@@ -50,6 +50,10 @@
     color: #f3f3f3;
 }
 
+.sidebar-menu-section li:hover {
+    background-color: #244493;
+}
+
 .sidebar-menu-section .menu-active {
     background-color: #3159BF;
 }

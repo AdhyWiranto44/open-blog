@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
-    <link rel="stylesheet" href="../../css/backend-styles.css">
+    <link rel="stylesheet" href="/css/backend-styles.css">
 
     <title>Open Blog: <%= title %></title>
 </head>
@@ -30,7 +30,7 @@
                     <ul>
                         <li class="<%= title === "Tambah Post Baru" ? "menu-active" : ""; %>"><span class="ti-plus"></span><a href="/admin/tambah-post-baru">Tambah Post Baru</a></li>
                         <li class="<%= title === "Tampil Semua Post" ? "menu-active" : ""; %>"><span class="ti-list"></span><a href="/admin/tampil-semua-post">Tampil Semua Post</a></li>
-                        <li><span class="ti-archive"></span><a href="/admin/arsip-post">Arsip Post</a></li>
+                        <li class="<%= title === "Arsip Post" ? "menu-active" : ""; %>"><span class="ti-archive"></span><a href="/admin/arsip-post">Arsip Post</a></li>
                     </ul>
                 </li>
                 <li class="sidebar-menu-section">
