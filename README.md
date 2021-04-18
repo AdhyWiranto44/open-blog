@@ -32,6 +32,7 @@ Open-Blog ini dapat melakukan operasi CRUDS, memiliki fitur tag untuk setiap pos
 - Cari Post Front-End
 
 # Fungsi yang belum selesai
+- kolom pencarian masih harus spesifik judul post-nya
 - otentikasi: session login dan logout, ubah password, reset password
 - validasi input
 
