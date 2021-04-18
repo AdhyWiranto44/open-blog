@@ -1,4 +1,4 @@
-# Status: Sedang dalam tahap desain
+# Versi: Beta 1
 
 
 # Open-Blog
@@ -31,10 +31,11 @@ Open-Blog ini dapat melakukan operasi CRUDS, memiliki fitur tag untuk setiap pos
 - Tampil Post dengan Tag Front-End
 - Cari Post Front-End
 
+# Fungsi yang belum selesai
+- otentikasi: session login dan logout, ubah password, reset password
+- validasi input
 
-# Model Bisnis
-Model bisnis yang dilakukan pada aplikasi Open-Blog ini adalah melakukan pengelolaan artikel blog.
-
-
-# Business Use Case Diagram
-![Business Use Case Diagram](https://github.com/AdhyWiranto44/open-blog/blob/main/public/img/documentation/business-use-case-diagram.jpg)
+# Instalasi
+- npm i
+- uncomment pada app.js => default_user.save(); untuk membuat user default (username: admin, password: 1234)
+- jalankan dengan node . atau nodemon .

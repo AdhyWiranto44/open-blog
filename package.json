@@ -1,7 +1,7 @@
 {
   "name": "open-blog",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.3.0",
+  "description": "Open-Blog merupakan projek website blogging open-source dimana source code dapat diunduh, dipelajari, dimodifikasi, dan digunakan untuk keperluan pribadi atau komersial.",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
