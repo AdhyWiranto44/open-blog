@@ -7,7 +7,7 @@ Open-Blog merupakan projek website blogging open-source dimana source code dapat
 Open-Blog ini dapat melakukan operasi CRUDS, memiliki fitur tag untuk setiap post-nya, otentikasi, dan halaman dashboard untuk mengelola post. Terlepas dari fitur yang sudah ada, kamu juga dapat menambahkan fitur yang lain sesuai dengan kebutuhan.
 
 # Demo
-link: http://open-blog.herokuapp.com/
+link: coming soon
 
 # Stack Teknologi
 - MongoDB
