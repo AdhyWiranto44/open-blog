@@ -133,7 +133,7 @@ app.post("/", (req, res) => {
     if (search === "") {
         res.redirect("/");
     } else {
-        Post.find({title: search, active: 1}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
+        Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
     
             if (err) {
                 console.log(err);
@@ -359,7 +359,7 @@ app.post("/admin/tampil-semua-post", (req, res) => {
     if (search === "") {
         res.redirect("/admin/tampil-semua-post");
     } else {
-        Post.find({title: search, active: 1}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
+        Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
     
             if (err) {
                 console.log(err);
@@ -433,7 +433,7 @@ app.post("/admin/arsip-post", (req, res) => {
     if (search === "") {
         res.redirect("/admin/arsip-post");
     } else {
-        Post.find({title: search, active: 0}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
+        Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 0}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
     
             if (err) {
                 console.log(err);
