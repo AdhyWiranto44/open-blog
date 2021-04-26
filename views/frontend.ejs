@@ -1,7 +1,7 @@
 <%- include('frontend-templates/frontend-header') %>
 
         <div class="row mt-3">
-            <div class="col-lg-6 offset-lg-3">
+            <div class="col-md-7 offset-md-2">
                 <% if (tag === "" && search === "") { %>
                     <h6>Latest Post</h6>
                 <% } else if (tag !== "") { %>
@@ -13,7 +13,18 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-6 offset-lg-3">
+            <div class="col-md-3 order-md-2">
+                <% posts.forEach(post => { %>
+                    <% post.tags.forEach((tag, index) => { %>
+                        <% if (index % 2 === 0) { %>
+                            <a class="text-dark" href="/tag/<%= tag %>"><span class="btn btn-sm btn-primary mb-2 px-2 mb-1">#<%= tag %></span></a>
+                        <% } else { %>
+                            <a class="text-dark" href="/tag/<%= tag %>"><span class="btn btn-sm btn-dark mb-2 px-2 mb-1">#<%= tag %></span></a>
+                        <% } %>
+                    <% }) %>
+                <% }) %>
+            </div>
+            <div class="col-md-7 offset-md-2">
                 <% posts.forEach(post => { %>
                     <a href="/post/<%= post.slug %>">
                         <div class="card px-3 mb-3 shadow-sm border-0">
