@@ -6,9 +6,6 @@ Open-Blog merupakan projek website blogging open-source dimana source code dapat
 
 Open-Blog ini dapat melakukan operasi CRUDS, memiliki fitur tag untuk setiap post-nya, otentikasi, dan halaman dashboard untuk mengelola post. Terlepas dari fitur yang sudah ada, kamu juga dapat menambahkan fitur yang lain sesuai dengan kebutuhan.
 
-# Demo
-link: coming soon
-
 # Stack Teknologi
 - MongoDB
 - Express.js
@@ -35,10 +32,8 @@ link: coming soon
 
 # Fungsi yang belum selesai
 - kolom pencarian masih harus spesifik judul post-nya
-- otentikasi: session login dan logout, ubah password, reset password
-- validasi input
+- otentikasi: ubah password dan reset password
 
 # Instalasi
 - npm i
-- uncomment pada app.js => default_user.save(); untuk membuat user default (username: admin, password: 1234)
 - jalankan dengan node . atau nodemon .
