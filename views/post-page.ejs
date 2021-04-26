@@ -14,7 +14,7 @@
 <div class="row">
     <div class="col-lg-8 offset-lg-2">
         <div class="card p-3 mb-3 shadow-sm border-0">
-            <img src="../img/post/post-img.jpg" class="card-img-top" alt="post" />
+            <img src="../img/post/<%= post.img %>" class="card-img-top <%= post.img === "" ? "d-none" : "" %>" alt="post" />
             <div class="card-body px-0">
               <h4 class="card-title mb-0"><%= post.title %></h4>
               <small>

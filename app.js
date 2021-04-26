@@ -2,6 +2,18 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+// Upload image
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'public/img/post')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname)
+    }
+  })
+const upload = multer({dest: __dirname + '/public/img/post', storage})
+
 // session dan cookies
 const session = require('express-session');
 const passport = require('passport');
@@ -98,7 +110,6 @@ const post2 = new Post({
 //    default_user.save();
 
 app.get("/", (req, res) => {
-    let isAuthLink = req.isAuthenticated();
     Post.find({active: 1}, (err, foundPosts) => {
         if (foundPosts.length === 0) {
             Post.insertMany([post1, post2], function(err){
@@ -111,7 +122,7 @@ app.get("/", (req, res) => {
 
             res.redirect("/");
         } else {
-            res.render("frontend", {title: "Open Blog", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink});
+            res.render("frontend", {title: "Open Blog", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
         }
     });
 })
@@ -127,7 +138,7 @@ app.post("/", (req, res) => {
             if (err) {
                 console.log(err);
             } else {
-                res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search});
+                res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, isAuthLink: req.isAuthenticated()});
             }
         })
     }
@@ -144,7 +155,7 @@ app.get("/post/:postSlug", (req, res) => {
         if (err) {
             console.log(err);
         } else {
-            res.render("post-page", {title: foundPost.title, post: foundPost, arrDay, arrMonth, search: ""});
+            res.render("post-page", {title: foundPost.title, post: foundPost, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
         }
     })
 })
@@ -156,7 +167,7 @@ app.get("/tag/:postTag", (req, res) => {
         if (err) {
             console.log(err);
         } else {
-            res.render("frontend", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: ""});
+            res.render("frontend", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
         }
     })
 })
@@ -293,12 +304,12 @@ app.get("/admin/tambah-post-baru", (req, res) => {
     }
 })
 
-app.post("/admin/tambah-post-baru", (req, res) => {
+app.post("/admin/tambah-post-baru", upload.single('image'), (req, res) => {
     const title = req.body.title;
     const slug = title.replace(/\s+/g, '-').toLowerCase();
     const content = req.body.content;
     const tags = req.body.tags.split(",");
-    const img = req.body.image;
+    const img = req.file.originalname;
 
     Post.findOne({title}, (err, foundPost) => {
         if (err) {
@@ -461,12 +472,12 @@ app.get("/admin/mengubah-post/:postSlug", (req, res) => {
     }
 })
 
-app.post("/admin/mengubah-post", (req, res) => {
+app.post("/admin/mengubah-post", upload.single('image'), (req, res) => {
     const title = req.body.title;
     const slug = req.body.slug;
     const content = req.body.content;
     const tags = req.body.tags.split(",");
-    const img = req.body.image;
+    const img = req.file ? req.file.originalname : req.body.prev_img;
     const updated_at = new Date().getTime();
 
     Post.findOneAndUpdate({slug}, {title, content, tags, img, updated_at}, (err, postChanged) => {
