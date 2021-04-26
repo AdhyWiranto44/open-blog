@@ -36,8 +36,8 @@
                 <li class="sidebar-menu-section">
                     <h5>Settings</h5>
                     <ul>
-                        <li><span class="ti-pencil-alt"></span><a href="/admin/ubah-password">Ubah Password</a></li>
-                        <li><span class="ti-key"></span><a href="/admin/reset-password">Reset Password</a></li>
+                        <li><span class="ti-pencil-alt"></span><a href="/auth/ubah-password">Ubah Password</a></li>
+                        <li><span class="ti-key"></span><a href="/auth/reset-password">Reset Password</a></li>
                     </ul>
                 </li>
                 <li class="sidebar-menu-section">
@@ -53,7 +53,9 @@
 
         <header>
             <div class="header-content">
-                <a href="/auth/login"><span class="ti-arrow-left"></span> Logout</a>
+                <form action="/auth/logout" method="POST">
+                    <button class="btn btn-dark btn-sm"><span class="ti-arrow-left"></span> Logout</button>
+                </form>
                 <div class="header-img"></div>
             </div>
         </header>

@@ -23,7 +23,11 @@
                 <div class="navbar-nav ml-auto">
                     <a class="nav-link" href="#">About</a>
                     <a class="nav-link" href="#">Contact</a>
-                    <a class="nav-link" href="/auth/login">Login</a>
+                    <% if (isAuthLink) { %>
+                        <a class="nav-link" href="/admin/dashboard">Admin</a>
+                    <% } else { %>
+                        <a class="nav-link" href="/auth/login">Login</a>
+                    <% } %>
                 </div>
             </div>
         </div>

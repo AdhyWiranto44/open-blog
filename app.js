@@ -1,27 +1,37 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const { encrypt, decrypt } = require('./crypto.js');
+
+// session dan cookies
+const session = require('express-session');
+const passport = require('passport');
+const passportLocalMongoose = require('passport-local-mongoose');
 
 const app = express();
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public"));
+app.use(session({
+    secret: "Our secret.",
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.set("view engine", "ejs");
 
 mongoose.connect("mongodb://localhost:27017/openblogDB", {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.set("useCreateIndex", true);
 
 // DB Schema
-const userSchema = {
+const userSchema = new mongoose.Schema ({
     username: String,
-    password: {
-        iv: String,
-        content: String
-    },
+    password: String,
     created_at: Number,
     updated_at: Number
-}
+})
+userSchema.plugin(passportLocalMongoose);
 
 const postSchema = {
     title: String,
@@ -38,6 +48,11 @@ const postSchema = {
 // DB Model
 const User = mongoose.model("User", userSchema);
 const Post = mongoose.model("Post", postSchema);
+
+passport.use(User.createStrategy());
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 const arrDay = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
 const arrMonth = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -71,18 +86,19 @@ const post2 = new Post({
     updated_at: new Date().getTime()
 })
 
-const default_user = new User({
-    id: 1,
-    username: "admin",
-    password: encrypt("1234"),
-    created_at: new Date().getTime(),
-    updated_at: new Date().getTime()
-})
+// const default_user = new User({
+//     id: 1,
+//     username: "admin",
+//     password: encrypt("1234"),
+//     created_at: new Date().getTime(),
+//     updated_at: new Date().getTime()
+// })
 
 // Add default user
 //    default_user.save();
 
 app.get("/", (req, res) => {
+    let isAuthLink = req.isAuthenticated();
     Post.find({active: 1}, (err, foundPosts) => {
         if (foundPosts.length === 0) {
             Post.insertMany([post1, post2], function(err){
@@ -95,7 +111,7 @@ app.get("/", (req, res) => {
 
             res.redirect("/");
         } else {
-            res.render("frontend", {title: "Open Blog", tag: "", posts: foundPosts, arrDay, arrMonth, search: ""});
+            res.render("frontend", {title: "Open Blog", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink});
         }
     });
 })
@@ -146,34 +162,47 @@ app.get("/tag/:postTag", (req, res) => {
 })
 
 app.get("/auth/login", (req, res) => {
-    res.render("login", {title: "Login", alert: ""})
+    if (req.isAuthenticated()) {
+        res.redirect('/admin/dashboard');
+    } else {
+        res.render("login", {title: "Login", alert: ""});reset
+    }
 })
 
 app.post("/auth/login", (req, res) => {
-    const findUsername = req.body.username;
-    const findPassword = req.body.password;
+    const user = new User({
+        username: req.body.username,
+        password: req.body.password
+    })
     
-    User.findOne({username: findUsername}, (err, foundUser) => {
+    User.findOne({username: user.username}, (err, foundUser) => {
         if (err) {
             console.log(err);
         } else {
             if (foundUser === null) {
                 res.render("login", {title: "Login", alert: showAlert("alert-danger", "username tidak terdaftar, silahkan coba lagi.")});
             } else {
-                const decryptedPassword = decrypt(foundUser.password);
-                if (decryptedPassword === findPassword) {
-                    res.redirect("/admin/dashboard");
-                } else {
-                    res.render("login", {title: "Login", alert: showAlert("alert-danger", "password salah, silahkan coba lagi.")});
-                }
-
+                req.login(user, (err) => {
+                    if (err) {
+                        console.log(err);
+                        res.redirect("/auth/login");
+                    } else {
+                        passport.authenticate('local')(req, res, function() {
+                            res.redirect('/admin/dashboard');
+                        });
+                    }
+                })
             }
         }
     })
 })
 
 app.get("/auth/register", (req, res) => {
-    res.render("register", {title:"Register", alert: ""});
+    if (req.isAuthenticated()) {
+        res.redirect('/admin/dashboard');
+    } else {
+        res.render("register", {title:"Register", alert: ""});
+    }
 })
 
 app.post("/auth/register", (req, res) => {
@@ -187,15 +216,16 @@ app.post("/auth/register", (req, res) => {
         } else {
             if (foundUser === null) { // jika belum ada user yang terdaftar
                 if (regPassword === regConfirm_password) { // jika password cocok dengan confirm_password
-                    const newUser = new User({
-                        username: regUsername,
-                        password: encrypt(regPassword),
-                        created_at: new Date().getTime(),
-                        updated_at: new Date().getTime()
+                    User.register({username: regUsername}, regPassword, (err, user) => {
+                        if (err) {
+                            console.log(err);
+                            res.redirect('/register');
+                        } else {
+                            passport.authenticate('local')(req, res, () => {
+                                res.redirect('/admin/dashboard');
+                            })
+                        }
                     })
-
-                    newUser.save();
-                    res.render("login", {title: "Login", alert: showAlert("alert-success", "akun berhasil didaftarkan, silakan login.")});
                 } else {
                     res.render("register", {title: "Register", alert: showAlert("alert-danger", "password tidak cocok dengan confirm_password!")});
                 }
@@ -206,35 +236,61 @@ app.post("/auth/register", (req, res) => {
     })
 })
 
+app.post('/auth/logout', (req, res) => {
+    req.logout();
+    res.redirect('/auth/login');
+})
+
 app.get("/auth/reset-password", (req, res) => {
-    res.render("reset-password", {title: "Reset Password"});
+    if (req.isAuthenticated()) {
+        res.redirect('/admin/dashboard');
+    } else {
+        res.redirect('/auth/login');
+    }
+    // res.render("reset-password", {title: "Reset Password"});
+})
+
+app.get('/auth/ubah-password', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.redirect('/admin/dashboard');
+    } else {
+        res.redirect('/auth/login');
+    }
 })
 
 app.get("/admin/dashboard", (req, res) => {
-    let jmlPost = 0;
-    let postAktif = 0;
-    let postArsip = 0;
-
-    Post.find((err, foundPosts) => {
-        if (err) {
-            console.log(err);
-        } else {
-            jmlPost = foundPosts.length;
-            foundPosts.forEach(post => {
-                if (post.active === 1) {
-                    postAktif++;
-                } else {
-                    postArsip++;
-                }
-            })
-            res.render("dashboard", {title: "Dashboard", jmlPost, postAktif, postArsip});
-        }
-    })
+    if (req.isAuthenticated()) {
+        let jmlPost = 0;
+        let postAktif = 0;
+        let postArsip = 0;
+    
+        Post.find((err, foundPosts) => {
+            if (err) {
+                console.log(err);
+            } else {
+                jmlPost = foundPosts.length;
+                foundPosts.forEach(post => {
+                    if (post.active === 1) {
+                        postAktif++;
+                    } else {
+                        postArsip++;
+                    }
+                })
+                res.render("dashboard", {title: "Dashboard", jmlPost, postAktif, postArsip});
+            }
+        })
+    } else {
+        res.redirect('/auth/login');
+    }
 
 })
 
 app.get("/admin/tambah-post-baru", (req, res) => {
-    res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: ""});
+    if (req.isAuthenticated()) {
+        res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: ""});
+    } else {
+        res.redirect('/auth/login');
+    }
 })
 
 app.post("/admin/tambah-post-baru", (req, res) => {
@@ -276,9 +332,14 @@ app.post("/admin/tambah-post-baru", (req, res) => {
 })
 
 app.get("/admin/tampil-semua-post", (req, res) => {
-    Post.find({active: 1}, (err, foundPosts) => {
-        res.render("tampil-semua-post", {title: "Tampil Semua Post", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", alert: ""});
-    });
+    if (req.isAuthenticated()) {
+        Post.find({active: 1}, (err, foundPosts) => {
+            res.render("tampil-semua-post", {title: "Tampil Semua Post", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", alert: ""});
+        });    
+    } else {
+        res.redirect('/auth/login');
+    }
+    
 })
 
 app.post("/admin/tampil-semua-post", (req, res) => {
@@ -299,15 +360,19 @@ app.post("/admin/tampil-semua-post", (req, res) => {
 })
 
 app.get("/admin/tag/:postTag", (req, res) => {
-    const postTag = req.params.postTag;
-
-    Post.find({tags: postTag}, (err, foundPosts) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.render("tampil-semua-post", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: "", alert: ""});
-        }
-    })
+    if (req.isAuthenticated()) {
+        const postTag = req.params.postTag;
+    
+        Post.find({tags: postTag}, (err, foundPosts) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.render("tampil-semua-post", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: "", alert: ""});
+            }
+        })    
+    } else {
+        res.redirect('/auth/login');
+    }
 })
 
 app.post("/admin/mengarsipkan-post/:postSlug", (req, res) => {
@@ -342,9 +407,13 @@ app.post("/admin/menghapus-post/:postSlug", (req, res) => {
 })
 
 app.get("/admin/arsip-post", (req, res) => {
-    Post.find({active: 0}, (err, foundPosts) => {
-        res.render("arsip-post", {title: "Arsip Post", posts: foundPosts, arrDay, arrMonth, tag: "", search: "", alert: ""});
-    });
+    if (req.isAuthenticated()) {
+        Post.find({active: 0}, (err, foundPosts) => {
+            res.render("arsip-post", {title: "Arsip Post", posts: foundPosts, arrDay, arrMonth, tag: "", search: "", alert: ""});
+        });
+    } else {
+        res.redirect('/auth/login');
+    }
 })
 
 app.post("/admin/arsip-post", (req, res) => {
@@ -377,15 +446,19 @@ app.post("/admin/mengaktifkan-post/:postSlug", (req, res) => {
 })
 
 app.get("/admin/mengubah-post/:postSlug", (req, res) => {
-    const postSlug = req.params.postSlug;
-
-    Post.findOne({slug: postSlug}, (err, foundPost) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.render("ubah-post", {title: "Ubah Post", post: foundPost, alert: ""});
-        }
-    })
+    if (req.isAuthenticated()) {
+        const postSlug = req.params.postSlug;
+    
+        Post.findOne({slug: postSlug}, (err, foundPost) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.render("ubah-post", {title: "Ubah Post", post: foundPost, alert: ""});
+            }
+        })
+    } else {
+        res.redirect('/auth/login');
+    }
 })
 
 app.post("/admin/mengubah-post", (req, res) => {
