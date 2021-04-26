@@ -1,4 +1,4 @@
-# Versi: Beta 1
+# Dalam tahap development
 
 
 # Open-Blog
