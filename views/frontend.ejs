@@ -14,14 +14,12 @@
 
         <div class="row">
             <div class="col-md-3 order-md-2">
-                <% posts.forEach(post => { %>
-                    <% post.tags.forEach((tag, index) => { %>
-                        <% if (index % 2 === 0) { %>
-                            <a class="text-dark" href="/tag/<%= tag %>"><span class="btn btn-sm btn-primary mb-2 px-2 mb-1">#<%= tag %></span></a>
-                        <% } else { %>
-                            <a class="text-dark" href="/tag/<%= tag %>"><span class="btn btn-sm btn-dark mb-2 px-2 mb-1">#<%= tag %></span></a>
-                        <% } %>
-                    <% }) %>
+                <% tags.forEach((tag, index) => { %>
+                    <% if (index % 2 === 0) { %>
+                        <a class="text-dark" href="/tag/<%= tag %>"><span class="btn btn-sm btn-primary mb-2 px-2 mb-1">#<%= tag %></span></a>
+                    <% } else { %>
+                        <a class="text-dark" href="/tag/<%= tag %>"><span class="btn btn-sm btn-dark mb-2 px-2 mb-1">#<%= tag %></span></a>
+                    <% } %>
                 <% }) %>
             </div>
             <div class="col-md-7 offset-md-2">

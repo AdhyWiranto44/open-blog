@@ -91,7 +91,26 @@ app.route("/")
 
             res.redirect("/");
         } else {
-            res.render("frontend", {title: "Open Blog", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
+            Post.find({active: 1}, (err, foundForTags) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    // Push tag di setiap post ke array,
+                    // Lalu hilangkan duplikat
+                    let allTags = [];
+                    foundForTags.forEach(post => {
+                        post.tags.forEach(tag => {
+                        allTags.push(tag);
+                        })
+                    })
+                    
+                    allTags = allTags.filter(function(value, index, self) {
+                        return self.indexOf(value) === index;
+                    });
+
+                res.render("frontend", {title: "Halaman Utama", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated(), tags: allTags});
+                }
+            }).sort({created_at: -1});
         }
     });
 })
@@ -103,11 +122,30 @@ app.route("/")
         res.redirect("/");
     } else {
         Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}, (err, foundPosts) => {
-    
             if (err) {
                 console.log(err);
             } else {
-                res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, isAuthLink: req.isAuthenticated()});
+                Post.find({active: 1}, (err, foundForTags) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        // Push tag di setiap post ke array,
+                        // Lalu hilangkan duplikat
+                        let allTags = [];
+                        foundForTags.forEach(post => {
+                            post.tags.forEach(tag => {
+                            allTags.push(tag);
+                            })
+                        })
+                        
+                        allTags = allTags.filter(function(value, index, self) {
+                            return self.indexOf(value) === index;
+                        });
+    
+                    res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, isAuthLink: req.isAuthenticated(), tags: allTags});
+                    }
+                }).sort({created_at: -1});
+                
             }
         })
     }
@@ -164,6 +202,8 @@ app.get("/auth/login", (req, res) => {
                             res.render("login", {title: "Login", alert: ""});
                         }
                     })
+                } else {
+                    res.render("login", {title: "Login", alert: ""});
                 }
             }
         })
