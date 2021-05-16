@@ -1,10 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const Post = require('./models/Post');
-const User = require('./models/User');
-// Upload image
-const multer = require('multer');
+const Post = require('./models/Post.js');
+const User = require('./models/User.js');
+const showAlert = require('./helpers/alert.js');
+const {arrDay, arrMonth} = require('./helpers/dates.js');
+const multer = require('multer'); // Upload image
 
 //////////////////////////////////////////////////////////
 
@@ -44,13 +45,6 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 //////////////////////////////////////////////////////////
-
-const arrDay = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
-const arrMonth = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-
-const showAlert = function(color, message) {
-    return `<div class="alert ${color} alert-dismissible fade show shadow-sm" role="alert">${message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
-}
 
 const post1 = new Post({
     title: "Post 1",
