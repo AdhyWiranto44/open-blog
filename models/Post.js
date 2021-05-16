@@ -8,8 +8,10 @@ const postSchema = mongoose.Schema({
     tags: [String],
     author: String,
     active: Number,
-    created_at: Number,
-    updated_at: Number
+    views: Number,
+    vote: Number,
+    created_at: Date,
+    updated_at: Date
 });
 
 const Post = mongoose.model("Post", postSchema);
