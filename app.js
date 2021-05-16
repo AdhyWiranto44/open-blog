@@ -1,9 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+const Post = require('./models/Post');
+const User = require('./models/User');
 // Upload image
 const multer = require('multer');
+
+//////////////////////////////////////////////////////////
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'public/img/post')
@@ -14,12 +18,11 @@ const storage = multer.diskStorage({
   })
 const upload = multer({dest: __dirname + '/public/img/post', storage})
 
-// session dan cookies
+const app = express();
+
+// Cookie and Session
 const session = require('express-session');
 const passport = require('passport');
-const passportLocalMongoose = require('passport-local-mongoose');
-
-const app = express();
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public"));
@@ -33,38 +36,14 @@ app.use(passport.session());
 
 app.set("view engine", "ejs");
 
-mongoose.connect("mongodb://localhost:27017/openblogDB", {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect("mongodb://127.0.0.1:27017/openblogDB", {useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.set("useCreateIndex", true);
 
-// DB Schema
-const userSchema = new mongoose.Schema ({
-    username: String,
-    password: String,
-    created_at: Number,
-    updated_at: Number
-})
-userSchema.plugin(passportLocalMongoose);
-
-const postSchema = {
-    title: String,
-    slug: String,
-    content: String,
-    img: String,
-    tags: [String],
-    author: String,
-    active: Number,
-    created_at: Number,
-    updated_at: Number
-}
-
-// DB Model
-const User = mongoose.model("User", userSchema);
-const Post = mongoose.model("Post", postSchema);
-
 passport.use(User.createStrategy());
-
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+//////////////////////////////////////////////////////////
 
 const arrDay = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
 const arrMonth = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -72,7 +51,6 @@ const arrMonth = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli"
 const showAlert = function(color, message) {
     return `<div class="alert ${color} alert-dismissible fade show shadow-sm" role="alert">${message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
 }
-
 
 const post1 = new Post({
     title: "Post 1",
@@ -109,6 +87,8 @@ const post2 = new Post({
 // Add default user
 //    default_user.save();
 
+//////////////////////////////////////////////////////////
+
 app.get("/", (req, res) => {
     Post.find({active: 1}, (err, foundPosts) => {
         if (foundPosts.length === 0) {
@@ -133,7 +113,7 @@ app.post("/", (req, res) => {
     if (search === "") {
         res.redirect("/");
     } else {
-        Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
+        Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}, (err, foundPosts) => {
     
             if (err) {
                 console.log(err);
@@ -176,7 +156,7 @@ app.get("/auth/login", (req, res) => {
     if (req.isAuthenticated()) {
         res.redirect('/admin/dashboard');
     } else {
-        res.render("login", {title: "Login", alert: ""});reset
+        res.render("login", {title: "Login", alert: ""});
     }
 })
 
