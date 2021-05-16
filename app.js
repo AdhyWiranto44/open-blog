@@ -58,7 +58,7 @@ const post1 = Post({
     vote: 0,
     created_at: Date(),
     updated_at: Date()
-})
+});
 
 const post2 = Post({
     title: "Post 2",
@@ -72,18 +72,7 @@ const post2 = Post({
     vote: 0,
     created_at: Date(),
     updated_at: Date()
-})
-
-// const default_user = User({
-//     id: 1,
-//     username: "admin",
-//     password: encrypt("1234"),
-//     created_at: Date(),
-//     updated_at: Date()
-// })
-
-// Add default user
-//    default_user.save();
+});
 
 //////////////////////////////////////////////////////////
 
@@ -156,7 +145,28 @@ app.get("/auth/login", (req, res) => {
     if (req.isAuthenticated()) {
         res.redirect('/admin/dashboard');
     } else {
-        res.render("login", {title: "Login", alert: ""});
+        User.findOne((err, foundUser) => {
+            if (err) {
+                console.log(err);
+            } else {
+                if (!foundUser) {
+                    User.register({
+                        username: "admin",
+                        img: "",
+                        created_at: Date(),
+                        updated_at: Date()
+                    }, 
+                    "1234",
+                    (err) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            res.render("login", {title: "Login", alert: ""});
+                        }
+                    })
+                }
+            }
+        })
     }
 })
 
@@ -209,7 +219,12 @@ app.route("/auth/register")
         } else {
             if (foundUser === null) { // jika belum ada user yang terdaftar
                 if (regPassword === regConfirm_password) { // jika password cocok dengan confirm_password
-                    User.register({username: regUsername}, regPassword, (err, user) => {
+                    User.register({
+                        username: regUsername,
+                        img: "",
+                        created_at: Date(),
+                        updated_at: Date()
+                    }, regPassword, (err, user) => {
                         if (err) {
                             console.log(err);
                             res.redirect('/register');
