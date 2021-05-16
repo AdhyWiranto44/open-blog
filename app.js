@@ -83,7 +83,9 @@ const post2 = new Post({
 
 //////////////////////////////////////////////////////////
 
-app.get("/", (req, res) => {
+app.route("/")
+
+.get((req, res) => {
     Post.find({active: 1}, (err, foundPosts) => {
         if (foundPosts.length === 0) {
             Post.insertMany([post1, post2], function(err){
@@ -101,7 +103,7 @@ app.get("/", (req, res) => {
     });
 })
 
-app.post("/", (req, res) => {
+.post((req, res) => {
     const search = req.body.search;
     
     if (search === "") {
@@ -182,7 +184,9 @@ app.post("/auth/login", (req, res) => {
     })
 })
 
-app.get("/auth/register", (req, res) => {
+app.route("/auth/register")
+
+.get((req, res) => {
     if (req.isAuthenticated()) {
         res.redirect('/admin/dashboard');
     } else {
@@ -190,7 +194,7 @@ app.get("/auth/register", (req, res) => {
     }
 })
 
-app.post("/auth/register", (req, res) => {
+.post((req, res) => {
     const regUsername = req.body.username;
     const regPassword = req.body.password;
     const regConfirm_password = req.body.confirm_password;
@@ -270,7 +274,9 @@ app.get("/admin/dashboard", (req, res) => {
 
 })
 
-app.get("/admin/tambah-post-baru", (req, res) => {
+app.route("/admin/tambah-post-baru")
+
+.get((req, res) => {
     if (req.isAuthenticated()) {
         res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: ""});
     } else {
@@ -278,12 +284,12 @@ app.get("/admin/tambah-post-baru", (req, res) => {
     }
 })
 
-app.post("/admin/tambah-post-baru", upload.single('image'), (req, res) => {
+.post(upload.single('image'), (req, res) => {
     const title = req.body.title;
     const slug = title.replace(/\s+/g, '-').toLowerCase();
     const content = req.body.content;
     const tags = req.body.tags.split(",");
-    const img = req.file.originalname;
+    const img = req.file ? req.file.originalname : "";
 
     Post.findOne({title}, (err, foundPost) => {
         if (err) {
@@ -316,7 +322,9 @@ app.post("/admin/tambah-post-baru", upload.single('image'), (req, res) => {
     })
 })
 
-app.get("/admin/tampil-semua-post", (req, res) => {
+app.route("/admin/tampil-semua-post")
+
+.get((req, res) => {
     if (req.isAuthenticated()) {
         Post.find({active: 1}, (err, foundPosts) => {
             res.render("tampil-semua-post", {title: "Tampil Semua Post", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", alert: ""});
@@ -327,7 +335,7 @@ app.get("/admin/tampil-semua-post", (req, res) => {
     
 })
 
-app.post("/admin/tampil-semua-post", (req, res) => {
+.post((req, res) => {
     const search = req.body.search;
     
     if (search === "") {
@@ -391,7 +399,9 @@ app.post("/admin/menghapus-post/:postSlug", (req, res) => {
     
 })
 
-app.get("/admin/arsip-post", (req, res) => {
+app.route("/admin/arsip-post")
+
+.get((req, res) => {
     if (req.isAuthenticated()) {
         Post.find({active: 0}, (err, foundPosts) => {
             res.render("arsip-post", {title: "Arsip Post", posts: foundPosts, arrDay, arrMonth, tag: "", search: "", alert: ""});
@@ -401,7 +411,7 @@ app.get("/admin/arsip-post", (req, res) => {
     }
 })
 
-app.post("/admin/arsip-post", (req, res) => {
+.post((req, res) => {
     const search = req.body.search;
     
     if (search === "") {
