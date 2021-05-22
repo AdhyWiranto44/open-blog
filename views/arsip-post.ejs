@@ -21,16 +21,40 @@
 <div class="row">
     <%- alert %>
     <% if (posts.length !== 0) { %>
-        <% posts.forEach(post => { %>
-            <div class="col-lg-3 col-md-6">
-                <div class="card px-3 mb-3 shadow-sm border-0">
-                    <img src="/img/post/<%= post.img %>" class="card-img-top mt-3 <%= post.img === "" ? "d-none" : "" %>" alt="post" />
-                    <div class="card-body px-0">
-                        <form action="/admin/menghapus-post/<%= post.slug %>" method="POST" class="d-inline">
-                            <button type="submit" class="badge badge-danger border-0 mb-2" onClick="return confirm('Yakin ingin menghapus post ini? <%= post.title %>');"><span class="ti-trash"></span> Hapus</button>
-                        </form>
-                        <a class="text-dark text-underline-dark" href="/post/<%= post.slug %>"><h4 class="card-title mb-0"><%= post.title %></h4></a>
-
+        <table class="table table-bordered overflow-auto">
+            <thead>
+                <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Gambar</th>
+                    <th scope="col">Judul</th>
+                    <th scope="col">Body</th>
+                    <th scope="col">Tags</th>
+                    <th scope="col">Ditambahkan</th>
+                    <th scope="col">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let i = 1; %> 
+                <% posts.forEach(post => { %>
+                  <tr>
+                    <th scope="row"><%= i++; %></th>
+                    <td>
+                        <% if (post.img !== "") { %>
+                            <img src="../img/post/<%= post.img %>" alt="post" style="max-width: 75px;" />
+                        <% } else { %>
+                            <img src="../img/post/defaultimg2.png" alt="post" style="max-width: 75px;" />
+                        <% } %>
+                    </td>
+                    <td><%= post.title %></td>
+                    <td><%= post.content.substring(0, 50) + "..." %></td>
+                    <td>
+                        <div class="tag-list my-2">
+                            <% post.tags.forEach(tag => { %>
+                                <a class="text-dark" href="/admin/tag/<%= tag %>"><span class="badge badge-light p-2 mb-1">#<%= tag %></span></a>
+                            <% }) %>
+                        </div>
+                    </td>
+                    <td>
                         <small>
                             <%= arrDay[new Date(post.created_at).getDay()] %>, 
                             <%= new Date(post.created_at).getDate() %> 
@@ -38,20 +62,17 @@
                             <%= new Date(post.created_at).getFullYear() %> 
                             <%= new Date(post.created_at).getHours() %>.<%= new Date(post.created_at).getMinutes() %>
                         </small><br>
-                        <div class="tag-list my-2">
-                            <% post.tags.forEach(tag => { %>
-                                <a class="text-dark" href="/admin/tag/<%= tag %>"><span class="badge badge-light p-2 mb-1">#<%= tag %></span></a>
-                            <% }) %>
-                        </div>
-                        <p class="card-text"><%= post.content.substring(0, 50) + "..." %></p>
+                    </td>
+                    <td class="d-flex">
                         <a href="/admin/mengubah-post/<%= post.slug %>" class="btn btn-warning mr-2"><span class="ti-pencil-alt"></span> Ubah</a>
-                        <form action="/admin/mengaktifkan-post/<%= post.slug %>" method="POST" class="d-inline">
-                            <button type="submit" class="btn btn-primary" onClick="return confirm('Aktifkan post ini? <%= post.title %>');"><span class="ti-plus"></span> Aktifkan</button>
+                        <form action="/admin/mengarsipkan-post/<%= post.slug %>" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-outline-danger" onClick="return confirm('Yakin ingin mengarsipkan post ini? <%= post.title %>');"><span class="ti-archive"></span> Arsip</button>
                         </form>
-                    </div>
-                </div>
-            </div>
-        <% }) %>
+                    </td>
+                  </tr>
+                <% }) %>
+                </tbody>
+            </table>
     <% } else { %>
         <div class="col-lg">
             <h3>Post kosong</h3>
