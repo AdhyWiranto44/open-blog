@@ -155,13 +155,29 @@ app.get("/documentation", (req, res) => {
 })
 
 app.get("/post/:postSlug", (req, res) => {
+    // const postSlug = req.params.postSlug;
+
+    // Post.findOne({slug: postSlug}, (err, foundPost) => {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         res.render("post-page", {title: foundPost.title, post: foundPost, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
+    //     }
+    // })
+
     const postSlug = req.params.postSlug;
 
     Post.findOne({slug: postSlug}, (err, foundPost) => {
         if (err) {
             console.log(err);
         } else {
-            res.render("post-page", {title: foundPost.title, post: foundPost, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
+            Post.find({active: 1}, (err, foundPosts) => {
+            if (err) {
+                console.log(err);
+            } else {
+                res.render("post-page", {title: foundPost.title, tag: "", otherPosts: foundPosts, currentPost: foundPost, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
+            }
+            }).limit(5).sort({created_at: -1});
         }
     })
 })

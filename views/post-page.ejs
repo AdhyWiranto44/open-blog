@@ -5,7 +5,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb bg-transparent p-0">
         <li class="breadcrumb-item"><a class="text-dark" href="/">Home</a></li>
-        <li class="breadcrumb-item active font-weight-bold" aria-current="page"><%= post.title %></li>
+        <li class="breadcrumb-item active font-weight-bold" aria-current="page"><%= currentPost.title %></li>
       </ol>
     </nav>
   </div>
@@ -14,32 +14,56 @@
 <div class="row">
     <div class="col-lg-8">
         <% if (isAuthLink) { %>
-            <a class="btn btn-sm btn-danger mb-3" href="/admin/mengubah-post/<%= post.slug %>"><span class="ti-pencil-alt"></span> Ubah</a>
+            <a class="btn btn-sm btn-danger mb-3" href="/admin/mengubah-post/<%= currentPost.slug %>"><span class="ti-pencil-alt"></span> Ubah</a>
         <% } %>
         <div class="card mb-3 border-0 bg-transparent">
-            <% if (post.img !== "") { %>
-              <img src="../img/post/<%= post.img %>" class="card-img-top" alt="post" />
+            <% if (currentPost.img !== "") { %>
+              <img src="../img/post/<%= currentPost.img %>" class="card-img-top" alt="post" />
             <% } else { %>
               <img src="../img/post/defaultimg.png" class="card-img-top" alt="post" />
             <% } %>
             <div class="card-body px-0">
-              <h4 class="card-title mb-0 font-weight-bold"><%= post.title %></h4>
+              <h4 class="card-title mb-0 font-weight-bold"><%= currentPost.title %></h4>
               <small class="text-muted">
-                <%= new Date(post.created_at).getDate() %> 
-                <%= arrMonth[new Date(post.created_at).getMonth()] %> 
-                <%= new Date(post.created_at).getFullYear() %>
+                <%= new Date(currentPost.created_at).getDate() %> 
+                <%= arrMonth[new Date(currentPost.created_at).getMonth()] %> 
+                <%= new Date(currentPost.created_at).getFullYear() %>
               </small><br>
               <div class="tag-list my-2">
-                <% post.tags.forEach((tag) => { %>
+                <% currentPost.tags.forEach((tag) => { %>
                   <a href="/tag/<%= tag %>"><span class="btn btn-sm btn-light p-2"><span class="ti-tag"></span> <%= tag %></span></a>
                 <% }) %>
               </div>
               <p class="card-text mt-3">
-                <%= post.content %>
+                <%= currentPost.content %>
               </p>
             </div>
         </div>
     </div>
+    <div class="col-lg-4">
+      <h6 class="mb-3 font-weight-bold">Other Posts</h6>
+      <% otherPosts.forEach(post => { %>
+          <% if (currentPost.slug !== post.slug) { %>
+              <div class="row">
+                  <div class="col-lg">
+                      <div class="card mb-3 border-0 bg-transparent">
+                          <div class="card-body p-0">
+                              <a class="text-dark text-underline-dark" href="/post/<%= post.slug %>">
+                                  <h5 class="card-title mb-0 text-justify font-weight-bold"><%= post.title %></h5>
+                              </a>
+                              <small>
+                                  <%= new Date(post.created_at).getDate() %> 
+                                  <%= arrMonth[new Date(post.created_at).getMonth()] %> 
+                                  <%= new Date(post.created_at).getFullYear() %> 
+                              </small>
+                              <p class="text-justify overflow-hidden"><%= post.content.substring(0, 50) %>...<a href="/post/<%= post.slug %>">(more)</a></p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          <% } %>
+      <% }) %>
+  </div>
 </div>
 
 <%- include('frontend-templates/frontend-footer') %>
