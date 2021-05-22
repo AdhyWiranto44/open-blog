@@ -14,7 +14,11 @@
 <div class="row">
     <div class="col-lg-8">
         <div class="card mb-3 border-0 bg-transparent">
-            <img src="../img/post/<%= post.img %>" class="card-img-top <%= post.img === "" ? "d-none" : "" %>" alt="post" />
+            <% if (post.img !== "") { %>
+              <img src="../img/post/<%= post.img %>" class="card-img-top" alt="post" />
+            <% } else { %>
+              <img src="../img/post/defaultimg.png" class="card-img-top" alt="post" />
+            <% } %>
             <div class="card-body px-0">
               <h4 class="card-title mb-0 font-weight-bold"><%= post.title %></h4>
               <small class="text-muted">
