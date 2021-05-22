@@ -13,6 +13,9 @@
 
 <div class="row">
     <div class="col-lg-8">
+        <% if (isAuthLink) { %>
+            <a class="btn btn-sm btn-danger mb-3" href="/admin/mengubah-post/<%= post.slug %>"><span class="ti-pencil-alt"></span> Ubah</a>
+        <% } %>
         <div class="card mb-3 border-0 bg-transparent">
             <% if (post.img !== "") { %>
               <img src="../img/post/<%= post.img %>" class="card-img-top" alt="post" />
