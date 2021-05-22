@@ -23,7 +23,11 @@
                     <div class="card mb-3 border-0 bg-transparent">
                         <div class="row no-gutters d-flex align-items-center">
                           <div class="col-md-4">
-                            <img src="../img/post/<%= post.img %>" class="card-img-top" alt="post" />
+                              <% if (post.img !== "") { %>
+                                <img src="../img/post/<%= post.img %>" class="card-img-top" alt="post" />
+                              <% } else { %>
+                                <img src="../img/post/defaultimg.png" class="card-img-top" alt="post" />
+                              <% } %>
                           </div>
                           <div class="col-md-8">
                             <div class="card-body">
