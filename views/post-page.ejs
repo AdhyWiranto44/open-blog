@@ -1,7 +1,7 @@
 <%- include('frontend-templates/frontend-header') %>
 
 <div class="row">
-  <div class="col-lg-8 offset-lg-2">
+  <div class="col-lg-8">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb bg-transparent p-0">
         <li class="breadcrumb-item"><a class="text-dark" href="/">Home</a></li>
@@ -12,21 +12,19 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-8 offset-lg-2">
-        <div class="card p-3 mb-3 shadow-sm border-0">
+    <div class="col-lg-8">
+        <div class="card mb-3 border-0 bg-transparent">
             <img src="../img/post/<%= post.img %>" class="card-img-top <%= post.img === "" ? "d-none" : "" %>" alt="post" />
             <div class="card-body px-0">
-              <h4 class="card-title mb-0"><%= post.title %></h4>
-              <small>
-                <%= arrDay[new Date(post.created_at).getDay()] %>, 
+              <h4 class="card-title mb-0 font-weight-bold"><%= post.title %></h4>
+              <small class="text-muted">
                 <%= new Date(post.created_at).getDate() %> 
                 <%= arrMonth[new Date(post.created_at).getMonth()] %> 
-                <%= new Date(post.created_at).getFullYear() %> 
-                <%= new Date(post.created_at).getHours() %>.<%= new Date(post.created_at).getMinutes() %>
+                <%= new Date(post.created_at).getFullYear() %>
               </small><br>
               <div class="tag-list my-2">
                 <% post.tags.forEach((tag) => { %>
-                  <a class="text-dark" href="/tag/<%= tag %>"><span class="badge badge-light p-2">#<%= tag %></span></a>
+                  <a href="/tag/<%= tag %>"><span class="btn btn-sm btn-light p-2"><span class="ti-tag"></span> <%= tag %></span></a>
                 <% }) %>
               </div>
               <p class="card-text mt-3">

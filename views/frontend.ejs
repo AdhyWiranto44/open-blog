@@ -1,9 +1,9 @@
 <%- include('frontend-templates/frontend-header') %>
 
         <div class="row mt-3">
-            <div class="col-md-7 offset-md-2">
+            <div class="col-md-8">
                 <% if (tag === "" && search === "") { %>
-                    <h6>Latest Post</h6>
+                    <h6 class="font-weight-bold">Latest Post</h6>
                 <% } else if (tag !== "") { %>
                     <h5>#<%= tag %></h5>
                 <% } else if (tag === "" && search) { %>
@@ -13,38 +13,55 @@
         </div>
 
         <div class="row">
-            <div class="col-md-3 order-md-2">
-                <% tags.forEach((tag, index) => { %>
-                    <% if (index % 2 === 0) { %>
-                        <a class="text-dark" href="/tag/<%= tag %>"><span class="btn btn-sm btn-primary mb-2 px-2 mb-1">#<%= tag %></span></a>
-                    <% } else { %>
-                        <a class="text-dark" href="/tag/<%= tag %>"><span class="btn btn-sm btn-dark mb-2 px-2 mb-1">#<%= tag %></span></a>
-                    <% } %>
+            <div class="col-md-4 order-md-2">
+                <% tags.forEach(tag => { %>
+                    <a class="text-dark" href="/tag/<%= tag %>"><span class="btn btn-sm btn-light mb-2 px-2 mb-1"><span class="ti-tag"></span> <%= tag %></span></a>
                 <% }) %>
             </div>
-            <div class="col-md-7 offset-md-2">
+            <div class="col-md-8">
                 <% posts.forEach(post => { %>
-                    <a href="/post/<%= post.slug %>">
-                        <div class="card px-3 mb-3 shadow-sm border-0">
-                            <img src="../img/post/<%= post.img %>" class="card-img-top mt-3 <%= post.img === "" ? "d-none" : "" %>" alt="post" />
-                            <div class="card-body px-0">
-                            <a class="text-dark text-underline-dark" href="/post/<%= post.slug %>"><h4 class="card-title mb-0"><%= post.title %></h4></a>
-                            <small>
-                                <%= arrDay[new Date(post.created_at).getDay()] %>, 
-                                <%= new Date(post.created_at).getDate() %> 
-                                <%= arrMonth[new Date(post.created_at).getMonth()] %> 
-                                <%= new Date(post.created_at).getFullYear() %> 
-                                <%= new Date(post.created_at).getHours() %>.<%= new Date(post.created_at).getMinutes() %>
-                            </small><br>
-                            <div class="tag-list my-2">
-                                <% post.tags.forEach(tag => { %>
-                                    <a class="text-dark" href="/tag/<%= tag %>"><span class="badge badge-light p-2 mb-1">#<%= tag %></span></a>
-                                <% }) %>
+                    <div class="card mb-3 border-0 bg-transparent">
+                        <div class="row no-gutters d-flex align-items-center">
+                          <div class="col-md-4">
+                            <img src="../img/post/<%= post.img %>" class="card-img-top" alt="post" />
+                          </div>
+                          <div class="col-md-8">
+                            <div class="card-body">
+                                <a class="text-dark text-underline-dark" href="/post/<%= post.slug %>"><h4 class="card-title mb-0 font-weight-bold"><%= post.title %></h4></a>
+                                <small class="text-muted">
+                                    <%= new Date(post.created_at).getDate() %> 
+                                    <%= arrMonth[new Date(post.created_at).getMonth()] %> 
+                                    <%= new Date(post.created_at).getFullYear() %>
+                                </small><br>
+                                <div class="tag-list my-2">
+                                    <% post.tags.forEach(tag => { %>
+                                        <a href="/tag/<%= tag %>"><span class="badge badge-light rounded-pill p-2 mb-1"><span class="ti-tag"></span> <%= tag %></span></a>
+                                    <% }) %>
+                                </div>
+                                <p class="card-text"><%= post.content.substring(0, 70) + ". . . " %><a href="/post/<%= post.slug %>">read more</a></p>
                             </div>
-                            <p class="card-text"><%= post.content.substring(0, 100) + "..." %><a href="/post/<%= post.slug %>">read more</a></p>
+                          </div>
+                        </div>
+                      </div>
+                    <!-- <a href="/post/<%= post.slug %>">
+                        <div class="card mb-3 shadow-0 border-0 bg-transparent">
+                            <img src="../img/post/<%= post.img %>" class="card-img-top <%= post.img === "" ? "d-none" : "" %>" alt="post" />
+                            <div class="card-body px-0">
+                                <a class="text-dark text-underline-dark" href="/post/<%= post.slug %>"><h4 class="card-title mb-0 font-weight-bold"><%= post.title %></h4></a>
+                                <small class="text-muted">
+                                    <%= new Date(post.created_at).getDate() %> 
+                                    <%= arrMonth[new Date(post.created_at).getMonth()] %> 
+                                    <%= new Date(post.created_at).getFullYear() %>
+                                </small><br>
+                                <div class="tag-list my-2">
+                                    <% post.tags.forEach(tag => { %>
+                                        <a href="/tag/<%= tag %>"><span class="badge badge-light rounded-pill p-2 mb-1"><span class="ti-tag"></span> <%= tag %></span></a>
+                                    <% }) %>
+                                </div>
+                                <p class="card-text"><%= post.content.substring(0, 150) + ". . . " %><a href="/post/<%= post.slug %>">read more</a></p>
                             </div>
                         </div>
-                    </a>
+                    </a> -->
                 <% }) %>
             </div>
         </div>
