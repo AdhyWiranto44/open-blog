@@ -78,52 +78,18 @@ const post2 = Post({
 
 app.route("/")
 
-.get((req, res) => {
-    Post.find({active: 1}, (err, foundPosts) => {
-        if (foundPosts.length === 0) {
-            Post.insertMany([post1, post2], function(err){
-                if(err) {
-                    console.log(err);
-                } else {
-                    console.log("Data added successfully");
-                }
-            });
+    .get((req, res) => {
+        Post.find({active: 1}, (err, foundPosts) => {
+            if (foundPosts.length === 0) {
+                Post.insertMany([post1, post2], function(err){
+                    if(err) {
+                        console.log(err);
+                    } else {
+                        console.log("Data added successfully");
+                    }
+                });
 
-            res.redirect("/");
-        } else {
-            Post.find({active: 1}, (err, foundForTags) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    // Push tag di setiap post ke array,
-                    // Lalu hilangkan duplikat
-                    let allTags = [];
-                    foundForTags.forEach(post => {
-                        post.tags.forEach(tag => {
-                        allTags.push(tag);
-                        })
-                    })
-                    
-                    allTags = allTags.filter(function(value, index, self) {
-                        return self.indexOf(value) === index;
-                    });
-
-                res.render("frontend", {title: "Halaman Utama", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated(), tags: allTags});
-                }
-            }).sort({created_at: -1});
-        }
-    });
-})
-
-.post((req, res) => {
-    const search = req.body.search;
-    
-    if (search === "") {
-        res.redirect("/");
-    } else {
-        Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}, (err, foundPosts) => {
-            if (err) {
-                console.log(err);
+                res.redirect("/");
             } else {
                 Post.find({active: 1}, (err, foundForTags) => {
                     if (err) {
@@ -141,30 +107,54 @@ app.route("/")
                         allTags = allTags.filter(function(value, index, self) {
                             return self.indexOf(value) === index;
                         });
-    
-                    res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, isAuthLink: req.isAuthenticated(), tags: allTags});
+
+                    res.render("frontend", {title: "Halaman Utama", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated(), tags: allTags});
                     }
                 }).sort({created_at: -1});
             }
-        })
-    }
-})
+        });
+    })
+
+    .post((req, res) => {
+        const search = req.body.search;
+        
+        if (search === "") {
+            res.redirect("/");
+        } else {
+            Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}, (err, foundPosts) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    Post.find({active: 1}, (err, foundForTags) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            // Push tag di setiap post ke array,
+                            // Lalu hilangkan duplikat
+                            let allTags = [];
+                            foundForTags.forEach(post => {
+                                post.tags.forEach(tag => {
+                                allTags.push(tag);
+                                })
+                            })
+                            
+                            allTags = allTags.filter(function(value, index, self) {
+                                return self.indexOf(value) === index;
+                            });
+        
+                        res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, isAuthLink: req.isAuthenticated(), tags: allTags});
+                        }
+                    }).sort({created_at: -1});
+                }
+            })
+        }
+    })
 
 app.get("/documentation", (req, res) => {
     res.sendFile(__dirname + "/documentation/index.html");
 })
 
 app.get("/post/:postSlug", (req, res) => {
-    // const postSlug = req.params.postSlug;
-
-    // Post.findOne({slug: postSlug}, (err, foundPost) => {
-    //     if (err) {
-    //         console.log(err);
-    //     } else {
-    //         res.render("post-page", {title: foundPost.title, post: foundPost, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
-    //     }
-    // })
-
     const postSlug = req.params.postSlug;
 
     Post.findOne({slug: postSlug}, (err, foundPost) => {
@@ -213,110 +203,113 @@ app.get("/tag/:postTag", (req, res) => {
     })
 })
 
-app.get("/auth/login", (req, res) => {
-    if (req.isAuthenticated()) {
-        res.redirect('/admin/dashboard');
-    } else {
-        User.findOne((err, foundUser) => {
+
+app.route("/auth/login")
+
+    .get((req, res) => {
+        if (req.isAuthenticated()) {
+            res.redirect('/admin/dashboard');
+        } else {
+            User.findOne((err, foundUser) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    if (!foundUser) {
+                        User.register({
+                            username: "admin",
+                            img: "",
+                            created_at: Date(),
+                            updated_at: Date()
+                        }, 
+                        "1234",
+                        (err) => {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                res.render("login", {title: "Login", alert: ""});
+                            }
+                        })
+                    } else {
+                        res.render("login", {title: "Login", alert: ""});
+                    }
+                }
+            })
+        }
+    })
+
+    .post((req, res) => {
+        const user = new User({
+            username: req.body.username,
+            password: req.body.password
+        })
+        
+        User.findOne({username: user.username}, (err, foundUser) => {
             if (err) {
                 console.log(err);
             } else {
-                if (!foundUser) {
-                    User.register({
-                        username: "admin",
-                        img: "",
-                        created_at: Date(),
-                        updated_at: Date()
-                    }, 
-                    "1234",
-                    (err) => {
+                if (foundUser === null) {
+                    res.render("login", {title: "Login", alert: showAlert("alert-danger", "username tidak terdaftar, silahkan coba lagi.")});
+                } else {
+                    req.login(user, (err) => {
                         if (err) {
                             console.log(err);
+                            res.redirect("/auth/login");
                         } else {
-                            res.render("login", {title: "Login", alert: ""});
+                            passport.authenticate('local')(req, res, function() {
+                                res.redirect('/admin/dashboard');
+                            });
                         }
                     })
-                } else {
-                    res.render("login", {title: "Login", alert: ""});
                 }
             }
         })
-    }
-})
-
-app.post("/auth/login", (req, res) => {
-    const user = new User({
-        username: req.body.username,
-        password: req.body.password
     })
-    
-    User.findOne({username: user.username}, (err, foundUser) => {
-        if (err) {
-            console.log(err);
-        } else {
-            if (foundUser === null) {
-                res.render("login", {title: "Login", alert: showAlert("alert-danger", "username tidak terdaftar, silahkan coba lagi.")});
-            } else {
-                req.login(user, (err) => {
-                    if (err) {
-                        console.log(err);
-                        res.redirect("/auth/login");
-                    } else {
-                        passport.authenticate('local')(req, res, function() {
-                            res.redirect('/admin/dashboard');
-                        });
-                    }
-                })
-            }
-        }
-    })
-})
 
 app.route("/auth/register")
 
-.get((req, res) => {
-    if (req.isAuthenticated()) {
-        res.redirect('/admin/dashboard');
-    } else {
-        res.render("register", {title:"Register", alert: ""});
-    }
-})
-
-.post((req, res) => {
-    const regUsername = req.body.username;
-    const regPassword = req.body.password;
-    const regConfirm_password = req.body.confirm_password;
-
-    User.findOne({username: regUsername}, (err, foundUser) => {
-        if (err) {
-            console.log(err);
+    .get((req, res) => {
+        if (req.isAuthenticated()) {
+            res.redirect('/admin/dashboard');
         } else {
-            if (foundUser === null) { // jika belum ada user yang terdaftar
-                if (regPassword === regConfirm_password) { // jika password cocok dengan confirm_password
-                    User.register({
-                        username: regUsername,
-                        img: "",
-                        created_at: Date(),
-                        updated_at: Date()
-                    }, regPassword, (err, user) => {
-                        if (err) {
-                            console.log(err);
-                            res.redirect('/register');
-                        } else {
-                            passport.authenticate('local')(req, res, () => {
-                                res.redirect('/admin/dashboard');
-                            })
-                        }
-                    })
-                } else {
-                    res.render("register", {title: "Register", alert: showAlert("alert-danger", "password tidak cocok dengan confirm_password!")});
-                }
-            } else {
-                res.render("register", {title: "Register", alert: showAlert("alert-danger", "sudah pernah ada akun dengan username tersebut!")});
-            }
+            res.render("register", {title:"Register", alert: ""});
         }
     })
-})
+
+    .post((req, res) => {
+        const regUsername = req.body.username;
+        const regPassword = req.body.password;
+        const regConfirm_password = req.body.confirm_password;
+
+        User.findOne({username: regUsername}, (err, foundUser) => {
+            if (err) {
+                console.log(err);
+            } else {
+                if (foundUser === null) { // jika belum ada user yang terdaftar
+                    if (regPassword === regConfirm_password) { // jika password cocok dengan confirm_password
+                        User.register({
+                            username: regUsername,
+                            img: "",
+                            created_at: Date(),
+                            updated_at: Date()
+                        }, regPassword, (err, user) => {
+                            if (err) {
+                                console.log(err);
+                                res.redirect('/register');
+                            } else {
+                                passport.authenticate('local')(req, res, () => {
+                                    res.redirect('/admin/dashboard');
+                                })
+                            }
+                        })
+                    } else {
+                        res.render("register", {title: "Register", alert: showAlert("alert-danger", "password tidak cocok dengan confirm_password!")});
+                    }
+                } else {
+                    res.render("register", {title: "Register", alert: showAlert("alert-danger", "sudah pernah ada akun dengan username tersebut!")});
+                }
+            }
+        })
+    })
 
 app.post('/auth/logout', (req, res) => {
     req.logout();
@@ -369,81 +362,81 @@ app.get("/admin/dashboard", (req, res) => {
 
 app.route("/admin/tambah-post-baru")
 
-.get((req, res) => {
-    if (req.isAuthenticated()) {
-        res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: ""});
-    } else {
-        res.redirect('/auth/login');
-    }
-})
-
-.post(upload.single('image'), (req, res) => {
-    const title = req.body.title;
-    const slug = title.replace(/\s+/g, '-').toLowerCase();
-    const content = req.body.content;
-    const tags = req.body.tags.split(",");
-    const img = req.file ? req.file.originalname : "";
-
-    Post.findOne({title}, (err, foundPost) => {
-        if (err) {
-            console.log(err);
+    .get((req, res) => {
+        if (req.isAuthenticated()) {
+            res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: ""});
         } else {
-            if (foundPost === null) {
-                const newPost = new Post({
-                    title,
-                    slug,
-                    content,
-                    img,
-                    tags,
-                    author: "Admin",
-                    active: 1,
-                    created_at: new Date().getTime(),
-                    updated_at: new Date().getTime()
-                })
-            
-                if (title !== "" && content !== "" && tags !== "") {
-                    newPost.save();
-            
-                    res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-success", "post baru berhasil ditambahkan.")});
-                } else {
-                    res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-warning", "data tidak boleh kosong!")});
-                }
-            } else {
-                res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-danger", "judul post sudah ada!")});
-            }
+            res.redirect('/auth/login');
         }
     })
-})
 
-app.route("/admin/tampil-semua-post")
+    .post(upload.single('image'), (req, res) => {
+        const title = req.body.title;
+        const slug = title.replace(/\s+/g, '-').toLowerCase();
+        const content = req.body.content;
+        const tags = req.body.tags.split(",");
+        const img = req.file ? req.file.originalname : "";
 
-.get((req, res) => {
-    if (req.isAuthenticated()) {
-        Post.find({active: 1}, (err, foundPosts) => {
-            res.render("tampil-semua-post", {title: "Tampil Semua Post", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", alert: ""});
-        });    
-    } else {
-        res.redirect('/auth/login');
-    }
-    
-})
-
-.post((req, res) => {
-    const search = req.body.search;
-    
-    if (search === "") {
-        res.redirect("/admin/tampil-semua-post");
-    } else {
-        Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
-    
+        Post.findOne({title}, (err, foundPost) => {
             if (err) {
                 console.log(err);
             } else {
-                res.render("tampil-semua-post", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, alert: ""});
+                if (foundPost === null) {
+                    const newPost = new Post({
+                        title,
+                        slug,
+                        content,
+                        img,
+                        tags,
+                        author: "Admin",
+                        active: 1,
+                        created_at: new Date().getTime(),
+                        updated_at: new Date().getTime()
+                    })
+                
+                    if (title !== "" && content !== "" && tags !== "") {
+                        newPost.save();
+                
+                        res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-success", "post baru berhasil ditambahkan.")});
+                    } else {
+                        res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-warning", "data tidak boleh kosong!")});
+                    }
+                } else {
+                    res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: showAlert("alert-danger", "judul post sudah ada!")});
+                }
             }
         })
-    }
-})
+    })
+
+app.route("/admin/tampil-semua-post")
+
+    .get((req, res) => {
+        if (req.isAuthenticated()) {
+            Post.find({active: 1}, (err, foundPosts) => {
+                res.render("tampil-semua-post", {title: "Tampil Semua Post", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", alert: ""});
+            });    
+        } else {
+            res.redirect('/auth/login');
+        }
+        
+    })
+
+    .post((req, res) => {
+        const search = req.body.search;
+        
+        if (search === "") {
+            res.redirect("/admin/tampil-semua-post");
+        } else {
+            Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
+        
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.render("tampil-semua-post", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, alert: ""});
+                }
+            })
+        }
+    })
 
 app.get("/admin/tag/:postTag", (req, res) => {
     if (req.isAuthenticated()) {
@@ -494,32 +487,32 @@ app.post("/admin/menghapus-post/:postSlug", (req, res) => {
 
 app.route("/admin/arsip-post")
 
-.get((req, res) => {
-    if (req.isAuthenticated()) {
-        Post.find({active: 0}, (err, foundPosts) => {
-            res.render("arsip-post", {title: "Arsip Post", posts: foundPosts, arrDay, arrMonth, tag: "", search: "", alert: ""});
-        });
-    } else {
-        res.redirect('/auth/login');
-    }
-})
+    .get((req, res) => {
+        if (req.isAuthenticated()) {
+            Post.find({active: 0}, (err, foundPosts) => {
+                res.render("arsip-post", {title: "Arsip Post", posts: foundPosts, arrDay, arrMonth, tag: "", search: "", alert: ""});
+            });
+        } else {
+            res.redirect('/auth/login');
+        }
+    })
 
-.post((req, res) => {
-    const search = req.body.search;
-    
-    if (search === "") {
-        res.redirect("/admin/arsip-post");
-    } else {
-        Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 0}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
-    
-            if (err) {
-                console.log(err);
-            } else {
-                res.render("arsip-post", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, alert: ""});
-            }
-        })
-    }
-})
+    .post((req, res) => {
+        const search = req.body.search;
+        
+        if (search === "") {
+            res.redirect("/admin/arsip-post");
+        } else {
+            Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 0}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
+        
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.render("arsip-post", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, alert: ""});
+                }
+            })
+        }
+    })
 
 app.post("/admin/mengaktifkan-post/:postSlug", (req, res) => {
     const postSlug = req.params.postSlug;
@@ -533,38 +526,41 @@ app.post("/admin/mengaktifkan-post/:postSlug", (req, res) => {
     })
 })
 
-app.get("/admin/mengubah-post/:postSlug", (req, res) => {
-    if (req.isAuthenticated()) {
-        const postSlug = req.params.postSlug;
-    
-        Post.findOne({slug: postSlug}, (err, foundPost) => {
+
+app.route("/admin/mengubah-post/:postSlug")
+
+    .get((req, res) => {
+        if (req.isAuthenticated()) {
+            const postSlug = req.params.postSlug;
+        
+            Post.findOne({slug: postSlug}, (err, foundPost) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.render("ubah-post", {title: "Ubah Post", post: foundPost, alert: ""});
+                }
+            })
+        } else {
+            res.redirect('/auth/login');
+        }
+    })
+
+    .post(upload.single('image'), (req, res) => {
+        const title = req.body.title;
+        const slug = req.body.slug;
+        const content = req.body.content;
+        const tags = req.body.tags.split(",");
+        const img = req.file ? req.file.originalname : req.body.prev_img;
+        const updated_at = new Date().getTime();
+
+        Post.findOneAndUpdate({slug}, {title, content, tags, img, updated_at}, (err, postChanged) => {
             if (err) {
                 console.log(err);
             } else {
-                res.render("ubah-post", {title: "Ubah Post", post: foundPost, alert: ""});
+                res.redirect("/admin/tampil-semua-post");
             }
         })
-    } else {
-        res.redirect('/auth/login');
-    }
-})
-
-app.post("/admin/mengubah-post", upload.single('image'), (req, res) => {
-    const title = req.body.title;
-    const slug = req.body.slug;
-    const content = req.body.content;
-    const tags = req.body.tags.split(",");
-    const img = req.file ? req.file.originalname : req.body.prev_img;
-    const updated_at = new Date().getTime();
-
-    Post.findOneAndUpdate({slug}, {title, content, tags, img, updated_at}, (err, postChanged) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.redirect("/admin/arsip-post");
-        }
     })
-})
 
 app.listen(3000, () => {
     console.log("http://localhost:3000");

@@ -5,7 +5,7 @@
         <%- alert %>
         <div class="card shadow-sm border-0 p-3">
             <div class="card-body">
-            <form action="/admin/mengubah-post" method="POST" enctype="multipart/form-data">
+            <form action="/admin/mengubah-post/<%= post.slug %>" method="POST" enctype="multipart/form-data">
                 <input type="hidden" id="slug" name="slug" value="<%= post.slug %>">
                 <div class="form-group">
                     <input type="text" class="form-control bg-light" id="title" name="title" placeholder="title" value="<%= post.title %>" autofocus required>
