@@ -67,9 +67,12 @@
                         </td>
                         <td class="d-flex">
                             <a href="/admin/mengubah-post/<%= post.slug %>" class="btn btn-warning mr-2"><span class="ti-pencil-alt"></span> Ubah</a>
-                            <form action="/admin/mengarsipkan-post/<%= post.slug %>" method="POST" class="d-inline">
-                                <button type="submit" class="btn btn-outline-danger" onClick="return confirm('Yakin ingin mengarsipkan post ini? <%= post.title %>');"><span class="ti-archive"></span> Arsip</button>
+                            <form action="/admin/mengaktifkan-post/<%= post.slug %>" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-primary mr-2 h-100" onClick="return confirm('Aktifkan post ini? <%= post.title %>');"><span class="ti-plus"></span> Aktifkan</button>
                             </form>
+                            <form action="/admin/menghapus-post/<%= post.slug %>" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-danger border-0 mb-2 h-100" onClick="return confirm('Yakin ingin menghapus post ini? <%= post.title %>');"><span class="ti-trash"></span> Hapus</button>
+                            </form>    
                         </td>
                     </tr>
                     <% }) %>

@@ -528,7 +528,7 @@ app.post("/admin/mengaktifkan-post/:postSlug", (req, res) => {
         if (err) {
             console.log(err);
         } else {
-            res.redirect("/admin/tampil-semua-post");
+            res.redirect("/admin/arsip-post");
         }
     })
 })
@@ -561,7 +561,7 @@ app.post("/admin/mengubah-post", upload.single('image'), (req, res) => {
         if (err) {
             console.log(err);
         } else {
-            res.redirect("/admin/tampil-semua-post");
+            res.redirect("/admin/arsip-post");
         }
     })
 })
