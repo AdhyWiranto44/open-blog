@@ -39,7 +39,7 @@
                                 </small><br>
                                 <div class="tag-list my-2">
                                     <% post.tags.forEach(tag => { %>
-                                        <a href="/tag/<%= tag %>"><span class="badge badge-light rounded-pill p-2 mb-1"><span class="ti-tag"></span> <%= tag %></span></a>
+                                        <a href="/tag/<%= tag %>"><span class="btn btn-sm btn-light mb-1"><span class="ti-tag"></span> <%= tag %></span></a>
                                     <% }) %>
                                 </div>
                                 <p class="card-text"><%= post.content.substring(0, 70) + ". . . " %><a href="/post/<%= post.slug %>">read more</a></p>

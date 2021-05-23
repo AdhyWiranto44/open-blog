@@ -9,7 +9,7 @@
 }
 
 .navbar-form input, .container-form input, .form-group input, .btn {
-    border-radius: 30px;
+    border-radius: 0;
 }
 
 input.form-control {
@@ -28,6 +28,10 @@ input.form-control {
 .alert {
     border-radius: 20px;
     border: 0;
+}
+
+.navbar-form, .container-form {
+    display: flex;
 }
 
 @media(min-width: 768px) {

@@ -19,8 +19,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav ml-auto">
-                    <form action="/" method="POST" class="navbar-form mr-3">
-                        <input class="form-control mr-sm-2 bg-white" type="search" placeholder="Search" aria-label="Search" name="search">
+                    <form action="/" method="POST" class="navbar-form mr-3 bg-white border">
+                        <input class="form-control bg-white border-0" type="search" placeholder="Search" aria-label="Search" name="search">
+                        <button class="btn btn-primary px-3"><span class="ti-search"></span></button>
                     </form>
                     <% if (isAuthLink) { %>
                         <a class="nav-link btn btn-light px-3" href="/admin/dashboard">Admin</a>
@@ -36,8 +37,9 @@
         
         <div class="row my-3">
             <div class="col-md-8">
-                <form action="/" method="POST" class="container-form w-100 mx-auto">
-                    <input class="form-control mr-sm-2 text-center py-4" type="search" placeholder="Search" aria-label="Search" name="search">
+                <form action="/" method="POST" class="container-form bg-white border">
+                    <input class="form-control bg-white border-0" type="search" placeholder="Search" aria-label="Search" name="search">
+                    <button class="btn btn-primary px-3"><span class="ti-search"></span></button>
                 </form>
             </div>
         </div>
