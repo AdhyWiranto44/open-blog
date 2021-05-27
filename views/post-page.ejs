@@ -72,7 +72,7 @@
 
 <div class="row my-4">
   <div class="col-lg-8">
-    <h4 class="font-weight-bold">3 Komentar</h4>
+    <h4 class="font-weight-bold"><%= comments.length %> Komentar</h4>
     <small class="text-muted">Silakan beri komentar terkait postingan ini, dilarang membagi komentar yang bersifat SARA. Terapkanlah nilai-nilai baik di lingkup komunitas ini.</small>
     <form action="/post/menambah-komentar/<%= currentPost.slug %>" method="POST">
       <div class="form-group mt-3">
