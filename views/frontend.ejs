@@ -22,50 +22,31 @@
                 <% posts.forEach(post => { %>
                     <div class="card mb-3 border-0 bg-transparent">
                         <div class="row no-gutters d-flex align-items-center">
-                          <div class="col-md-4">
-                              <% if (post.img !== "") { %>
-                                <img src="../img/post/<%= post.img %>" class="card-img-top" alt="post" />
-                              <% } else { %>
-                                <img src="../img/post/defaultimg2.png" class="card-img-top" alt="post" />
-                              <% } %>
-                          </div>
-                          <div class="col-md-8">
-                            <div class="card-body">
-                                <a class="text-dark text-underline-dark" href="/post/<%= post.slug %>"><h4 class="card-title mb-0 font-weight-bold"><%= post.title %></h4></a>
-                                <small class="text-muted">
-                                    <%= new Date(post.created_at).getDate() %> 
-                                    <%= arrMonth[new Date(post.created_at).getMonth()] %> 
-                                    <%= new Date(post.created_at).getFullYear() %>
-                                </small><br>
-                                <div class="tag-list my-2">
-                                    <% post.tags.forEach(tag => { %>
-                                        <a href="/tag/<%= tag %>"><span class="btn btn-sm btn-light mb-1"><span class="ti-tag"></span> <%= tag %></span></a>
-                                    <% }) %>
-                                </div>
-                                <p class="card-text"><%= post.content.substring(0, 70) + ". . . " %><a href="/post/<%= post.slug %>">read more</a></p>
+                            <div class="col-md-4">
+                                <% if (post.img !== "") { %>
+                                    <img src="../img/post/<%= post.img %>" class="card-img-top" alt="post" />
+                                <% } else { %>
+                                    <img src="../img/post/defaultimg2.png" class="card-img-top" alt="post" />
+                                <% } %>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                    <!-- <a href="/post/<%= post.slug %>">
-                        <div class="card mb-3 shadow-0 border-0 bg-transparent">
-                            <img src="../img/post/<%= post.img %>" class="card-img-top <%= post.img === "" ? "d-none" : "" %>" alt="post" />
-                            <div class="card-body px-0">
-                                <a class="text-dark text-underline-dark" href="/post/<%= post.slug %>"><h4 class="card-title mb-0 font-weight-bold"><%= post.title %></h4></a>
-                                <small class="text-muted">
-                                    <%= new Date(post.created_at).getDate() %> 
-                                    <%= arrMonth[new Date(post.created_at).getMonth()] %> 
-                                    <%= new Date(post.created_at).getFullYear() %>
-                                </small><br>
-                                <div class="tag-list my-2">
-                                    <% post.tags.forEach(tag => { %>
-                                        <a href="/tag/<%= tag %>"><span class="badge badge-light rounded-pill p-2 mb-1"><span class="ti-tag"></span> <%= tag %></span></a>
-                                    <% }) %>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <a class="text-dark text-underline-dark" href="/post/<%= post.slug %>"><h4 class="card-title mb-0 font-weight-bold"><%= post.title %></h4></a>
+                                    <small class="text-muted">
+                                        <%= new Date(post.created_at).getDate() %> 
+                                        <%= arrMonth[new Date(post.created_at).getMonth()] %> 
+                                        <%= new Date(post.created_at).getFullYear() %>
+                                    </small><br>
+                                    <div class="tag-list my-2">
+                                        <% post.tags.forEach(tag => { %>
+                                            <a href="/tag/<%= tag %>"><span class="btn btn-sm btn-light mb-1"><span class="ti-tag"></span> <%= tag %></span></a>
+                                        <% }) %>
+                                    </div>
+                                    <p class="card-text"><%= post.content.substring(0, 70) + ". . . " %><a href="/post/<%= post.slug %>">read more</a></p>
                                 </div>
-                                <p class="card-text"><%= post.content.substring(0, 150) + ". . . " %><a href="/post/<%= post.slug %>">read more</a></p>
                             </div>
                         </div>
-                    </a> -->
+                    </div>
                 <% }) %>
             </div>
         </div>
