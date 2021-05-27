@@ -76,16 +76,16 @@
     <small class="text-muted">Silakan beri komentar terkait postingan ini, dilarang membagi komentar yang bersifat SARA. Terapkanlah nilai-nilai baik di lingkup komunitas ini.</small>
     <form>
       <div class="form-group mt-3">
-        <input type="text" class="form-control" id="name" name="name" placeholder="Nama">
+        <input type="text" class="form-control formName" id="name" name="name" placeholder="Nama" required>
       </div>
       <div class="form-group">
-        <textarea class="form-control" id="comment" name="comment" placeholder="Komentar" rows="7"></textarea>
+        <textarea class="form-control formComment" id="comment" name="comment" placeholder="Komentar" rows="7" required></textarea>
       </div>
-      <button type="submit" class="btn btn-primary font-weight-bold ">Submit</button>
+      <button type="submit" class="btn btn-primary font-weight-bold submit-komentar">Submit</button>
     </form>
   </div>
 </div>
-<div class="row mt-5">
+<div class="row mt-5 kolom-komentar">
   <div class="col-lg-8">
     <div class="card mb-3 rounded-0 p-3">
       <div class="row no-gutters d-flex align-items-center">
