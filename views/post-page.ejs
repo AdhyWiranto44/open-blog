@@ -96,8 +96,26 @@
           <div class="col-md-10">
               <div class="card-body py-0">
                   <h4 class="card-title font-weight-bold"><%= comment.name %></h4>
-                  <p class="card-text"><%= comment.body %></p>
+                  <% if (comment.hidden !== 1) { %>
+                    <p class="card-text"><%= comment.body %></p>
+                  <% } else { %>
+                    <p class="card-text text-muted"><i>Komentar ini telah disembunyikan oleh admin.</i></p>
+                  <% } %>
                   <a href="#">Balas &raquo;</a>
+                  <% if (isAuthLink) { %>
+                    <% if (comment.hidden === 0) { %>
+                      <form action="/post/menghapus-komentar/<%= currentPost.slug %>" method="POST">
+                        <button type="submit" class="btn btn-sm btn-warning" name="deleteComment" value="<%= comment.body %>" onClick="return confirm('Yakin ingin menghapus komentar ini?');"><span class="ti-trash"></span> Hapus</button>
+                      </form>
+                    <% } else { %>
+                      <form action="/post/mengaktifkan-komentar/<%= currentPost.slug %>" method="POST">
+                        <button type="submit" class="btn btn-sm btn-light" name="activateComment" value="<%= comment._id %>" onClick="return confirm('Yakin ingin mengaktifkan komentar ini?');"><span class="ti-plus"></span> Aktifkan</button>
+                      </form>
+                    <% } %>
+                    <form action="/post/menghapus-permanen-komentar/<%= currentPost.slug %>" method="POST">
+                      <button type="submit" class="btn btn-sm btn-danger" name="permanentDeleteComment" value="<%= comment._id %>" onClick="return confirm('Yakin ingin menghapus permanen komentar ini?');"><span class="ti-trash"></span> Hapus Permanen</button>
+                    </form>
+                  <% } %>
               </div>
           </div>
         </div>

@@ -169,7 +169,7 @@ app.get("/post/:postSlug", (req, res, next) => {
 
     .then((foundPosts) => {
         posts = foundPosts;
-        return Comment.find({postSlug: postSlug}).exec();
+        return Comment.find({postSlug: postSlug}).sort({created_at: -1}).exec();
     })
 
     .then(foundComments => {
@@ -177,20 +177,6 @@ app.get("/post/:postSlug", (req, res, next) => {
     })
 
     .then(null, next);
-
-    // Post.findOne({slug: postSlug}, (err, foundPost) => {
-    //     if (err) {
-    //         console.log(err);
-    //     } else {
-    //         Post.find({active: 1}, (err, foundPosts) => {
-    //         if (err) {
-    //             console.log(err);
-    //         } else {
-    //             res.render("post-page", {title: foundPost.title, tag: "", otherPosts: foundPosts, currentPost: foundPost, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
-    //         }
-    //         }).limit(5).sort({created_at: -1});
-    //     }
-    // })
 });
 
 app.post("/post/menambah-komentar/:currentPostSlug", (req, res) => {
@@ -198,6 +184,7 @@ app.post("/post/menambah-komentar/:currentPostSlug", (req, res) => {
         name: req.body.name,
         body: req.body.comment,
         postSlug: req.params.currentPostSlug,
+        hidden : 0,
         created_at: new Date().getTime(),
         updated_at: new Date().getTime()
     });
@@ -205,6 +192,36 @@ app.post("/post/menambah-komentar/:currentPostSlug", (req, res) => {
     newComment.save();
 
     res.redirect("/post/" + req.params.currentPostSlug);
+});
+
+app.post("/post/menghapus-komentar/:currentPostSlug", (req, res, next) => {
+    Comment.findOneAndUpdate({body: req.body.deleteComment, postSlug: req.params.currentPostSlug}, {hidden: 1}).exec()
+
+    .then(() => {
+        res.redirect("/post/" + req.params.currentPostSlug);
+    })
+
+    .then(null, next);
+});
+
+app.post("/post/menghapus-permanen-komentar/:currentPostSlug", (req, res, next) => {
+    Comment.findByIdAndRemove({_id: req.body.permanentDeleteComment}).exec()
+
+    .then(() => {
+        res.redirect("/post/" + req.params.currentPostSlug);
+    })
+
+    .then(null, next);
+});
+
+app.post("/post/mengaktifkan-komentar/:currentPostSlug", (req, res, next) => {
+    Comment.findOneAndUpdate({hidden: 1, postSlug: req.params.currentPostSlug}, {hidden: 0}).exec()
+
+    .then(() => {
+        res.redirect("/post/" + req.params.currentPostSlug);
+    })
+
+    .then(null, next);
 });
 
 app.get("/tag/:postTag", (req, res) => {
