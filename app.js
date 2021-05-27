@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Post = require('./models/Post.js');
 const User = require('./models/User.js');
+const Comment = require('./models/Comment.js');
 const showAlert = require('./helpers/alert.js');
 const {arrDay, arrMonth} = require('./helpers/dates.js');
 const multer = require('multer'); // Upload image
@@ -148,29 +149,63 @@ app.route("/")
                 }
             })
         }
-    })
+    });
 
 app.get("/documentation", (req, res) => {
     res.sendFile(__dirname + "/documentation/index.html");
-})
+});
 
-app.get("/post/:postSlug", (req, res) => {
+app.get("/post/:postSlug", (req, res, next) => {
     const postSlug = req.params.postSlug;
+    let post = null;
+    let posts = null;
 
-    Post.findOne({slug: postSlug}, (err, foundPost) => {
-        if (err) {
-            console.log(err);
-        } else {
-            Post.find({active: 1}, (err, foundPosts) => {
-            if (err) {
-                console.log(err);
-            } else {
-                res.render("post-page", {title: foundPost.title, tag: "", otherPosts: foundPosts, currentPost: foundPost, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
-            }
-            }).limit(5).sort({created_at: -1});
-        }
+    Post.findOne({slug: postSlug}).exec()
+
+    .then((foundPost) => {
+        post = foundPost;
+        return Post.find({active: 1}).limit(5).sort({created_at: -1}).exec();
     })
-})
+
+    .then((foundPosts) => {
+        posts = foundPosts;
+        return Comment.find({postSlug: postSlug}).exec();
+    })
+
+    .then(foundComments => {
+        res.render("post-page", {title: post.title, tag: "", otherPosts: posts, currentPost: post, comments: foundComments, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
+    })
+
+    .then(null, next);
+
+    // Post.findOne({slug: postSlug}, (err, foundPost) => {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         Post.find({active: 1}, (err, foundPosts) => {
+    //         if (err) {
+    //             console.log(err);
+    //         } else {
+    //             res.render("post-page", {title: foundPost.title, tag: "", otherPosts: foundPosts, currentPost: foundPost, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
+    //         }
+    //         }).limit(5).sort({created_at: -1});
+    //     }
+    // })
+});
+
+app.post("/post/menambah-komentar/:currentPostSlug", (req, res) => {
+    const newComment = new Comment({
+        name: req.body.name,
+        body: req.body.comment,
+        postSlug: req.params.currentPostSlug,
+        created_at: new Date().getTime(),
+        updated_at: new Date().getTime()
+    });
+
+    newComment.save();
+
+    res.redirect("/post/" + req.params.currentPostSlug);
+});
 
 app.get("/tag/:postTag", (req, res) => {
     const postTag = req.params.postTag;

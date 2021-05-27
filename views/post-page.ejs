@@ -74,7 +74,7 @@
   <div class="col-lg-8">
     <h4 class="font-weight-bold">3 Komentar</h4>
     <small class="text-muted">Silakan beri komentar terkait postingan ini, dilarang membagi komentar yang bersifat SARA. Terapkanlah nilai-nilai baik di lingkup komunitas ini.</small>
-    <form>
+    <form action="/post/menambah-komentar/<%= currentPost.slug %>" method="POST">
       <div class="form-group mt-3">
         <input type="text" class="form-control formName" id="name" name="name" placeholder="Nama" required>
       </div>
@@ -86,54 +86,24 @@
   </div>
 </div>
 <div class="row mt-5 kolom-komentar">
-  <div class="col-lg-8">
-    <div class="card mb-3 rounded-0 p-3">
-      <div class="row no-gutters d-flex align-items-center">
-        <div class="col-md-2">
-          <img src="../img/post/komentar/1.jpg" class="card-img-top rounded-circle" alt="post" />
-        </div>
-        <div class="col-md-10">
-            <div class="card-body py-0">
-                <h4 class="card-title font-weight-bold">Tzuyu</h4>
-                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. At impedit accusantium quas harum iste vero ut fugit aliquam voluptates, sapiente explicabo tenetur porro reiciendis, sint omnis temporibus, quae obcaecati iusto animi voluptatum laudantium!</p>
-                <a href="#">Balas &raquo;</a>
-            </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-8">
-    <div class="card mb-3 rounded-0 p-3">
-      <div class="row no-gutters d-flex align-items-center">
-        <div class="col-md-2">
-          <img src="../img/post/komentar/2.jpg" class="card-img-top rounded-circle" alt="post" />
-        </div>
-        <div class="col-md-10">
-            <div class="card-body py-0">
-                <h4 class="card-title font-weight-bold">Mina</h4>
-                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-                <a href="#">Balas &raquo;</a>
-            </div>
+  <% comments.forEach(comment => { %>
+    <div class="col-lg-8">
+      <div class="card mb-3 rounded-0 p-3">
+        <div class="row no-gutters d-flex align-items-center">
+          <div class="col-md-2">
+            <img src="../img/post/komentar/1.jpg" class="card-img-top rounded-circle" alt="post" />
+          </div>
+          <div class="col-md-10">
+              <div class="card-body py-0">
+                  <h4 class="card-title font-weight-bold"><%= comment.name %></h4>
+                  <p class="card-text"><%= comment.body %></p>
+                  <a href="#">Balas &raquo;</a>
+              </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-lg-8">
-    <div class="card mb-3 rounded-0 p-3">
-      <div class="row no-gutters d-flex align-items-center">
-        <div class="col-md-2">
-          <img src="../img/post/komentar/3.jpg" class="card-img-top rounded-circle" alt="post" />
-        </div>
-        <div class="col-md-10">
-            <div class="card-body py-0">
-                <h4 class="card-title font-weight-bold">Dahyun</h4>
-                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. At impedit accusantium quas harum iste vero ut fugit aliquam voluptates.</p>
-                <a href="#">Balas &raquo;</a>
-            </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <% }) %>
 </div>
 
 <%- include('frontend-templates/frontend-footer') %>
