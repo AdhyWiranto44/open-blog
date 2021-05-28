@@ -416,7 +416,7 @@ app.route("/admin/tambah-post-baru")
 
     .get((req, res) => {
         if (req.isAuthenticated()) {
-            res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: ""});
+            res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: "", previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
         } else {
             res.redirect('/auth/login');
         }
@@ -465,7 +465,7 @@ app.route("/admin/tampil-semua-post")
     .get((req, res) => {
         if (req.isAuthenticated()) {
             Post.find({active: 1}, (err, foundPosts) => {
-                res.render("tampil-semua-post", {title: "Tampil Semua Post", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", alert: ""});
+                res.render("tampil-semua-post", {title: "Tampil Semua Post", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", alert: "", previousLink: "/admin/dashboard", previousTitle: "Dashboard"});
             });    
         } else {
             res.redirect('/auth/login');
@@ -484,11 +484,33 @@ app.route("/admin/tampil-semua-post")
                 if (err) {
                     console.log(err);
                 } else {
-                    res.render("tampil-semua-post", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, alert: ""});
+                    res.render("tampil-semua-post", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, alert: "", previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
                 }
             })
         }
-    })
+    });
+
+app.get("/admin/post/:postSlug", (req, res, next) => {
+    if (req.isAuthenticated()) {
+        const postSlug = req.params.postSlug;
+        let post = null;
+
+        Post.findOne({slug: postSlug}).exec()
+
+        .then((foundPost) => {
+            post = foundPost;
+            return Comment.find({postSlug: postSlug}).sort({created_at: -1}).exec();
+        })
+
+        .then(foundComments => {
+            res.render("admin-post-page", {title: post.title, tag: "", currentPost: post, comments: foundComments, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated(), previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
+        })
+
+        .then(null, next);
+    } else {
+        res.redirect('/auth/login');
+    }
+});
 
 app.get("/admin/tag/:postTag", (req, res) => {
     if (req.isAuthenticated()) {
@@ -498,7 +520,7 @@ app.get("/admin/tag/:postTag", (req, res) => {
             if (err) {
                 console.log(err);
             } else {
-                res.render("tampil-semua-post", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: "", alert: ""});
+                res.render("tampil-semua-post", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: "", alert: "", previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
             }
         })    
     } else {
@@ -542,7 +564,7 @@ app.route("/admin/arsip-post")
     .get((req, res) => {
         if (req.isAuthenticated()) {
             Post.find({active: 0}, (err, foundPosts) => {
-                res.render("arsip-post", {title: "Arsip Post", posts: foundPosts, arrDay, arrMonth, tag: "", search: "", alert: ""});
+                res.render("arsip-post", {title: "Arsip Post", posts: foundPosts, arrDay, arrMonth, tag: "", search: "", alert: "", previousLink: "/admin/dashboard", previousTitle: "Dashboard"});
             });
         } else {
             res.redirect('/auth/login');
@@ -560,7 +582,7 @@ app.route("/admin/arsip-post")
                 if (err) {
                     console.log(err);
                 } else {
-                    res.render("arsip-post", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, alert: ""});
+                    res.render("arsip-post", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, alert: "", previousLink: "/admin/arsip-post", previousTitle: "Arsip Post"});
                 }
             })
         }
@@ -589,7 +611,7 @@ app.route("/admin/mengubah-post/:postSlug")
                 if (err) {
                     console.log(err);
                 } else {
-                    res.render("ubah-post", {title: "Ubah Post", post: foundPost, alert: ""});
+                    res.render("ubah-post", {title: "Ubah Post", post: foundPost, alert: "", previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
                 }
             })
         } else {

@@ -61,9 +61,11 @@
         </header>
 
         <main>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb bg-transparent pl-0">
-                    <li class="breadcrumb-item active" aria-current="page">Admin</li>
-                    <li class="breadcrumb-item" aria-current="page"><%= title %></li>
-                </ol>
-            </nav>
+            <% if (title !== "Dashboard") { %>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-transparent pl-0">
+                        <li class="breadcrumb-item active" aria-current="page"><a class="text-dark" href="<%= previousLink %>"><%= previousTitle %></a></li>
+                        <li class="breadcrumb-item" aria-current="page"><%= title %></li>
+                    </ol>
+                </nav>
+            <% } %>

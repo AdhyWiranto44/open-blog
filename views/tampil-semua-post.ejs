@@ -47,7 +47,7 @@
                                 <img src="../img/post/defaultimg2.png" alt="post" style="max-width: 75px;" />
                             <% } %>
                         </td>
-                        <td><%= post.title %></td>
+                        <td><a href="/admin/post/<%= post.slug %> "><%= post.title %></a></td>
                         <td class="post-body"><%= post.content %></td>
                         <td>
                             <div class="tag-list my-2">
