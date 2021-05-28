@@ -4,6 +4,7 @@
   "description": "Open-Blog merupakan projek website blogging open-source dimana source code dapat diunduh, dipelajari, dimodifikasi, dan digunakan untuk keperluan pribadi atau komersial.",
   "main": "app.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Adhy Wiranto",
