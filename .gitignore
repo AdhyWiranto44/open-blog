@@ -114,7 +114,3 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-
-
-# Other directories
-public/img/post/
