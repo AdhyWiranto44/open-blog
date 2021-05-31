@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -29,7 +30,7 @@ const passport = require('passport');
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public"));
 app.use(session({
-    secret: "Our secret.",
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false
 }));
@@ -38,8 +39,11 @@ app.use(passport.session());
 
 app.set("view engine", "ejs");
 
-mongoose.connect("mongodb://127.0.0.1:27017/openblogDB", {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(`mongodb+srv://open-blog-admin:${process.env.DB_PASSWORD}@cluster0.wvtrr.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {useNewUrlParser: true, useUnifiedTopology: true});
 mongoose.set("useCreateIndex", true);
+
+// mongodb://127.0.0.1:27017/${process.env.DB_NAME}
+// mongodb+srv://open-blog-admin:${process.env.DB_PASSWORD}@cluster0.wvtrr.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority
 
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
