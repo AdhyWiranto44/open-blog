@@ -47,8 +47,9 @@ Redesign Front-End
 npm install
 ```
 ```
-rename file .env.example menjadi .env, lalu sesuaikan value dari variabel-nya
+mv .env.example .env
 ```
+Sesuaikan .env
 
 # Running the app
 ```
