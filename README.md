@@ -43,8 +43,14 @@ Redesign Front-End
 - otentikasi: ubah password dan reset password
 
 # Instalasi
-- npm install
-- rename file .env.example menjadi .env, lalu sesuaikan value dari variabel-nya
+```
+npm install
+```
+```
+rename file .env.example menjadi .env, lalu sesuaikan value dari variabel-nya
+```
 
 # Running the app
-- npm start
+```
+npm start
+```
