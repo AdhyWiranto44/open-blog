@@ -172,7 +172,7 @@ app.get("/documentation", (req, res) => {
     res.sendFile(__dirname + "/documentation/index.html");
 });
 
-app.get("/post/:postSlug", (req, res, next) => {
+app.get("/post/:postSlug", (req, res) => {
     const postSlug = req.params.postSlug;
     let post = null;
     let posts = null;
@@ -193,52 +193,76 @@ app.get("/post/:postSlug", (req, res, next) => {
         res.render("post-page", {title: post.title, tag: "", otherPosts: posts, currentPost: post, comments: foundComments, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
     })
 
-    .then(null, next);
+    .catch(err => {
+        console.log(err);
+    });
 });
 
 app.post("/post/menambah-komentar/:currentPostSlug", (req, res) => {
+    const currentPostSlug = req.params.currentPostSlug;
+
     const newComment = new Comment({
         name: req.body.name,
         body: req.body.comment,
-        postSlug: req.params.currentPostSlug,
+        postSlug: currentPostSlug,
         hidden : 0,
         created_at: new Date().getTime(),
         updated_at: new Date().getTime()
     });
 
-    newComment.save();
-
-    res.redirect("/post/" + req.params.currentPostSlug);
-});
-
-app.post("/post/menghapus-komentar/:currentPostSlug", (req, res, next) => {
-    Comment.findOneAndUpdate({body: req.body.deleteComment, postSlug: req.params.currentPostSlug}, {hidden: 1}).exec()
+    newComment.save()
 
     .then(() => {
-        res.redirect("/post/" + req.params.currentPostSlug);
+        res.redirect("/post/" + currentPostSlug);
     })
 
-    .then(null, next);
+    .catch(err => {
+        console.log(err);
+    });
 });
 
-app.post("/post/menghapus-permanen-komentar/:currentPostSlug", (req, res, next) => {
+app.post("/post/menghapus-komentar/:currentPostSlug", (req, res) => {
+    const currentPostSlug = req.params.currentPostSlug;
+
+    Comment.findOneAndUpdate(
+        {body: req.body.deleteComment, postSlug: currentPostSlug}, 
+        {hidden: 1}).exec()
+
+    .then(() => {
+        res.redirect("/post/" + currentPostSlug);
+    })
+
+    .catch(err => {
+        console.log(err);
+    });
+});
+
+app.post("/post/menghapus-permanen-komentar/:currentPostSlug", (req, res) => {
     Comment.findByIdAndRemove({_id: req.body.permanentDeleteComment}).exec()
 
     .then(() => {
         res.redirect("/post/" + req.params.currentPostSlug);
     })
 
-    .then(null, next);
+    .catch(err => {
+        console.log(err);
+    });
 });
 
-app.post("/post/mengaktifkan-komentar/:currentPostSlug", (req, res, next) => {
-    Comment.findOneAndUpdate({hidden: 1, postSlug: req.params.currentPostSlug}, {hidden: 0}).exec()
+app.post("/post/mengaktifkan-komentar/:currentPostSlug", (req, res) => {
+    const currentPostSlug = req.params.currentPostSlug;
+
+    Comment.findOneAndUpdate(
+        {hidden: 1, postSlug: currentPostSlug}, 
+        {hidden: 0}).exec()
 
     .then(() => {
-        res.redirect("/post/" + req.params.currentPostSlug);
+        res.redirect("/post/" + currentPostSlug);
     })
 
-    .then(null, next);
+    .catch(err => {
+        console.log(err);
+    });
 });
 
 app.get("/tag/:postTag", (req, res) => {
