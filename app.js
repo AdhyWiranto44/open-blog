@@ -139,32 +139,32 @@ app.route("/")
         if (search === "") {
             res.redirect("/");
         } else {
-            Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}, (err, foundPosts) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    Post.find({active: 1}, (err, foundForTags) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            // Push tag di setiap post ke array,
-                            // Lalu hilangkan duplikat
-                            let allTags = [];
-                            foundForTags.forEach(post => {
-                                post.tags.forEach(tag => {
-                                allTags.push(tag);
-                                })
-                            })
-                            
-                            allTags = allTags.filter(function(value, index, self) {
-                                return self.indexOf(value) === index;
-                            });
-        
-                        res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, isAuthLink: req.isAuthenticated(), tags: allTags});
-                        }
-                    }).sort({created_at: -1});
-                }
+            Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}).exec()
+
+            .then(foundPosts => {
+                Post.find({active: 1}).sort({created_at: -1}).exec()
+
+                .then(foundForTags => {
+                    // Push tag di setiap post ke array
+                    let allTags = [];
+                    foundForTags.forEach(post => {
+                        post.tags.forEach(tag => {
+                        allTags.push(tag);
+                        })
+                    });
+                    
+                    // Lalu hilangkan duplikat
+                    allTags = allTags.filter(function(value, index, self) {
+                        return self.indexOf(value) === index;
+                    });
+
+                    res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, isAuthLink: req.isAuthenticated(), tags: allTags});
+                })
             })
+
+            .catch(err => {
+                console.log(err);
+            });
         }
     });
 
