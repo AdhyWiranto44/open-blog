@@ -30,9 +30,28 @@ Open-Blog ini dapat melakukan operasi CRUDS, memiliki fitur tag untuk setiap pos
 - Tampil Post dengan Tag Front-End
 - Cari Post Front-End
 
+## Updated!
+Redesign Front-End
+
+## New Features!
+- Tambah Komentar Post Front-End
+- Hide Komentar Post Front-End (Admin)
+- Hapus Komentar Post (Admin)
+- Kelola Komentar Back-End
+
 # Fungsi yang belum selesai
 - otentikasi: ubah password dan reset password
 
 # Instalasi
-- npm i
-- jalankan dengan node . atau nodemon .
+```
+npm install
+```
+```
+mv .env.example .env
+```
+Sesuaikan .env
+
+# Running the app
+```
+npm start
+```
