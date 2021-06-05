@@ -39,7 +39,7 @@ app.use(passport.session());
 
 app.set("view engine", "ejs");
 
-mongoose.connect(`mongodb+srv://open-blog-admin:${process.env.DB_PASSWORD}@cluster0.wvtrr.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(`mongodb://127.0.0.1:27017/${process.env.DB_NAME}`, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
 mongoose.set("useCreateIndex", true);
 
 // mongodb://127.0.0.1:27017/${process.env.DB_NAME}
@@ -84,39 +84,52 @@ const post2 = Post({
 app.route("/")
 
     .get((req, res) => {
-        Post.find({active: 1}, (err, foundPosts) => {
-            if (foundPosts.length === 0) {
-                Post.insertMany([post1, post2], function(err){
-                    if(err) {
-                        console.log(err);
-                    } else {
-                        console.log("Data added successfully");
-                    }
-                });
+        // mencari post aktif
+        Post.find({active: 1}).exec() 
 
-                res.redirect("/");
+        .then(foundPosts => {
+            // jika tidak ada data post
+            if (foundPosts.length < 1) { 
+                // tambahkan data default
+                Post.insertMany([post1, post2]) 
+
+                .then(() => {
+                    console.log("Data added successfully");
+                    res.redirect("/");
+                })
+
+                .catch(err => {
+                    console.log(err);
+                });
             } else {
-                Post.find({active: 1}, (err, foundForTags) => {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        // Push tag di setiap post ke array,
-                        // Lalu hilangkan duplikat
-                        let allTags = [];
-                        foundForTags.forEach(post => {
-                            post.tags.forEach(tag => {
-                            allTags.push(tag);
-                            })
+                 // mencari semua tag post yang aktif
+                Post.find({active: 1}).sort({created_at: -1}).exec()
+
+                .then(foundForTags => {
+                    // Push tag di setiap post ke array
+                    let allTags = [];
+                    foundForTags.forEach(post => {
+                        post.tags.forEach(tag => {
+                        allTags.push(tag);
                         })
-                        
-                        allTags = allTags.filter(function(value, index, self) {
-                            return self.indexOf(value) === index;
-                        });
+                    });
+                    
+                    // Lalu hilangkan duplikat
+                    allTags = allTags.filter(function(value, index, self) {
+                        return self.indexOf(value) === index;
+                    });
 
                     res.render("frontend", {title: "Halaman Utama", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated(), tags: allTags});
-                    }
-                }).sort({created_at: -1});
+                })
+
+                .catch(err => {
+                    console.log(err);
+                });
             }
+        })
+
+        .catch(err => {
+            console.log(err);
         });
     })
 
