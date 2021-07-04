@@ -47,7 +47,7 @@ Redesign Front-End
 npm install
 ```
 ```
-mv .env.example .env
+cp .env.example .env
 ```
 Sesuaikan .env
 
