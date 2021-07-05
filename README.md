@@ -1,4 +1,4 @@
-## Perhatian
+# Perhatian
 Jika ingin menggunakan projek yang lama bisa gunakan branch legacy-version!
 
 # open-blog
