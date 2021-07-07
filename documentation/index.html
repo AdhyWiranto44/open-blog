@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <style>
+        h2:hover::before {
+            content: '# ';
+            display: inline;
+            margin-left: -27.7px;
+            color: blue;
+        }
+    </style>
+
+    <title>Documentation</title>
+</head>
+<body id="top" class="bg-light">
+
+    <a class="btn btn-secondary sticky-top" style="z-index: 9999;" href="#top">Go Top</a>
+    
+    <div class="container-fluid text-justify">
+
+        <div class="row">
+            <div class="col-md-3 bg-primary text-light">
+
+                <h5 class="mt-4">Lists</h5>
+                <ul>
+                    <li><a class="text-light" href="#deskripsi">Deskripsi</a></li>
+                    <li><a class="text-light" href="#stack-teknologi">Stack Teknologi</a></li>
+                    <li><a class="text-light" href="#user">User List</a></li>
+                    <li><a class="text-light" href="#software-features">Software Features</a></li>
+                    <li><a class="text-light" href="#model-bisnis">Model Bisnis</a></li>
+                    <li><a class="text-light" href="#activity-diagram">Activity Diagram</a></li>
+                </ul>
+
+            </div>
+            <div class="col-md-9">
+
+                <div class="row">
+                    <div class="col-md mt-3">
+                        <h1 class="text-center">Open-blog</h1>
+                    </div>
+                </div>
+                
+                <div id="deskripsi" class="row my-4">
+                    <div class="col-md-10 offset-md-1">
+                        <h2>Deskripsi</h2>
+                        <p>
+                            Open-Blog merupakan projek website blogging open-source dimana source code dapat diunduh, dipelajari, dimodifikasi, dan digunakan untuk keperluan pribadi atau komersial.
+                            <br> <br> 
+                            Open-Blog ini dapat melakukan operasi CRUDS, memiliki fitur tag untuk setiap post-nya, otentikasi, dan halaman dashboard untuk mengelola post. Terlepas dari fitur yang sudah ada, kamu juga dapat menambahkan fitur yang lain sesuai dengan kebutuhan.
+                        </p>
+                    </div>
+                </div>
+        
+                <div id="stack-teknologi" class="row my-4">
+                    <div class="col-md-10 offset-md-1">
+                        <h2>Stack Teknologi</h2>
+                        <ul>
+                            <li class="li">MongoDB</li>
+                            <li class="li">Express.js</li>
+                            <li class="li">Node.js</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="user" class="row my-4">
+                    <div class="col-md-10 offset-md-1">
+                        <h2>User List</h2>
+                        <ul>
+                            <li>Admin</li>
+                            <li>Visitor</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="software-features" class="row my-4">
+                    <div class="col-md-10 offset-md-1">
+                        <h2>Software Features</h2>
+                        <ol>
+                            <li>Tambah Post</li>
+                            <li>Tampil Post</li>
+                            <li>Ubah Post</li>
+                            <li>Arsip Post</li>
+                            <li>Hapus Post</li>
+                            <li>Cari Post</li>
+                            <li>Aktivasi Post</li>
+                            <li>Tampil Semua Post</li>
+                            <li>Tampil Post dengan Tag</li>
+                            <li>Login</li>
+                            <li>Logout</li>
+                            <li>Registrasi</li>
+                            <li>Reset Password</li>
+
+                            <li>Tampil Post Front-End</li>
+                            <li>Tampil Post dengan Tag Front-End</li>
+                            <li>Cari Post Front-End</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div id="model-bisnis" class="row my-4">
+                    <div class="col-md-10 offset-md-1">                
+                        <h2>Model Bisnis</h2>
+                        <p>Model bisnis yang dilakukan pada aplikasi Open-Blog ini adalah melakukan pengelolaan artikel blog.</p>
+                    </div>
+                </div>
+        
+                <div id="business-use-case" class="row my-4">
+                    <div class="col-md-10 offset-md-1">
+                        <h2>Business Use Case</h2>
+                        <img class="d-block mx-auto" src="img/documentation/business-use-case-diagram.jpg" alt="Business Use Case Diagram">
+                    </div>
+                </div>
+
+                <div id="activity-diagram" class="row my-4">
+                    <div class="col-md-10 offset-md-1">
+                        <h2>Activity Diagram</h2>
+                        <p>Aktivitas yang tertera dibawah ini adalah berdasarkan Business Use Case pada aplikasi Open-Blog.</p>
+                        <ol>
+                            <li>Menambah Post
+                                <img class="d-block mx-auto" src="img/documentation/ad-menambahkan-post.jpg" alt="Activity Diagram"><br>                             
+                            </li>
+                            <li>Menampilkan Post
+                                <img class="d-block mx-auto" src="img/documentation/ad-menampilkan-post.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Mengubah Post
+                                <img class="d-block mx-auto" src="img/documentation/ad-mengubah-post.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Mengarsipkan Post
+                                <img class="d-block mx-auto" src="img/documentation/ad-mengarsipkan-post.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Menghapus Post
+                                <img class="d-block mx-auto" src="img/documentation/ad-menghapus-post.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Mencari Post
+                                <img class="d-block mx-auto" src="img/documentation/ad-mencari-post.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Mengaktivasi Post
+                                <img class="d-block mx-auto" src="img/documentation/ad-mengaktivasi-post.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Menampilkan Semua Post
+                                <img class="d-block mx-auto" src="img/documentation/ad-menampilkan-semua-post.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Menampilkan Post dengan Tag
+                                <img class="d-block mx-auto" src="img/documentation/ad-menampilkan-post-dengan-tag.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Login
+                                <img class="d-block mx-auto" src="img/documentation/ad-login.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Logout
+                                <img class="d-block mx-auto" src="img/documentation/ad-logout.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Registrasi
+                                <img class="d-block mx-auto" src="img/documentation/ad-registrasi.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Reset Password
+                                <img class="d-block mx-auto" src="img/documentation/ad-reset-password.jpg" alt="Activity Diagram"><br> 
+                            </li>
+
+                            <li>Menampilkan Semua Post Front-End
+                                <img class="d-block mx-auto" src="img/documentation/ad-menampilkan-semua-post-front-end.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Menampilkan Post dengan Tag Front-End
+                                <img class="d-block mx-auto" src="img/documentation/ad-menampilkan-post-dengan-tag-front-end.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                            <li>Mencari Post Front-End
+                                <img class="d-block mx-auto" src="img/documentation/ad-mencari-post-front-end.jpg" alt="Activity Diagram"><br> 
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+</body>
+</html>

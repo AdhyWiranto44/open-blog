@@ -1,0 +1,77 @@
+<%- include('backend-templates/backend-header') %>
+
+<div class="row">
+    <div class="col-lg-8">
+      <div class="row">
+        <div class="col-lg border-bottom mb-4">
+          <% if (isAuthLink) { %>
+              <a class="btn btn-sm btn-danger mb-3" href="/admin/mengubah-post/<%= currentPost.slug %>"><span class="ti-pencil-alt"></span> Ubah</a>
+          <% } %>
+          <div class="card mb-3 border-0 bg-transparent">
+              <% if (currentPost.img !== "") { %>
+                <img src="/../img/post/<%= currentPost.img %>" class="card-img-top w-75" alt="post" />
+              <% } else { %>
+                <img src="/../img/post/defaultimg2.png" class="card-img-top" alt="post" />
+              <% } %>
+              <div class="card-body px-0">
+                <h4 class="card-title mb-0 font-weight-bold"><%= currentPost.title %></h4>
+                <small class="text-muted">
+                  <%= new Date(currentPost.created_at).getDate() %> 
+                  <%= arrMonth[new Date(currentPost.created_at).getMonth()] %> 
+                  <%= new Date(currentPost.created_at).getFullYear() %>
+                </small><br>
+                <div class="tag-list my-2">
+                  <% currentPost.tags.forEach((tag) => { %>
+                    <a href="/tag/<%= tag %>"><span class="btn btn-sm btn-light p-2"><span class="ti-tag"></span> <%= tag %></span></a>
+                  <% }) %>
+                </div>
+                <p class="card-text mt-3">
+                  <%= currentPost.content %>
+                </p>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="row kolom-komentar">
+  <% comments.forEach(comment => { %>
+    <div class="col-lg-8">
+      <div class="card mb-3 rounded-0 p-3">
+        <div class="row no-gutters d-flex align-items-center">
+            <div class="col-md-2">
+                <img src="/../img/post/komentar/1.jpg" class="card-img-top rounded-circle" alt="post" />
+            </div>
+            <div class="col-md-10">
+                <div class="card-body py-0">
+                    <h4 class="card-title font-weight-bold"><%= comment.name %></h4>
+                    <% if (comment.hidden !== 1) { %>
+                        <p class="card-text"><%= comment.body %></p>
+                    <% } else { %>
+                        <p class="card-text text-muted"><i>Komentar ini telah disembunyikan oleh admin.</i></p>
+                    <% } %>
+                    <a href="#">Balas &raquo;</a>
+                    <% if (isAuthLink) { %>
+                        <% if (comment.hidden === 0) { %>
+                        <form action="/post/menghapus-komentar/<%= currentPost.slug %>" method="POST">
+                            <button type="submit" class="btn btn-sm btn-warning" name="deleteComment" value="<%= comment.body %>" onClick="return confirm('Yakin ingin menghapus komentar ini?');"><span class="ti-trash"></span> Hapus</button>
+                        </form>
+                        <% } else { %>
+                        <form action="/post/mengaktifkan-komentar/<%= currentPost.slug %>" method="POST">
+                            <button type="submit" class="btn btn-sm btn-light" name="activateComment" value="<%= comment._id %>" onClick="return confirm('Yakin ingin mengaktifkan komentar ini?');"><span class="ti-plus"></span> Aktifkan</button>
+                        </form>
+                        <% } %>
+                        <form action="/post/menghapus-permanen-komentar/<%= currentPost.slug %>" method="POST">
+                        <button type="submit" class="btn btn-sm btn-danger" name="permanentDeleteComment" value="<%= comment._id %>" onClick="return confirm('Yakin ingin menghapus permanen komentar ini?');"><span class="ti-trash"></span> Hapus Permanen</button>
+                        </form>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<%- include('backend-templates/backend-footer') %>

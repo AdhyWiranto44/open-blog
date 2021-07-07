@@ -1,0 +1,27 @@
+<%- include('auth-templates/auth-header') %>
+
+<div class="row mt-5">
+    <div class="col-lg-4 col-md-6 offset-lg-4 offset-md-3">
+        <%- alert %>
+        <div class="card p-3 mb-3 bg-transparent border-0">
+            <div class="card-body">
+            <h4 class="card-title text-center mb-5 font-weight-bold">Register</h4>
+            <form action="/auth/register" method="POST" class="text-center">
+                <div class="form-group">
+                    <input type="username" class="form-control bg-white" id="username" name="username" placeholder="username" autofocus>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control bg-white" id="password" name="password" placeholder="password">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control bg-white" id="confirm_password" name="confirm_password" placeholder="confirm password">
+                </div>
+                <button type="submit" class="btn btn-primary w-100 my-3 font-weight-bold">Register</button>
+                <small>Sudah punya akun? <a class="text-primary" href="/auth/login">Login</a></small>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('auth-templates/auth-footer') %>

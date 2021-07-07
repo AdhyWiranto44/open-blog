@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet" href="/css/backend-styles.css">
+
+    <title>Open Blog: <%= title %></title>
+</head>
+<body class="bg-light">
+
+    <div class="sidebar overflow-auto">
+        <div class="sidebar-header">
+            <h4>
+                <a class="text-light" href="/"><span>Open Blog</span></a>
+            </h4>
+        </div>
+
+        <div class="sidebar-menu">
+            <ul class="sidebar-menu-container">
+                <li class="sidebar-menu-section">
+                    <h5>Admin</h5>
+                    <ul>
+                        <li class="<%= title === "Dashboard" ? "menu-active" : ""; %>"><span class="ti-dashboard"></span><a href="/admin/dashboard">Dashboard</a></li>
+                    </ul>
+                </li>
+                <li class="sidebar-menu-section">
+                    <h5>Post</h5>
+                    <ul>
+                        <li class="<%= title === "Tambah Post Baru" ? "menu-active" : ""; %>"><span class="ti-plus"></span><a href="/admin/tambah-post-baru">Tambah Post Baru</a></li>
+                        <li class="<%= title === "Tampil Semua Post" ? "menu-active" : ""; %>"><span class="ti-list"></span><a href="/admin/tampil-semua-post">Tampil Semua Post</a></li>
+                        <li class="<%= title === "Arsip Post" ? "menu-active" : ""; %>"><span class="ti-archive"></span><a href="/admin/arsip-post">Arsip Post</a></li>
+                    </ul>
+                </li>
+                <li class="sidebar-menu-section">
+                    <h5>Settings</h5>
+                    <ul>
+                        <li><span class="ti-pencil-alt"></span><a href="/auth/ubah-password">Ubah Password</a></li>
+                        <li><span class="ti-key"></span><a href="/auth/reset-password">Reset Password</a></li>
+                    </ul>
+                </li>
+                <li class="sidebar-menu-section">
+                    <ul>
+                        <li><span class="ti-arrow-left"></span><a href="/auth/logout">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+        <header>
+            <div class="header-content">
+                <form action="/auth/logout" method="POST">
+                    <button class="btn btn-dark btn-sm"><span class="ti-arrow-left"></span> Logout</button>
+                </form>
+                <div class="header-img"></div>
+            </div>
+        </header>
+
+        <main>
+            <% if (title !== "Dashboard") { %>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-transparent pl-0">
+                        <li class="breadcrumb-item active" aria-current="page"><a class="text-dark" href="<%= previousLink %>"><%= previousTitle %></a></li>
+                        <li class="breadcrumb-item" aria-current="page"><%= title %></li>
+                    </ol>
+                </nav>
+            <% } %>

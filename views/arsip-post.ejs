@@ -1,0 +1,89 @@
+<%- include("backend-templates/backend-header") %>
+
+<div class="row mb-5">
+    <div class="col-md-4">
+        <form action="/admin/arsip-post" method="POST" class="d-flex bg-white border">
+            <input class="form-control bg-white border-0" type="search" placeholder="Search" aria-label="Search" name="search">
+            <button class="btn btn-primary px-3 rounded-0"><span class="ti-search"></span></button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-lg-6">
+        <% if (tag !== "") { %>
+            <h5>#<%= tag %></h5>
+        <% } else if (tag === "" && search) { %>
+            <h5>Search item: <%= search %></h5>
+        <% } %>
+    </div>
+</div>
+
+<div class="row">
+    <%- alert %>
+    <% if (posts.length !== 0) { %>
+        <div class="col-lg">
+            <table class="table table-striped table-bordered overflow-auto">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">No</th>
+                        <th scope="col">Gambar</th>
+                        <th scope="col">Judul</th>
+                        <th scope="col">Body</th>
+                        <th scope="col">Tags</th>
+                        <th scope="col">Ditambahkan</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% let i = 1; %> 
+                    <% posts.forEach(post => { %>
+                    <tr>
+                        <th scope="row"><%= i++; %></th>
+                        <td>
+                            <% if (post.img !== "") { %>
+                                <img src="../img/post/<%= post.img %>" alt="post" style="max-width: 75px;" />
+                            <% } else { %>
+                                <img src="../img/post/defaultimg2.png" alt="post" style="max-width: 75px;" />
+                            <% } %>
+                        </td>
+                        <td><%= post.title %></td>
+                        <td class="post-body"><%= post.content %></td>
+                        <td>
+                            <div class="tag-list my-2">
+                                <% post.tags.forEach(tag => { %>
+                                    <a class="text-dark" href="/admin/tag/<%= tag %>"><span class="btn btn-sm btn-light mb-1"><span class="ti-tag"></span> <%= tag %></span></a>
+                                <% }) %>
+                            </div>
+                        </td>
+                        <td>
+                            <small>
+                                <%= arrDay[new Date(post.created_at).getDay()] %>, 
+                                <%= new Date(post.created_at).getDate() %> 
+                                <%= arrMonth[new Date(post.created_at).getMonth()] %> 
+                                <%= new Date(post.created_at).getFullYear() %> 
+                                <%= new Date(post.created_at).getHours() %>.<%= new Date(post.created_at).getMinutes() %>
+                            </small><br>
+                        </td>
+                        <td class="d-flex">
+                            <a href="/admin/mengubah-post/<%= post.slug %>" class="btn btn-warning mr-2"><span class="ti-pencil-alt"></span> Ubah</a>
+                            <form action="/admin/mengaktifkan-post/<%= post.slug %>" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-primary mr-2 h-100" onClick="return confirm('Aktifkan post ini? <%= post.title %>');"><span class="ti-plus"></span> Aktifkan</button>
+                            </form>
+                            <form action="/admin/menghapus-post/<%= post.slug %>" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-danger border-0 mb-2 h-100" onClick="return confirm('Yakin ingin menghapus post ini? <%= post.title %>');"><span class="ti-trash"></span> Hapus</button>
+                            </form>    
+                        </td>
+                    </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            </div>
+    <% } else { %>
+        <div class="col-lg">
+            <h3>Post kosong</h3>
+        </div>
+    <% } %>
+</div>
+
+<%- include("backend-templates/backend-footer") %>
