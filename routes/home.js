@@ -1,49 +1,32 @@
 const express = require('express');
 const app = express();
 const Post = require('../models/post');
-const defaultPost = require('../helpers/default_post');
+const defaultPosts = require('../helpers/default_posts');
 const {arrDay, arrMonth} = require('../helpers/dates');
+const ACTIVE = 1
+const LATEST = -1
 
 
 app.get("/", (req, res) => {
     // mencari post aktif
-    Post.find({active: 1}).exec() 
+    Post.find({active: ACTIVE}).sort({created_at: LATEST}).exec()
     .then(foundPosts => {
         // jika tidak ada data post
         if (foundPosts.length < 1) { 
             // tambahkan data default
-            Post.insertMany(defaultPost) 
-
-            .then(() => {
-                console.log("Data added successfully");
-                res.redirect("/");
-            })
-
-            .catch(err => {
-                console.log(err);
-            });
+            insertDefaultPosts(defaultPosts);
+            res.redirect("/");
         } else {
             // mencari semua tag post yang aktif
-            Post.find({active: 1}).sort({created_at: -1}).exec()
-            .then(foundForTags => {
-                // Push tag di setiap post ke array
-                let allTags = [];
-                foundForTags.forEach(post => {
-                    post.tags.forEach(tag => {
+            let allTags = [];
+            foundPosts.forEach(post => {
+                post.tags.forEach(tag => {
                     allTags.push(tag);
-                    })
                 });
-                
-                // Lalu hilangkan duplikat
-                allTags = allTags.filter(function(value, index, self) {
-                    return self.indexOf(value) === index;
-                });
-
-                res.render("frontend", {title: "Halaman Utama", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated(), tags: allTags});
-            })
-            .catch(err => {
-                console.log(err);
             });
+            allTags = filterActiveTags(allTags);
+            
+            res.render("frontend", {title: "Halaman Utama", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated(), tags: allTags});
         }
     })
     .catch(err => {
@@ -57,25 +40,18 @@ app.post("/", (req, res) => {
     if (search === "") {
         res.redirect("/");
     } else {
-        Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}).exec()
+        Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: ACTIVE}).sort({created_at: LATEST}).exec()
         .then(foundPosts => {
-            Post.find({active: 1}).sort({created_at: -1}).exec()
-            .then(foundForTags => {
-                // Push tag di setiap post ke array
-                let allTags = [];
-                foundForTags.forEach(post => {
-                    post.tags.forEach(tag => {
+            // Push tag di setiap post ke array
+            let allTags = [];
+            foundPosts.forEach(post => {
+                post.tags.forEach(tag => {
                     allTags.push(tag);
-                    })
                 });
-                
-                // Lalu hilangkan duplikat
-                allTags = allTags.filter(function(value, index, self) {
-                    return self.indexOf(value) === index;
-                });
+            });
+            allTags = filterActiveTags(allTags);
 
-                res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, isAuthLink: req.isAuthenticated(), tags: allTags});
-            })
+            res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, isAuthLink: req.isAuthenticated(), tags: allTags});
         })
         .catch(err => {
             console.log(err);
@@ -108,5 +84,20 @@ app.get("/admin/dashboard", (req, res) => {
         res.redirect('/auth/login');
     }
 });
+
+const insertDefaultPosts = (data) => {
+    Post.insertMany(data).then(() => {
+        console.log("Data added successfully");
+    }).catch(err => {
+        console.log(err);
+    });
+}
+
+const filterActiveTags = (data) => {
+    return data.filter(function(value, index, self) {
+        return self.indexOf(value) === index;
+    });
+}
+
 
 module.exports = app;

@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./models/user.js');
-const db_connect = require('./database/db_connect');
+const dbConnect = require('./database/db_connect');
 const PORT = 4000;
 
 const apiRouter = require('./routes/api');
@@ -26,7 +26,7 @@ app.use(passport.session());
 app.set("view engine", "ejs");
 
 // connection database
-db_connect();
+dbConnect();
 
 mongoose.set("useCreateIndex", true);
 
