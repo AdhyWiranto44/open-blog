@@ -1,10 +1,8 @@
-const express = require('express');
-const app = express();
 const User = require('../models/user');
 const showAlert = require('../helpers/alert.js');
 
 
-app.get("/auth/login", (req, res) => {
+exports.getLogin = (req, res) => {
     if (req.isAuthenticated()) {
         res.redirect('/admin/dashboard');
     } else {
@@ -33,9 +31,9 @@ app.get("/auth/login", (req, res) => {
             }
         })
     }
-});
+}
 
-app.post("/auth/login", (req, res) => {
+exports.postLogin = (req, res) => {
     const user = new User({
         username: req.body.username,
         password: req.body.password
@@ -61,17 +59,17 @@ app.post("/auth/login", (req, res) => {
             }
         }
     })
-})
+}
 
-app.get("/auth/register", (req, res) => {
+exports.getRegister = (req, res) => {
     if (req.isAuthenticated()) {
         res.redirect('/admin/dashboard');
     } else {
         res.render("register", {title:"Register", alert: ""});
     }
-});
+}
 
-app.post("/auth/register", (req, res) => {
+exports.postRegister = (req, res) => {
     const regUsername = req.body.username;
     const regPassword = req.body.password;
     const regConfirm_password = req.body.confirm_password;
@@ -105,29 +103,25 @@ app.post("/auth/register", (req, res) => {
             }
         }
     })
-});
+}
 
-app.post('/auth/logout', (req, res) => {
+exports.postLogout = (req, res) => {
     req.logout();
     res.redirect('/auth/login');
-});
+}
 
-app.get("/auth/reset-password", (req, res) => {
+exports.getResetPassword = (req, res) => {
     if (req.isAuthenticated()) {
         res.redirect('/admin/dashboard');
     } else {
         res.redirect('/auth/login');
     }
-    // res.render("reset-password", {title: "Reset Password"});
-});
+}
 
-app.get('/auth/ubah-password', (req, res) => {
+exports.getUpdatePassword = (req, res) => {
     if (req.isAuthenticated()) {
         res.redirect('/admin/dashboard');
     } else {
         res.redirect('/auth/login');
     }
-});
-
-
-module.exports = app;
+}

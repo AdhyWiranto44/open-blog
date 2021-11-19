@@ -1,10 +1,10 @@
 const express = require('express');
 const app = express();
 
-const homeRouter = require('./home');
-const dashboardRouter = require('./dashboard');
-const postRouter = require('./post');
-const authRouter = require('./auth');
+const homeRouter = require('./home_router');
+const dashboardRouter = require('./dashboard_router');
+const postRouter = require('./post_router');
+const authRouter = require('./auth_router');
 
 
 app.use(homeRouter);
