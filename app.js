@@ -1,11 +1,11 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const User = require('./models/user.js');
-const dbConnect = require('./database/db_connect');
+const User = require('./src/models/user.js');
+const dbConnect = require('./src/database/db_connect');
 const PORT = 4000;
 
-const apiRouter = require('./routes/api');
+const apiRouter = require('./src/routes/api');
 
 const app = express();
 
