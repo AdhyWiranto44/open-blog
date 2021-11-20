@@ -11,7 +11,7 @@
 </head>
 <body class="bg-light">
 
-    <nav class="navbar navbar-expand-md navbar-light bg-light py-3 border-bottom sticky-top py-4">
+    <nav class="navbar navbar-expand-md navbar-light bg-white py-3 shadow-sm sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand font-weight-bold" href="/">Open Blog</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,14 +19,14 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav ml-auto">
-                    <form action="/" method="POST" class="navbar-form mr-3 bg-white border">
-                        <input class="form-control bg-white border-0" type="search" placeholder="Search" aria-label="Search" name="search">
-                        <button class="btn btn-primary px-3"><span class="ti-search"></span></button>
+                    <form action="/" method="POST" class="navbar-form mr-3 bg-light border rounded">
+                        <input class="form-control bg-light border-0 rounded" type="search" placeholder="Search" aria-label="Search" name="search">
+                        <button class="btn btn-primary px-3 border-0 rounded-right"><span class="ti-search"></span></button>
                     </form>
                     <% if (isAuthLink) { %>
-                        <a class="nav-link btn btn-light px-3" href="/admin/dashboard">Admin</a>
+                        <a class="nav-link text-light btn btn-primary px-3 border-0 rounded shadow-sm" href="/admin/dashboard">Admin</a>
                     <% } else { %>
-                        <a class="nav-link btn btn-light px-3" href="/auth/login">Login</a>
+                        <a class="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm" href="/auth/login">Login</a>
                     <% } %>
                 </div>
             </div>
@@ -37,9 +37,9 @@
         
         <div class="row my-3">
             <div class="col-md-8">
-                <form action="/" method="POST" class="container-form bg-white border">
-                    <input class="form-control bg-white border-0" type="search" placeholder="Search" aria-label="Search" name="search">
-                    <button class="btn btn-primary px-3"><span class="ti-search"></span></button>
+                <form action="/" method="POST" class="container-form bg-white border rounded">
+                    <input class="form-control bg-white border-0 rounded-right" type="search" placeholder="Search" aria-label="Search" name="search">
+                    <button class="btn btn-primary px-3 border-0 rounded-right"><span class="ti-search"></span></button>
                 </form>
             </div>
         </div>
