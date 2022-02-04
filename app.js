@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const User = require('./src/models/user.js');
 const dbConnect = require('./src/database/db_connect');
 const PORT = 4000;
@@ -22,6 +23,8 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.json());
+app.use(cors());
 
 app.set("view engine", "ejs");
 
