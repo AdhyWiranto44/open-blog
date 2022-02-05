@@ -1,100 +1,74 @@
+const bcrypt = require('bcrypt'); const rounds = 12;
 const User = require('../models/user');
 const showAlert = require('../helpers/alert.js');
 
 
 exports.getLogin = (req, res) => {
-    if (req.isAuthenticated()) {
+    if (typeof req.session.username !== 'undefined') {
         res.redirect('/admin/dashboard');
-    } else {
-        User.findOne((err, foundUser) => {
-            if (err) {
-                console.log(err);
-            } else {
-                if (!foundUser) {
-                    User.register({
-                        username: "admin",
-                        img: "",
-                        created_at: Date(),
-                        updated_at: Date()
-                    }, 
-                    "1234",
-                    (err) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            res.render("login", {title: "Login", alert: ""});
-                        }
-                    })
-                } else {
-                    res.render("login", {title: "Login", alert: ""});
-                }
-            }
-        })
     }
+    
+    User.findOne({}).exec()
+        .then(foundUser => {
+            if (!foundUser) storeUser("admin", "12345");
+            res.render("login", {title: "Login", alert: ""});
+        })
+        .catch(err => {
+            console.log("error" + err);
+            return res.redirect('/auth/login');
+        });
 }
 
 exports.postLogin = (req, res) => {
-    const user = new User({
+    const user = {
         username: req.body.username,
         password: req.body.password
-    })
+    }
     
-    User.findOne({username: user.username}, (err, foundUser) => {
-        if (err) {
-            console.log(err);
-        } else {
+    User.findOne({username: user.username}).exec()
+        .then((foundUser) => {
             if (foundUser === null) {
-                res.render("login", {title: "Login", alert: showAlert("alert-danger", "username tidak terdaftar, silahkan coba lagi.")});
-            } else {
-                req.login(user, (err) => {
-                    if (err) {
-                        console.log(err);
-                        res.redirect("/auth/login");
-                    } else {
-                        passport.authenticate('local')(req, res, function() {
-                            res.redirect('/admin/dashboard');
-                        });
-                    }
-                })
+                return res.render("login", {title: "Login", alert: showAlert("alert-danger", "username tidak terdaftar, silahkan coba lagi.")});
             }
-        }
-    })
+
+            if (!bcrypt.compareSync(user.password, foundUser.password)) {
+                console.log("password tidak sama");
+                return res.redirect('/auth/login');
+            }
+            
+            req.session.username = user.username;
+            res.redirect('/admin/dashboard');
+        })
+        .catch(err => {
+            console.log("error" + err);
+            return res.redirect('/auth/login');
+        });
 }
 
 exports.getRegister = (req, res) => {
-    if (req.isAuthenticated()) {
+    if (typeof req.session.username !== 'undefined') {
         res.redirect('/admin/dashboard');
-    } else {
-        res.render("register", {title:"Register", alert: ""});
     }
+
+    res.render("register", {title:"Register", alert: ""});
 }
 
 exports.postRegister = (req, res) => {
-    const regUsername = req.body.username;
-    const regPassword = req.body.password;
-    const regConfirm_password = req.body.confirm_password;
+    const registration = {
+        username: req.body.username,
+        password: req.body.password,
+        confirm_password: req.body.confirm_password
+    }
 
-    User.findOne({username: regUsername}, (err, foundUser) => {
+    User.findOne({username: registration.username}, (err, foundUser) => {
         if (err) {
             console.log(err);
         } else {
             if (foundUser === null) { // jika belum ada user yang terdaftar
-                if (regPassword === regConfirm_password) { // jika password cocok dengan confirm_password
-                    User.register({
-                        username: regUsername,
-                        img: "",
-                        created_at: Date(),
-                        updated_at: Date()
-                    }, regPassword, (err, user) => {
-                        if (err) {
-                            console.log(err);
-                            res.redirect('/register');
-                        } else {
-                            passport.authenticate('local')(req, res, () => {
-                                res.redirect('/admin/dashboard');
-                            })
-                        }
-                    })
+                if (registration.password === registration.confirm_password) { // jika password cocok dengan confirm_password
+                    storeUser(registration.username, registration.password);
+                    req.session.username = registration.username;
+                    res.redirect('/admin/dashboard');
                 } else {
                     res.render("register", {title: "Register", alert: showAlert("alert-danger", "password tidak cocok dengan confirm_password!")});
                 }
@@ -106,22 +80,31 @@ exports.postRegister = (req, res) => {
 }
 
 exports.postLogout = (req, res) => {
-    req.logout();
+    delete req.session.username;
     res.redirect('/auth/login');
 }
 
 exports.getResetPassword = (req, res) => {
-    if (req.isAuthenticated()) {
+    if (typeof req.session.username !== 'undefined') {
         res.redirect('/admin/dashboard');
-    } else {
-        res.redirect('/auth/login');
     }
+    res.redirect('/auth/login');
 }
 
 exports.getUpdatePassword = (req, res) => {
-    if (req.isAuthenticated()) {
+    if (typeof req.session.username !== 'undefined') {
         res.redirect('/admin/dashboard');
-    } else {
-        res.redirect('/auth/login');
     }
+    res.redirect('/auth/login');
+}
+
+const storeUser = (username, password) => {
+    const newUser = new User({
+        username,
+        password: bcrypt.hashSync(password, rounds),
+        img: "",
+        created_at: Date(),
+        updated_at: Date()
+    });
+    newUser.save();
 }

@@ -1,17 +1,17 @@
 const Post = require('../models/post');
 const Comment = require('../models/comment');
-const multer = require('multer'); // Upload image
+// const multer = require('multer'); // Upload image
 const {arrDay, arrMonth} = require('../helpers/dates');
 const showAlert = require('../helpers/alert.js');
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, '../public/img/post')
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.originalname)
-    }
-  })
-const upload = multer({dest: '../public/img/post', storage})
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//       cb(null, '../public/img/post')
+//     },
+//     filename: function (req, file, cb) {
+//       cb(null, file.originalname)
+//     }
+//   })
+// const upload = multer({dest: '../public/img/post', storage})
 
 
 exports.show = (req, res) => {
@@ -32,7 +32,7 @@ exports.show = (req, res) => {
     })
 
     .then(foundComments => {
-        res.render("post-page", {title: post.title, tag: "", otherPosts: posts, currentPost: post, comments: foundComments, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated()});
+        res.render("post-page", {title: post.title, tag: "", otherPosts: posts, currentPost: post, comments: foundComments, arrDay, arrMonth, search: "", isAuthLink: req.session.username});
     })
 
     .catch(err => {
@@ -64,7 +64,7 @@ exports.showTag = (req, res) => {
                       return self.indexOf(value) === index;
                   });
 
-              res.render("frontend", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated(), tags: allTags});
+              res.render("frontend", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.session.username, tags: allTags});
               }
           }).sort({created_at: -1});
       }
@@ -72,7 +72,7 @@ exports.showTag = (req, res) => {
 }
 
 exports.create = (req, res) => {
-  if (req.isAuthenticated()) {
+  if (typeof req.session.username !== 'undefined') {
       res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: "", previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
   } else {
       res.redirect('/auth/login');
@@ -81,7 +81,7 @@ exports.create = (req, res) => {
 
 exports.store = (req, res) => {
   const title = req.body.title;
-  const slug = title.replace(/\s+/g, '-').toLowerCase();
+  const slug = req.body.title.replace(/\s+/g, '-').toLowerCase();
   const content = req.body.content;
   const tags = req.body.tags.split(",");
   const img = req.file ? req.file.originalname : "";
@@ -118,7 +118,7 @@ exports.store = (req, res) => {
 }
 
 exports.indexAdmin = (req, res) => {
-  if (req.isAuthenticated()) {
+  if (typeof req.session.username !== 'undefined') {
       Post.find({active: 1}, (err, foundPosts) => {
           res.render("tampil-semua-post", {title: "Tampil Semua Post", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", alert: "", previousLink: "/admin/dashboard", previousTitle: "Dashboard"});
       });    
@@ -145,7 +145,7 @@ exports.findAdmin = (req, res) => {
 }
 
 exports.showAdmin = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  if (typeof req.session.username !== 'undefined') {
       const postSlug = req.params.postSlug;
       let post = null;
 
@@ -157,7 +157,7 @@ exports.showAdmin = (req, res, next) => {
       })
 
       .then(foundComments => {
-          res.render("admin-post-page", {title: post.title, tag: "", currentPost: post, comments: foundComments, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated(), previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
+          res.render("admin-post-page", {title: post.title, tag: "", currentPost: post, comments: foundComments, arrDay, arrMonth, search: "", isAuthLink: req.session.username, previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
       })
 
       .then(null, next);
@@ -167,7 +167,7 @@ exports.showAdmin = (req, res, next) => {
 }
 
 exports.showTagAdmin = (req, res) => {
-  if (req.isAuthenticated()) {
+  if (typeof req.session.username !== 'undefined') {
       const postTag = req.params.postTag;
   
       Post.find({tags: postTag}, (err, foundPosts) => {
@@ -213,7 +213,7 @@ exports.destroy = (req, res) => {
 }
 
 exports.indexArchieveAdmin = (req, res) => {
-  if (req.isAuthenticated()) {
+  if (typeof req.session.username !== 'undefined') {
       Post.find({active: 0}, (err, foundPosts) => {
           res.render("arsip-post", {title: "Arsip Post", posts: foundPosts, arrDay, arrMonth, tag: "", search: "", alert: "", previousLink: "/admin/dashboard", previousTitle: "Dashboard"});
       });
@@ -252,7 +252,7 @@ exports.activatePost = (req, res) => {
 }
 
 exports.modify = (req, res) => {
-  if (req.isAuthenticated()) {
+  if (typeof req.session.username !== 'undefined') {
       const postSlug = req.params.postSlug;
   
       Post.findOne({slug: postSlug}, (err, foundPost) => {

@@ -2,7 +2,7 @@ const Post = require('../models/post');
 
 
 exports.index = (req, res) => {
-    if (req.isAuthenticated()) {
+    if (typeof req.session.username !== 'undefined') {
         let jmlPost = 0;
         let postAktif = 0;
         let postArsip = 0;

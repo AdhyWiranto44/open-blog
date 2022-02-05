@@ -24,7 +24,7 @@ exports.index = (req, res) => {
             });
             allTags = filterActiveTags(allTags);
             
-            res.render("frontend", {title: "Halaman Utama", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.isAuthenticated(), tags: allTags});
+            res.render("frontend", {title: "Halaman Utama", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.session.username, tags: allTags});
         }
     })
     .catch(err => {
@@ -49,7 +49,7 @@ exports.find = (req, res) => {
             });
             allTags = filterActiveTags(allTags);
 
-            res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, isAuthLink: req.isAuthenticated(), tags: allTags});
+            res.render("frontend", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, isAuthLink: req.session.username, tags: allTags});
         })
         .catch(err => {
             console.log(err);

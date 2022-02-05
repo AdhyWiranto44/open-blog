@@ -23,7 +23,7 @@
                         <input class="form-control bg-light border-0 rounded" type="search" placeholder="Search" aria-label="Search" name="search">
                         <button class="btn btn-primary px-3 border-0 rounded-right"><span class="ti-search"></span></button>
                     </form>
-                    <% if (isAuthLink) { %>
+                    <% if (typeof isAuthLink !== 'undefined') { %>
                         <a class="nav-link text-light btn btn-primary px-3 border-0 rounded shadow-sm" href="/admin/dashboard">Admin</a>
                     <% } else { %>
                         <a class="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm" href="/auth/login">Login</a>
