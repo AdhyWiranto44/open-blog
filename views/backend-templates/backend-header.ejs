@@ -22,7 +22,7 @@
                 <li class="sidebar-menu-section">
                     <h5>Admin</h5>
                     <ul>
-                        <li class="<%= title === "Dashboard" ? "menu-active" : ""; %>"><span class="ti-dashboard"></span><a href="/admin/dashboard">Dashboard</a></li>
+                        <li class="<%= title === "Dashboard" ? "menu-active" : ""; %>"><span class="ti-dashboard"></span><a href="/dashboard">Dashboard</a></li>
                     </ul>
                 </li>
                 <li class="sidebar-menu-section">
@@ -36,13 +36,13 @@
                 <li class="sidebar-menu-section">
                     <h5>Settings</h5>
                     <ul>
-                        <li><span class="ti-pencil-alt"></span><a href="/auth/ubah-password">Ubah Password</a></li>
-                        <li><span class="ti-key"></span><a href="/auth/reset-password">Reset Password</a></li>
+                        <li><span class="ti-pencil-alt"></span><a href="/ubah-password">Ubah Password</a></li>
+                        <li><span class="ti-key"></span><a href="/reset-password">Reset Password</a></li>
                     </ul>
                 </li>
                 <li class="sidebar-menu-section">
                     <ul>
-                        <li><span class="ti-arrow-left"></span><a href="/auth/logout">Logout</a></li>
+                        <li><span class="ti-arrow-left"></span><a href="/logout">Logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -53,7 +53,7 @@
 
         <header>
             <div class="header-content">
-                <form action="/auth/logout" method="POST">
+                <form action="/logout" method="POST">
                     <button class="btn btn-dark btn-sm"><span class="ti-arrow-left"></span> Logout</button>
                 </form>
                 <div class="header-img"></div>

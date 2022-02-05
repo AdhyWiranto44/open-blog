@@ -1,28 +1,65 @@
 const Post = require('../models/post');
 
 
-exports.index = (req, res) => {
-    if (typeof req.session.username !== 'undefined') {
-        let jmlPost = 0;
-        let postAktif = 0;
-        let postArsip = 0;
+class DashboardController {
+    constructor() {}
+
+    async index(req, res) {
+        const userLogin = req.session.username;
+        if (typeof userLogin === 'undefined') {
+            console.log(`Please login first.`);
+            return res.status(406).json({
+                success: false,
+                message: `Please login first.`
+            });
+        }
     
-        Post.find((err, foundPosts) => {
-            if (err) {
-                console.log(err);
-            } else {
-                jmlPost = foundPosts.length;
-                foundPosts.forEach(post => {
-                    if (post.active === 1) {
-                        postAktif++;
-                    } else {
-                        postArsip++;
+        try {
+            let total = 0;
+            let active = 0;
+            let archived = 0;
+            
+            await Post.find({}).exec()
+                .then(foundPosts => {
+                    console.log(foundPosts.length);
+                    if (foundPosts.length > 0) {
+                        total = foundPosts.length;
                     }
-                })
-                res.render("dashboard", {title: "Dashboard", jmlPost, postAktif, postArsip});
-            }
-        })
-    } else {
-        res.redirect('/auth/login');
+                });
+
+            await Post.find({active: 1}).exec()
+                .then(foundPosts => {
+                    console.log(foundPosts.length);
+                    if (foundPosts.length > 0) {
+                        active = foundPosts.length;
+                    }
+                });
+
+            await Post.find({active: 0}, ).exec()
+                .then(foundPosts => {
+                    console.log(foundPosts.length);
+                    if (foundPosts.length > 0) {
+                        archived = foundPosts.length;
+                    }
+                });
+            
+            console.log('Total amount of posts, active posts, and archive posts');
+            return res.status(200).json({
+                success: true,
+                message: 'Total amount of posts, active posts, and archive posts',
+                data: {
+                    posts: { total, active, archived }
+                }
+            })
+        } catch(err) {
+            console.error(err.message);
+            return res.status(500).json({
+                success: false,
+                message: `Internal Server Error.`
+            });
+        }
     }
 }
+
+
+module.exports = DashboardController;
