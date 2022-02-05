@@ -17,8 +17,8 @@
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "mongoose": "^5.12.3",
-    "multer": "^1.4.2",
+    "mongoose": "^6.2.0",
+    "multer": "^1.4.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
