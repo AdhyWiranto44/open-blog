@@ -173,7 +173,6 @@ class PostController {
     async updatePost(req, res) {
         const userLogin = req.session.username;
         const filter = { slug: req.params.slug };
-        let update = {}
 
         if (typeof userLogin === 'undefined') {
             console.log(`Please login first to update post.`);
@@ -183,16 +182,30 @@ class PostController {
             });
         }
         
-        const queryActive = parseInt(req.query.active);
-        if (typeof queryActive !== 'undefined') {
-            if ([0,1].includes(queryActive)) { // jika status aktif 
-                update['active'] = queryActive;
-            }
-        }
+        // Find current post to update
+        let postToUpdate = null;
+        await Post.findOne(filter).exec()
+            .then(foundPost => {
+                postToUpdate = foundPost
+            })
+            .catch(err => {
+                console.error(err.message);
+            });
+
+        const update = {
+            title: req.body.title !== undefined ? req.body.title : postToUpdate.title,
+            content: req.body.content !== undefined ? req.body.content : postToUpdate.content,
+            img: req.body.img !== undefined ? req.body.img : postToUpdate.img,
+            tags: req.body.tags !== undefined ? req.body.tags.split(",") : postToUpdate.tags,
+            author: req.body.author !== undefined ? req.body.author : postToUpdate.author,
+            active: req.body.active !== undefined ? parseInt(req.body.active) : postToUpdate.active,
+            views: req.body.views !== undefined ? parseInt(req.body.views) : postToUpdate.views,
+            vote: req.body.vote !== undefined ? parseInt(req.body.vote) : postToUpdate.vote,
+            updated_at: new Date().getTime(),
+        };
       
         try {
             let post = null;
-
             await Post.findOneAndUpdate(filter, update).exec()
                 .then(oldPost => {
                     post = oldPost;
