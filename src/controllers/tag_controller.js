@@ -26,11 +26,20 @@ class TagController {
                 const postTags = post.tags;
                 tags = [...tags, ...postTags];
             });
+
+            let filteredTags = [];
+            tags.forEach(tag => {
+                if (!filteredTags.includes(tag)) {
+                    filteredTags.push(tag);
+                }
+                console.log(filteredTags);
+            })
+
             console.log('Tags found.');
             return res.status(200).json({
                 success: false,
                 message: 'Tags found.',
-                data: { tags }
+                data: { tags: filteredTags }
             });
 
         } catch(err) {
