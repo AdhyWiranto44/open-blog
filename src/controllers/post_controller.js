@@ -16,7 +16,7 @@ const showAlert = require('../helpers/alert.js');
 class PostController {
     constructor() {}
 
-    async index(req, res) {
+    async getPosts(req, res) {
         const userLogin = req.session.username;
         const title = req.query.title;
         const active = req.query.active ? req.query.active : 1;
@@ -68,7 +68,7 @@ class PostController {
         }
     }
 
-    async show(req, res) {
+    async getPost(req, res) {
         const userLogin = req.session.username;
         const slug = req.params.slug;
     
@@ -110,7 +110,7 @@ class PostController {
         }
     }
     
-    async addNewPost(req, res) {
+    async insertPost(req, res) {
         const userLogin = req.session.username;
         if (typeof userLogin === 'undefined') {
             console.log(`Please login first to add new post.`);
@@ -170,139 +170,121 @@ class PostController {
         }
     }
 
-    showTag(req, res) {
-      const postTag = req.params.postTag;
-    
-      Post.find({tags: postTag}, (err, foundPosts) => {
+    async updatePost(req, res) {
+        const userLogin = req.session.username;
+        const filter = { slug: req.params.slug };
+        let update = {}
+
+        if (typeof userLogin === 'undefined') {
+            console.log(`Please login first to update post.`);
+            return res.status(406).json({
+                success: false,
+                message: `Please login first to update post.`
+            });
+        }
+        
+        const queryActive = parseInt(req.query.active);
+        if (typeof queryActive !== 'undefined') {
+            if ([0,1].includes(queryActive)) { // jika status aktif 
+                update['active'] = queryActive;
+            }
+        }
+      
+        try {
+            let post = null;
+
+            await Post.findOneAndUpdate(filter, update).exec()
+                .then(oldPost => {
+                    post = oldPost;
+                });
+
+            if (post === null) {
+                console.log(`Post with slug ${filter['slug']} not found.`);
+                return res.status(406).json({
+                    success: false,
+                    message: `Post with slug ${filter['slug']} not found.`
+                });
+            }
+
+            console.log(`Success update post with slug ${filter['slug']}.`);
+            return res.status(201).json({
+                success: true,
+                message: `Success update post with slug ${filter['slug']}.`,
+                data: { post }
+            });
+        } catch(err) {
+            console.error(err.message);
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error'
+            });
+        }
+    }
+
+    removePost(req, res) {
+        const postSlug = req.params.postSlug;
+      
+        Post.findOne({slug: postSlug}, (err, foundPost) => {
           if (err) {
-              console.log(err);
+            console.log(err);
           } else {
-              Post.find({active: 1}, (err, foundForTags) => {
-                  if (err) {
-                      console.log(err);
-                  } else {
-                      // Push tag di setiap post ke array,
-                      // Lalu hilangkan duplikat
-                      let allTags = [];
-                      foundForTags.forEach(post => {
-                          post.tags.forEach(tag => {
-                          allTags.push(tag);
-                          })
-                      })
-                      
-                      allTags = allTags.filter(function(value, index, self) {
-                          return self.indexOf(value) === index;
-                      });
-    
-                  res.render("frontend", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.session.username, tags: allTags});
-                  }
-              }).sort({created_at: -1});
+            Post.findByIdAndRemove({_id: foundPost._id}, (err) => {
+              if (err) {
+                console.log(err);
+              } else {
+                res.redirect("/admin/arsip-post");
+              }
+            })
           }
-      })
-    }
-    
-    create(req, res) {
-      if (typeof req.session.username !== 'undefined') {
-          res.render("tambah-post-baru", {title: "Tambah Post Baru", alert: "", previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
-      } else {
-          res.redirect('/login');
+        }); 
       }
-    }
+
+    // showTag(req, res) {
+    //   const postTag = req.params.postTag;
     
-    // indexAdmin(req, res) {
-    //   if (typeof req.session.username !== 'undefined') {
-    //       Post.find({active: 1}, (err, foundPosts) => {
-    //           res.render("tampil-semua-post", {title: "Tampil Semua Post", tag: "", posts: foundPosts, arrDay, arrMonth, search: "", alert: "", previousLink: "/dashboard", previousTitle: "Dashboard"});
-    //       });    
-    //   } else {
-    //       res.redirect('/login');
-    //   } 
+    //   Post.find({tags: postTag}, (err, foundPosts) => {
+    //       if (err) {
+    //           console.log(err);
+    //       } else {
+    //           Post.find({active: 1}, (err, foundForTags) => {
+    //               if (err) {
+    //                   console.log(err);
+    //               } else {
+    //                   // Push tag di setiap post ke array,
+    //                   // Lalu hilangkan duplikat
+    //                   let allTags = [];
+    //                   foundForTags.forEach(post => {
+    //                       post.tags.forEach(tag => {
+    //                       allTags.push(tag);
+    //                       })
+    //                   })
+                      
+    //                   allTags = allTags.filter(function(value, index, self) {
+    //                       return self.indexOf(value) === index;
+    //                   });
+    
+    //               res.render("frontend", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: "", isAuthLink: req.session.username, tags: allTags});
+    //               }
+    //           }).sort({created_at: -1});
+    //       }
+    //   })
     // }
     
-    findAdmin(req, res) {
-      const search = req.body.search;
+    // showTagAdmin(req, res) {
+    //   if (typeof req.session.username !== 'undefined') {
+    //       const postTag = req.params.postTag;
       
-      if (search === "") {
-          res.redirect("/admin/tampil-semua-post");
-      } else {
-          Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 1}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
-      
-              if (err) {
-                  console.log(err);
-              } else {
-                  res.render("tampil-semua-post", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, alert: "", previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
-              }
-          })
-      }
-    }
-    
-    showAdmin(req, res, next) {
-      if (typeof req.session.username !== 'undefined') {
-          const postSlug = req.params.postSlug;
-          let post = null;
-    
-          Post.findOne({slug: postSlug}).exec()
-    
-          .then((foundPost) => {
-              post = foundPost;
-              return Comment.find({postSlug: postSlug}).sort({created_at: -1}).exec();
-          })
-    
-          .then(foundComments => {
-              res.render("admin-post-page", {title: post.title, tag: "", currentPost: post, comments: foundComments, arrDay, arrMonth, search: "", isAuthLink: req.session.username, previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
-          })
-    
-          .then(null, next);
-      } else {
-          res.redirect('/login');
-      }
-    }
-    
-    showTagAdmin(req, res) {
-      if (typeof req.session.username !== 'undefined') {
-          const postTag = req.params.postTag;
-      
-          Post.find({tags: postTag}, (err, foundPosts) => {
-              if (err) {
-                  console.log(err);
-              } else {
-                  res.render("tampil-semua-post", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: "", alert: "", previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
-              }
-          })    
-      } else {
-          res.redirect('/login');
-      }
-    }
-    
-    archievingPostAdmin(req, res) {
-      const postSlug = req.params.postSlug;
-    
-      Post.findOneAndUpdate({slug: postSlug}, {active: 0}, (err, postChanged) => {
-          if (err) {
-              console.log(err);
-          } else {
-              res.redirect("/admin/tampil-semua-post");
-          }
-      })
-    }
-    
-    destroy(req, res) {
-      const postSlug = req.params.postSlug;
-    
-      Post.findOne({slug: postSlug}, (err, foundPost) => {
-        if (err) {
-          console.log(err);
-        } else {
-          Post.findByIdAndRemove({_id: foundPost._id}, (err) => {
-            if (err) {
-              console.log(err);
-            } else {
-              res.redirect("/admin/arsip-post");
-            }
-          })
-        }
-      }); 
-    }
+    //       Post.find({tags: postTag}, (err, foundPosts) => {
+    //           if (err) {
+    //               console.log(err);
+    //           } else {
+    //               res.render("tampil-semua-post", {title: postTag, tag: postTag, posts: foundPosts, arrDay, arrMonth, search: "", alert: "", previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
+    //           }
+    //       })    
+    //   } else {
+    //       res.redirect('/login');
+    //   }
+    // }
     
     indexArchieveAdmin(req, res) {
       if (typeof req.session.username !== 'undefined') {

@@ -12,20 +12,15 @@ const PostController = require('../controllers/post_controller');
 // const upload = multer({dest: '../public/img/post', storage})
 
 
-router.get("/posts", new PostController().index);
-router.get("/posts/:slug", new PostController().show);
-router.post("/posts", new PostController().addNewPost);
-// router.get("/tag/:postTag", new PostController().showTag);
-// router.get("/admin/tambah-post-baru", new PostController().create);
-// router.post("/admin/tambah-post-baru", new PostController().store);
-// router.get("/admin/post/:postSlug", new PostController().showAdmin);
-// router.get("/admin/tag/:postTag", new PostController().showTagAdmin);
-// router.post("/admin/mengarsipkan-post/:postSlug", new PostController().archievingPostAdmin);
-// router.post("/admin/menghapus-post/:postSlug", new PostController().destroy);
-// router.post("/admin/mengaktifkan-post/:postSlug", new PostController().activatePost);
+router.get("/posts", new PostController().getPosts);
+router.get("/posts/:slug", new PostController().getPost);
+router.post("/posts", new PostController().insertPost);
+router.patch("/posts/:slug", new PostController().updatePost);
+router.delete("/posts/:slug", new PostController().removePost);
 // router.get("/admin/mengubah-post/:postSlug", new PostController().modify);
 // router.post("/admin/mengubah-post/:postSlug", new PostController().update);
-// router.post("/admin/mengubah-post/:postSlug", upload.single('image'), new PostController().update);
+// router.get("/tag/:postTag", new PostController().showTag);
+// router.get("/admin/tag/:postTag", new PostController().showTagAdmin);
 
 
 module.exports = router;
