@@ -44,7 +44,7 @@ class PostController {
                     posts = foundPosts;
                 });
 
-            // if psot not found
+            // if post not found
             if (posts.length < 1) {
                 console.log('Post not found.');
                 return res.status(404).json({
@@ -106,6 +106,45 @@ class PostController {
             return res.status(500).json({
                 success: false,
                 message: 'Internal Server Error.'
+            });
+        }
+    }
+
+    async getPostsByTag(req, res) {
+        const userLogin = req.session.username;
+        const filter = { tag: req.params.tag }
+
+        if (typeof userLogin === 'undefined') {
+            filter['active'] = 1;
+        }
+
+        try {
+            let posts = [];
+            await Post.find(filter).exec()
+                .then(foundPosts => {
+                    posts = foundPosts.filter(post => post.tags.includes(filter['tag']));
+                });
+
+            // if post not found
+            if (posts.length < 1) {
+                console.log('Post not found.');
+                return res.status(404).json({
+                    success: false,
+                    message: 'Post not found.'
+                });
+            }
+
+            console.log('Found posts.');
+            return res.status(200).json({
+                success: true,
+                message: 'Found posts.',
+                data: { posts }
+            });
+        } catch(err) {
+            console.error(err.message);
+            return res.status(500).json({
+                success: false,
+                message: `Internal Server Error.`
             });
         }
     }

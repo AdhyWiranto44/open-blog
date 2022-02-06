@@ -14,6 +14,7 @@ const PostController = require('../controllers/post_controller');
 
 router.get("/posts", new PostController().getPosts);
 router.get("/posts/:slug", new PostController().getPost);
+router.get("/posts/tags/:tag", new PostController().getPostsByTag);
 router.post("/posts", new PostController().insertPost);
 router.patch("/posts/:slug", new PostController().updatePost);
 router.delete("/posts/:id", new PostController().removePost);
