@@ -16,9 +16,7 @@ router.get("/posts", new PostController().getPosts);
 router.get("/posts/:slug", new PostController().getPost);
 router.post("/posts", new PostController().insertPost);
 router.patch("/posts/:slug", new PostController().updatePost);
-router.delete("/posts/:slug", new PostController().removePost);
-// router.get("/admin/mengubah-post/:postSlug", new PostController().modify);
-// router.post("/admin/mengubah-post/:postSlug", new PostController().update);
+router.delete("/posts/:id", new PostController().removePost);
 // router.get("/tag/:postTag", new PostController().showTag);
 // router.get("/admin/tag/:postTag", new PostController().showTagAdmin);
 

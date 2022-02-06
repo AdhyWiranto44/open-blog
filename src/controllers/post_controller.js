@@ -213,7 +213,7 @@ class PostController {
 
             if (post === null) {
                 console.log(`Post with slug ${filter['slug']} not found.`);
-                return res.status(406).json({
+                return res.status(404).json({
                     success: false,
                     message: `Post with slug ${filter['slug']} not found.`
                 });
@@ -234,23 +234,48 @@ class PostController {
         }
     }
 
-    removePost(req, res) {
-        const postSlug = req.params.postSlug;
-      
-        Post.findOne({slug: postSlug}, (err, foundPost) => {
-          if (err) {
-            console.log(err);
-          } else {
-            Post.findByIdAndRemove({_id: foundPost._id}, (err) => {
-              if (err) {
-                console.log(err);
-              } else {
-                res.redirect("/admin/arsip-post");
-              }
-            })
-          }
-        }); 
-      }
+    async removePost(req, res) {
+        const _id = req.params.id;
+        const userLogin = req.session.username;
+
+        if (typeof userLogin === 'undefined') {
+            console.log(`Please login first to remove post.`);
+            return res.status(406).json({
+                success: false,
+                message: `Please login first to remove post.`
+            });
+        }
+        
+        try {
+            let post = null;
+            await Post.findByIdAndRemove({_id}).exec()
+                .then(deletedPost => {
+                    post = deletedPost;
+                });
+            
+            if (post === null) {
+                console.log(`Post not found.`);
+                return res.status(404).json({
+                    success: false,
+                    message: `Post not found.`
+                });
+            }
+
+            console.log(`Success deleted post.`);
+            return res.status(200).json({
+                success: true,
+                message: `Success deleted post.`,
+                data: { post }
+            });
+
+        } catch(err) {
+            console.error(err.message);
+            return res.status(500).json({
+                success: false,
+                message: 'Internal Server Error'
+            });
+        }
+    }
 
     // showTag(req, res) {
     //   const postTag = req.params.postTag;
@@ -298,78 +323,6 @@ class PostController {
     //       res.redirect('/login');
     //   }
     // }
-    
-    indexArchieveAdmin(req, res) {
-      if (typeof req.session.username !== 'undefined') {
-          Post.find({active: 0}, (err, foundPosts) => {
-              res.render("arsip-post", {title: "Arsip Post", posts: foundPosts, arrDay, arrMonth, tag: "", search: "", alert: "", previousLink: "/dashboard", previousTitle: "Dashboard"});
-          });
-      } else {
-          res.redirect('/login');
-      }
-    }
-    
-    findArchieveAdmin(req, res) {
-      const search = req.body.search;
-      
-      if (search === "") {
-          res.redirect("/admin/arsip-post");
-      } else {
-          Post.find({title: {$regex: ".*"+search+".*", $options: 'i'}, active: 0}, (err, foundPosts) => { // MASIH SALAH PENCARIANNYA
-      
-              if (err) {
-                  console.log(err);
-              } else {
-                  res.render("arsip-post", {title: "Search: " + search, tag: "", posts: foundPosts, arrDay, arrMonth, search, alert: "", previousLink: "/admin/arsip-post", previousTitle: "Arsip Post"});
-              }
-          })
-      }
-    }
-    
-    activatePost(req, res) {
-      const postSlug = req.params.postSlug;
-    
-      Post.findOneAndUpdate({slug: postSlug}, {active: 1}, (err, postChanged) => {
-          if (err) {
-              console.log(err);
-          } else {
-              res.redirect("/admin/arsip-post");
-          }
-      })
-    }
-    
-    modify(req, res) {
-      if (typeof req.session.username !== 'undefined') {
-          const postSlug = req.params.postSlug;
-      
-          Post.findOne({slug: postSlug}, (err, foundPost) => {
-              if (err) {
-                  console.log(err);
-              } else {
-                  res.render("ubah-post", {title: "Ubah Post", post: foundPost, alert: "", previousLink: "/admin/tampil-semua-post", previousTitle: "Tampil Semua Post"});
-              }
-          })
-      } else {
-          res.redirect('/login');
-      }
-    }
-    
-    update(req, res) {
-      const title = req.body.title;
-      const slug = req.body.slug;
-      const content = req.body.content;
-      const tags = req.body.tags.split(",");
-      const img = req.file ? req.file.originalname : req.body.prev_img;
-      const updated_at = new Date().getTime();
-    
-      Post.findOneAndUpdate({slug}, {title, content, tags, img, updated_at}, (err, postChanged) => {
-          if (err) {
-              console.log(err);
-          } else {
-              res.redirect("/admin/tampil-semua-post");
-          }
-      })
-    }
 }
 
 
