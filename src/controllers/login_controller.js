@@ -106,6 +106,15 @@ class LoginController {
     }
     
     logout(req, res) {
+        const userLogin = req.session.username;
+        if (typeof userLogin === 'undefined') {
+            console.log(`Already logged out.`);
+            return res.status(406).json({
+                success: false,
+                message: `Already logged out.`
+            });
+        }
+
         try {
             console.log(`Success logged out.`);
             delete req.session.username;
