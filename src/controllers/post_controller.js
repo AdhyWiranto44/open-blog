@@ -92,7 +92,7 @@ class PostController {
 
             return new ApiResponse(
                 res, 200, true, 
-                `Found post y slug ${slug}.`,
+                `Found post by slug ${slug}.`,
                 { post }
             ).sendResponse();
         } catch(err) {
