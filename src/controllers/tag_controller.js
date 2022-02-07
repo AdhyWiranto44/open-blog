@@ -15,11 +15,10 @@ class TagController {
 
             // if post not found
             if (posts.length < 1) {
-                console.log('Post not found.');
-                return res.status(404).json({
-                    success: false,
-                    message: 'Post not found.'
-                });
+                return new ApiResponse(
+                    res, 404, false, 
+                    `Post not found.`
+                ).sendResponse();
             }
 
             posts.forEach(post => {
@@ -35,19 +34,17 @@ class TagController {
                 console.log(filteredTags);
             })
 
-            console.log('Tags found.');
-            return res.status(200).json({
-                success: false,
-                message: 'Tags found.',
-                data: { tags: filteredTags }
-            });
+            return new ApiResponse(
+                res, 200, true, 
+                `Tags found.`,
+                { tags: filteredTags }
+            ).sendResponse();
 
         } catch(err) {
-            console.error(err.message);
-            return res.status(500).json({
-                success: false,
-                message: `Internal Server Error.`
-            });
+            return new ApiResponse(
+                res, 500, false, 
+                err.message
+            ).sendResponse();
         }
     }
 }

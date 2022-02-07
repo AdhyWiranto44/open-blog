@@ -1,8 +1,9 @@
 const Post = require('../models/post');
-const Comment = require('../models/comment');
+const ApiResponse = require('../helpers/api_response');
+// const Comment = require('../models/comment');
 // const multer = require('multer'); // Upload image
-const {arrDay, arrMonth} = require('../helpers/dates');
-const showAlert = require('../helpers/alert.js');
+// const {arrDay, arrMonth} = require('../helpers/dates');
+// const showAlert = require('../helpers/alert.js');
 // const storage = multer.diskStorage({
 //     destination: function (req, file, cb) {
 //       cb(null, '../public/img/post')
@@ -23,11 +24,10 @@ class PostController {
 
         // if not logged in and find archived post
         if (typeof userLogin === 'undefined' && active == 0) {
-            console.log(`Please login first to get archived posts.`);
-            return res.status(401).json({
-                success: false,
-                message: `Please login first to get archived posts.`
-            });
+            return new ApiResponse(
+                res, 401, false, 
+                `Please login first to get archived posts.`
+            ).sendResponse();
         }
 
         try {
@@ -46,25 +46,22 @@ class PostController {
 
             // if post not found
             if (posts.length < 1) {
-                console.log('Post not found.');
-                return res.status(404).json({
-                    success: false,
-                    message: 'Post not found.'
-                });
+                return new ApiResponse(
+                    res, 404, false, 
+                    `Posts not found.`
+                ).sendResponse();
             }
 
-            console.log('Found posts.');
-            return res.status(200).json({
-                success: true,
-                message: 'Found posts.',
-                data: { posts }
-            });
+            return new ApiResponse(
+                res, 200, true, 
+                `Found posts.`,
+                { posts }
+            ).sendResponse();
         } catch(err) {
-            console.error(err.message);
-            return res.status(500).json({
-                success: false,
-                message: `Internal Server Error.`
-            });
+            return new ApiResponse(
+                res, 500, false, 
+                err.message
+            ).sendResponse();
         }
     }
 
@@ -80,33 +77,29 @@ class PostController {
             });
 
             if (post == null) {
-                console.log('Post not found.');
-                return res.status(404).json({
-                    success: false,
-                    message: 'Post not found.'
-                });
+                return new ApiResponse(
+                    res, 404, false, 
+                    `Post not found.`
+                ).sendResponse();
             }
 
             if (typeof userLogin === 'undefined' && post.active == 0) {
-                console.log(`Please login first to get archived posts.`);
-                return res.status(401).json({
-                    success: false,
-                    message: `Please login first to get archived posts.`
-                });
+                return new ApiResponse(
+                    res, 401, false, 
+                    `Please login first to get archived posts.`
+                ).sendResponse();
             }
 
-            console.log(`Found post by slug ${slug}.`);
-            return res.status(200).json({
-                success: true,
-                message: `Found post by slug ${slug}.`,
-                data: { post }
-            });
+            return new ApiResponse(
+                res, 200, true, 
+                `Found post y slug ${slug}.`,
+                { post }
+            ).sendResponse();
         } catch(err) {
-            console.error(err.message);
-            return res.status(500).json({
-                success: false,
-                message: 'Internal Server Error.'
-            });
+            return new ApiResponse(
+                res, 500, false, 
+                err.message
+            ).sendResponse();
         }
     }
 
@@ -127,36 +120,32 @@ class PostController {
 
             // if post not found
             if (posts.length < 1) {
-                console.log('Post not found.');
-                return res.status(404).json({
-                    success: false,
-                    message: 'Post not found.'
-                });
+                return new ApiResponse(
+                    res, 404, false, 
+                    `Post not found.`
+                ).sendResponse();
             }
 
-            console.log('Found posts.');
-            return res.status(200).json({
-                success: true,
-                message: 'Found posts.',
-                data: { posts }
-            });
+            return new ApiResponse(
+                res, 200, true, 
+                `Found posts.`,
+                { posts }
+            ).sendResponse();
         } catch(err) {
-            console.error(err.message);
-            return res.status(500).json({
-                success: false,
-                message: `Internal Server Error.`
-            });
+            return new ApiResponse(
+                res, 500, false, 
+                err.message
+            ).sendResponse();
         }
     }
     
     async insertPost(req, res) {
         const userLogin = req.session.username;
         if (typeof userLogin === 'undefined') {
-            console.log(`Please login first to add new post.`);
-            return res.status(406).json({
-                success: false,
-                message: `Please login first to add new post.`
-            });
+            return new ApiResponse(
+                res, 406, false,
+                'Please login first to add new post.'
+            ).sendResponse();
         }
 
         try {
@@ -183,29 +172,23 @@ class PostController {
             
             // If post with slug already available
             if (post !== null) {
-                console.log(`Post with slug ${slug} already available.`);
-                return res.status(406).json({
-                    success: false,
-                    message: `Post with slug ${slug} already available.`
-                });
+                return new ApiResponse(
+                    res, 406, false, 
+                    `Post with slug ${slug} have already available.`
+                ).sendResponse();
             } else { // Else, continue to create post
                 newPost.save();
             }
 
-            console.log(`New post created.`);
-            return res.status(201).json({
-                success: true,
-                message: `New post created.`,
-                data: {
-                    post: newPost
-                }
-            });
+            return new ApiResponse(
+                res, 201, true, 
+                'New post created.'
+            ).sendResponse();
         } catch(err) {
-            console.error(err.message);
-            return res.status(500).json({
-                success: false,
-                message: 'Internal Server Error.'
-            });
+            return new ApiResponse(
+                res, 500, false, 
+                err.message
+            ).sendResponse();
         }
     }
 
@@ -214,11 +197,10 @@ class PostController {
         const filter = { slug: req.params.slug };
 
         if (typeof userLogin === 'undefined') {
-            console.log(`Please login first to update post.`);
-            return res.status(406).json({
-                success: false,
-                message: `Please login first to update post.`
-            });
+            return new ApiResponse(
+                res, 406, false, 
+                'Please login first to update post.'
+            ).sendResponse();
         }
         
         // Find current post to update
@@ -251,25 +233,21 @@ class PostController {
                 });
 
             if (post === null) {
-                console.log(`Post with slug ${filter['slug']} not found.`);
-                return res.status(404).json({
-                    success: false,
-                    message: `Post with slug ${filter['slug']} not found.`
-                });
+                return new ApiResponse(
+                    res, 404, false, 
+                    `Post with slug ${filter['slug']} not found.`
+                ).sendResponse();
             }
 
-            console.log(`Success update post with slug ${filter['slug']}.`);
-            return res.status(201).json({
-                success: true,
-                message: `Success update post with slug ${filter['slug']}.`,
-                data: { post }
-            });
+            return new ApiResponse(
+                res, 201, true, 
+                `Success update post with slug ${filter['slug']}.`
+            ).sendResponse();
         } catch(err) {
-            console.error(err.message);
-            return res.status(500).json({
-                success: false,
-                message: 'Internal Server Error.'
-            });
+            return new ApiResponse(
+                res, 500, false, 
+                err.message
+            ).sendResponse();
         }
     }
 
@@ -278,11 +256,10 @@ class PostController {
         const userLogin = req.session.username;
 
         if (typeof userLogin === 'undefined') {
-            console.log(`Please login first to remove post.`);
-            return res.status(406).json({
-                success: false,
-                message: `Please login first to remove post.`
-            });
+            return new ApiResponse(
+                res, 406, false, 
+                'Please login first to remove post.'
+            ).sendResponse();
         }
         
         try {
@@ -293,26 +270,23 @@ class PostController {
                 });
             
             if (post === null) {
-                console.log(`Post not found.`);
-                return res.status(404).json({
-                    success: false,
-                    message: `Post not found.`
-                });
+                return new ApiResponse(
+                    res, 404, false, 
+                    'Post not found.'
+                ).sendResponse();
             }
 
-            console.log(`Success deleted post.`);
-            return res.status(200).json({
-                success: true,
-                message: `Success deleted post.`,
-                data: { post }
-            });
+            return new ApiResponse(
+                res, 201, true, 
+                'Success deleted post.',
+                { post }
+            ).sendResponse();
 
         } catch(err) {
-            console.error(err.message);
-            return res.status(500).json({
-                success: false,
-                message: 'Internal Server Error.'
-            });
+            return new ApiResponse(
+                res, 500, false, 
+                err.message
+            ).sendResponse();
         }
     }
 }
