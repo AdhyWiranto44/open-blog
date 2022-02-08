@@ -1,3 +1,6 @@
+import chalk from 'chalk';
+
+
 class ApiResponse {
     response: any;
     status_code: number;
@@ -20,7 +23,11 @@ class ApiResponse {
     }
 
     sendResponse() {
-        console.log(this.message);
+        if (this.status_code >= 400) {
+            console.error(chalk.black.bgRed(`[${new Date()}] ${this.message}`));
+        } else {
+            console.log(chalk.black.bgGreen(`[${new Date()}] ${this.message}`));
+        }
         return this.response.status(this.status_code).json(this.response_data);
     }
 }
