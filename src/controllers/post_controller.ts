@@ -1,5 +1,6 @@
-const Post = require('../models/post');
-const ApiResponse = require('../helpers/api_response');
+import { Request, Response } from 'express';
+import Post from '../models/post';
+import ApiResponse from '../helpers/api_response';
 // const Comment = require('../models/comment');
 // const multer = require('multer'); // Upload image
 // const {arrDay, arrMonth} = require('../helpers/dates');
@@ -18,9 +19,9 @@ class PostController {
     constructor() {}
 
     async getPosts(req, res) {
-        const userLogin = req.session.username;
-        const title = req.query.title;
-        const active = req.query.active ? req.query.active : 1;
+        const userLogin: string = req.session.username;
+        const title: string = req.query.title;
+        const active: number = req.query.active ? req.query.active : 1;
 
         // if not logged in and find archived post
         if (typeof userLogin === 'undefined' && active == 0) {
@@ -292,4 +293,4 @@ class PostController {
 }
 
 
-module.exports = PostController;
+export default PostController;

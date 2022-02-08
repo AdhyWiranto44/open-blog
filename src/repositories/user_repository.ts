@@ -1,14 +1,22 @@
-const bcrypt = require('bcrypt'); const ROUNDS = 12;
-const User = require('../models/user');
+import { hashSync } from 'bcrypt'; const ROUNDS = 12;
+import User from '../models/user';
 
+
+interface User {
+    username: string,
+    password: string,
+    img: string,
+    created_at: Date,
+    updated_at: Date,
+}
 
 class UserRepository {
     constructor() {}
 
-    insertOne(data) {
+    insertOne(data: User) {
         const newUser = new User({
             username: data.username,
-            password: bcrypt.hashSync(data.password, ROUNDS),
+            password: hashSync(data.password, ROUNDS),
             img: "",
             created_at: Date(),
             updated_at: Date()
@@ -16,9 +24,9 @@ class UserRepository {
         newUser.save();
     }
 
-    async findOneAndUpdate(filter, data) {
+    async findOneAndUpdate(filter: any, data: User) {
         let user = null;
-        data.password = bcrypt.hashSync(data.password, ROUNDS);
+        data.password = hashSync(data.password, ROUNDS);
         await User.findOneAndUpdate(filter, data).exec()
             .then(oldUser => {
                 user = oldUser;
@@ -30,7 +38,7 @@ class UserRepository {
         return user;
     }
 
-    async removeUser(data) {
+    async removeUser(data: any) {
         let user = null;
         await User.findByIdAndRemove(data).exec()
             .then(deletedUser => {
@@ -45,4 +53,4 @@ class UserRepository {
 }
 
 
-module.exports = UserRepository;
+export default UserRepository;

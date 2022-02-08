@@ -1,4 +1,5 @@
-const Post = require('../models/post');
+import Post from '../models/post';
+import ApiResponse from '../helpers/api_response';
 
 
 class TagController {
@@ -50,4 +51,4 @@ class TagController {
 }
 
 
-module.exports = TagController;
+export default TagController;

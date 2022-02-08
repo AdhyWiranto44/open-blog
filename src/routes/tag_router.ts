@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const TagController = require('../controllers/tag_controller');
+import TagController from '../controllers/tag_controller';
 
 
 router.get('/posts/tags', new TagController().getTags);
@@ -7,4 +7,4 @@ router.get('/posts/tags', new TagController().getTags);
 // router.get("/admin/tag/:postTag", new TagController().showTagAdmin);
 
 
-module.exports = router;
+export default router;

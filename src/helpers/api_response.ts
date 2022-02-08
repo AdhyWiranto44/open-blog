@@ -1,12 +1,12 @@
 class ApiResponse {
-    response;
-    status_code;
-    success;
-    message;
-    data;
-    response_data;
+    response: any;
+    status_code: number;
+    success: boolean;
+    message: string;
+    data: any;
+    response_data: any;
 
-    constructor(response = "", status_code = 0, success = true, message = "", data = {}) {
+    constructor(response: any = "", status_code: number = 0, success: boolean = true, message: string = "", data: any = {}) {
         this.response = response;
         this.status_code = status_code;
         this.success = success;
@@ -26,4 +26,4 @@ class ApiResponse {
 }
 
 
-module.exports = ApiResponse;
+export default ApiResponse;

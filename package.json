@@ -4,8 +4,9 @@
   "description": "Open-Blog merupakan projek website blogging open-source dimana source code dapat diunduh, dipelajari, dimodifikasi, dan digunakan untuk keperluan pribadi atau komersial.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js",
+    "start": "node dist/app.js",
+    "build": "tsc -p ./tsconfig.json",
+    "dev": "ts-node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Adhy Wiranto",
@@ -21,6 +22,13 @@
     "multer": "^1.4.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "@types/bcrypt": "^5.0.0",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/express-session": "^1.17.4",
+    "@types/node": "^17.0.15",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.5"
   }
 }

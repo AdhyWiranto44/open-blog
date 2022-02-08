@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt');
-const User = require('../models/user');
-const ApiResponse = require('../helpers/api_response');
+import bcrypt from 'bcrypt';
+import User from '../models/user';
+import ApiResponse from '../helpers/api_response';
 
 
 class LoginController {
@@ -75,4 +75,4 @@ class LoginController {
 }
 
 
-module.exports = LoginController;
+export default LoginController;

@@ -1,6 +1,7 @@
+import express from 'express';
 const router = require('express').Router();
 // const multer = require('multer'); // Upload image
-const PostController = require('../controllers/post_controller');
+import PostController from '../controllers/post_controller';
 // const storage = multer.diskStorage({
 //     destination: function (req, file, cb) {
 //       cb(null, '../public/img/post')
@@ -20,4 +21,4 @@ router.patch("/posts/:slug", new PostController().updatePost);
 router.delete("/posts/:id", new PostController().removePost);
 
 
-module.exports = router;
+export default router;

@@ -1,10 +1,10 @@
 require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const session = require('express-session');
-const dbConnect = require('./src/database/db_connect');
+import express from 'express';
+import cors from 'cors';
+import session from 'express-session';
+import dbConnect from './src/database/db_connect';
 const PORT = 4000;
-const apiRouter = require('./src/routes/api');
+import apiRouter from './src/routes/api';
 const app = express();
 
 

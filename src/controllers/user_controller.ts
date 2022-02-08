@@ -1,7 +1,7 @@
-const User = require('../models/user');
-const UserRepository = require('../repositories/user_repository');
+import User from '../models/user';
+import UserRepository from '../repositories/user_repository';
 const userRepository = new UserRepository();
-const ApiResponse = require('../helpers/api_response');
+import ApiResponse from '../helpers/api_response';
 
 
 class UserController {
@@ -48,6 +48,14 @@ class UserController {
     }
 
     async getUser(req, res) {
+        interface User {
+            username: string,
+            password: string,
+            img: string,
+            created_at: Date,
+            updated_at: Date,
+        }
+
         const userLogin = req.session.username;
         const username = req.params.username;
 
@@ -87,7 +95,7 @@ class UserController {
     
     async insertUser(req, res) {
         const userLogin = req.session.username;
-        const formInput = {
+        const formInput: any = {
             username: req.body.username,
             password: req.body.password,
             confirm_password: req.body.confirm_password
@@ -158,11 +166,6 @@ class UserController {
                 `Password and confirm_password field should be same.`
             ).sendResponse();
         }
-
-        const update = {
-            password: req.body.password !== undefined ? req.body.password : postToUpdate.password,
-            updated_at: new Date().getTime(),
-        };
       
         try {
             // Find current user to update
@@ -179,6 +182,11 @@ class UserController {
                     `User not found.`
                 ).sendResponse();
             }
+            
+            const update: any = {
+                password: req.body.password !== undefined ? req.body.password : userToUpdate.password,
+                updated_at: new Date().getTime(),
+            };
 
             let user = await userRepository.findOneAndUpdate(filter, update);
 
@@ -239,4 +247,4 @@ class UserController {
 }
 
 
-module.exports = UserController;
+export default UserController;
