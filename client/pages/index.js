@@ -7,6 +7,7 @@ import Posts from '../components/frontend/Posts';
 import MobileSearchBar from '../components/frontend/MobileSearchBar';
 
 export default function Home() {
+
     return (
         <div className='bg-light'>
             <Head>

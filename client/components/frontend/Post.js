@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 
 import DefaultImage from './DefaultImage';
 import Body from './Body';
@@ -7,7 +8,7 @@ import Time from './Time';
 import Title from './Title';
 
 
-export default function Post({ post }) {
+export default function Post({ post, findByTag }) {
     return (
         <div className="card mb-3 border-0 bg-transparent">
             <div className="row no-gutters d-flex align-items-center">
