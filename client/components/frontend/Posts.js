@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 
 import Post from './Post';
 import Tag from './Tag';
@@ -23,16 +24,16 @@ export default function Posts() {
     }, []);
 
     return (
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 order-md-2">
+        <div className="container">
+            <div className="row">
+                <div className="col-md-4 order-md-2">
                     {tags.map(tag => {
-                        return <Tag tag={tag} />
+                        return <Tag key={uuidv4()} tag={tag} />
                     })}
                 </div>
-                <div class="col-md-8">
+                <div className="col-md-8">
                     {posts.map(post => {
-                        return <Post post={post} />
+                        return <Post key={post._id} post={post} />
                     })}
                 </div>
             </div>
