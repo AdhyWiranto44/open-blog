@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Head from 'next/head';
 import Navbar from '../components/auth/Navbar';
+import Footer from '../components/frontend/Footer';
 
 
 export default function Login() {
@@ -51,6 +52,7 @@ export default function Login() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }

@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Navbar from '../components/auth/Navbar';
+import Footer from '../components/frontend/Footer';
 
 
 export default function register() {
@@ -49,6 +50,7 @@ export default function register() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }
