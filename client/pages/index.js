@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 
@@ -7,6 +8,7 @@ import Posts from '../components/frontend/Posts';
 import MobileSearchBar from '../components/frontend/MobileSearchBar';
 
 export default function Home() {
+    const [term, setTerm] = useState("");
 
     return (
         <div className='bg-light'>
@@ -21,9 +23,9 @@ export default function Home() {
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossOrigin="anonymous"></script>
                 <script src="/js/script.js"></script>
             </Head>
-            <Navbar />
-            <MobileSearchBar />
-            <Posts />
+            <Navbar filterPosts={(e) => setTerm(e.target.value)} />
+            <MobileSearchBar filterPosts={(e) => setTerm(e.target.value)} />
+            <Posts term={term} />
             <Footer />
         </div>
     )
