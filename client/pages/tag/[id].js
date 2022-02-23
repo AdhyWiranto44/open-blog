@@ -1,24 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
+import { useRouter } from 'next/router';
 
-import { getPosts } from '../actions/posts';
-import { getTags } from '../actions/tags';
-import Navbar from '../components/frontend/Navbar';
-import Footer from '../components/frontend/Footer';
-import MobileSearchBar from '../components/frontend/MobileSearchBar';
-import Tag from '../components/frontend/Tag';
-import Post from '../components/frontend/Post';
+import { getTags } from '../../actions/tags';
+import { getPosts, findByTag } from '../../actions/posts';
+import Navbar from '../../components/frontend/Navbar';
+import Footer from '../../components/frontend/Footer';
+import MobileSearchBar from '../../components/frontend/MobileSearchBar';
+import Tag from '../../components/frontend/Tag';
+import Post from '../../components/frontend/Post';
 
-export default function Home() {
+export default function PostByTag() {
     const posts = useSelector(state => state.posts);
     const tags = useSelector(state => state.tags);
     const dispatch = useDispatch();
+    const router = useRouter();
+    const tag = router.query.id;
 
     useEffect(() => {
-        dispatch(getPosts());
+        dispatch(findByTag(tag));
     }, [dispatch]);
 
     useEffect(() => {

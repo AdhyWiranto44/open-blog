@@ -26,7 +26,6 @@ export default function Posts({ term }) {
     }, []);
 
     const findByTag = (tag) => {
-        console.log("find by tag");
         axios.get(`${url}/tags/${tag}`).then(foundPosts => {
             setPosts(foundPosts.data.data.posts);
         });
