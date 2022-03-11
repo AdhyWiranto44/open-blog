@@ -1,15 +1,32 @@
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
+import { useUser } from '@auth0/nextjs-auth0';
 
 import { getPosts, filterPosts } from '../../actions/posts';
 
 
 export default function Navbar() {
     const dispatch = useDispatch();
+    const { user, error, isLoading } = useUser();
 
     function handleFilter(e) {
         e.preventDefault();
         dispatch(filterPosts(e.target.value));
+    }
+
+    function renderAuthButton() {
+        if (user) {
+            return (
+                <>
+                    <Link href="/admin/dashboard">
+                        <a className="nav-link text-light btn btn-primary px-3 border-0 rounded shadow-sm">Dashboard</a>
+                    </Link>
+                    <a href="/api/auth/logout" className="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm">Logout</a>
+                </>
+            );
+        } else {
+            return <a href="/api/auth/login" className="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm">Login</a>
+        }
     }
 
     return (
@@ -26,9 +43,7 @@ export default function Navbar() {
                         <form action="/" className="navbar-form mr-3 bg-light border rounded" onSubmit={handleFilter}>
                             <input className="form-control bg-light border-0 rounded" type="search" placeholder="Search" aria-label="Search" name="search" onChange={handleFilter} />
                         </form>
-                        <Link href="/login">
-                            <a className="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm">Login</a>
-                        </Link>
+                        {renderAuthButton()}
                     </div>
                 </div>
             </div>

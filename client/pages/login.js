@@ -1,10 +1,33 @@
 import Link from 'next/link';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useUser } from '@auth0/nextjs-auth0';
+
 import Navbar from '../components/auth/Navbar';
 import Footer from '../components/frontend/Footer';
+import { login } from '../actions/login';
 
 
 export default function Login() {
+    const [ username, setUsername ] = useState("");
+    const [ password, setPassword ] = useState("");
+    const loginInfo = useSelector(state => state.login);
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const { user, error, isLoading } = useUser();
+
+    function handleLogin(e) {
+        e.preventDefault();
+        dispatch(login(username, password));
+        if (loginInfo.success == true) {
+            router.push('/admin/dashboard');
+        } else {
+            console.log("Username / Password Salah!");
+        }
+    }
+
     return (
         <div className='bg-light'>
             <Head>
@@ -23,28 +46,28 @@ export default function Login() {
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
             </Head>
             <Navbar />
-            <div class="row mt-5">
-                <div class="col-lg-4 col-md-6 offset-lg-4 offset-md-3">
-                    <div class="card p-3 mb-3 bg-transparent border-0">
-                        <div class="card-body">
-                        <h4 class="card-title text-center mb-5 font-weight-bold">Login</h4>
-                        <form action="/login" method="POST" class="text-center">
-                            <div class="form-group">
-                                <input type="username" class="form-control bg-white" id="username" name="username" placeholder="username" autofocus />
+            <div className="row mt-5">
+                <div className="col-lg-4 col-md-6 offset-lg-4 offset-md-3">
+                    <div className="card p-3 mb-3 bg-transparent border-0">
+                        <div className="card-body">
+                        <h4 className="card-title text-center mb-5 font-weight-bold">Login</h4>
+                        <form method="POST" className="text-center" onSubmit={handleLogin}>
+                            <div className="form-group">
+                                <input type="username" className="form-control bg-white" id="username" name="username" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} autofocus />
                             </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control bg-white" id="password" name="password" placeholder="password" required />
+                            <div className="form-group">
+                                <input type="password" className="form-control bg-white" id="password" name="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 my-3 font-weight-bold">Login</button>
+                            <button type="submit" className="btn btn-primary w-100 my-3 font-weight-bold">Login</button>
                             <small>
                                 Belum punya akun?
                                 <Link href="/register">
-                                    <a class="text-primary"> Register</a>
+                                    <a className="text-primary"> Register</a>
                                 </Link>
                                 <br />
                                 Lupa password?
                                 <Link href="/reset-password">
-                                    <a class="text-primary"> Reset Password</a>
+                                    <a className="text-primary"> Reset Password</a>
                                 </Link>
                             </small>
                         </form>
