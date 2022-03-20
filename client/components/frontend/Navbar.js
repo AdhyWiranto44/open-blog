@@ -25,7 +25,14 @@ export default function Navbar() {
                 </>
             );
         } else {
-            return <a href="/api/auth/login" className="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm">Login</a>
+            return (
+                <>
+                    <Link href="/admin/dashboard">
+                        <a className="nav-link text-light btn btn-primary px-3 border-0 rounded shadow-sm">Dashboard</a>
+                    </Link>
+                    <a href="/api/auth/login" className="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm">Login</a>
+                </>
+            )
         }
     }
 
