@@ -18,17 +18,17 @@ export default function Sidebar() {
             "menuList": [
                 {
                     "title": "Tambah Post Baru",
-                    "url": "/admin/tambah-post-baru",
+                    "url": "/admin/posts/add",
                     "icon": "ti-plus"
                 },
                 {
                     "title": "Tampil Semua Post",
-                    "url": "/admin/tampil-post-baru",
+                    "url": "/admin/posts",
                     "icon": "ti-list"
                 },
                 {
                     "title": "Arsip Post",
-                    "url": "/admin/arsip-post",
+                    "url": "/admin/posts/archive",
                     "icon": "ti-archive"
                 },
             ]
@@ -36,16 +36,16 @@ export default function Sidebar() {
         {
             "mainMenu": "Settings",
             "menuList": [
-                {
-                    "title": "Ubah Password",
-                    "url": "/admin/ubah-password",
-                    "icon": "ti-pencil-alt"
-                },
-                {
-                    "title": "Reset Password",
-                    "url": "/admin/reset-password",
-                    "icon": "ti-key"
-                },
+                // {
+                //     "title": "Ubah Password",
+                //     "url": "/admin/update-password",
+                //     "icon": "ti-pencil-alt"
+                // },
+                // {
+                //     "title": "Reset Password",
+                //     "url": "/admin/reset-password",
+                //     "icon": "ti-key"
+                // },
                 {
                     "title": "Logout",
                     "url": "/",
