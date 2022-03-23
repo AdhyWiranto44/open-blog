@@ -13,6 +13,8 @@ export default (posts = [skeletonPost], action) => {
     switch (action.type) {
         case 'GET_POSTS':
             return action.payload;
+        case 'GET_ARCHIVE_POSTS':
+            return action.payload;
         case 'FILTER_POSTS':
             return action.payload;
         case 'FIND_BY_TAG':

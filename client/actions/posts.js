@@ -10,6 +10,16 @@ export const getPosts = () => async (dispatch) => {
     }
 };
 
+export const getArchivePosts = () => async (dispatch) => {
+    try {
+        const { data } = await api.getArchivePosts();
+  
+        dispatch({ type: "GET_ARCHIVE_POSTS", payload: data.data.posts });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 export const filterPosts = (filter) => async (dispatch) => {
     try {
         const { data } = await api.filterPosts(filter);

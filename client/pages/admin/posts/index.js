@@ -1,20 +1,23 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPosts } from '../../../actions/posts';
 import BackendLayout from '../../../layouts/backend';
+import Link from 'next/link';
+import Time from '../../../components/frontend/Time';
 
 
 export default function PostsPage() {
+    const posts = useSelector(state => state.posts);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getPosts());
+    }, [dispatch]);
+
     return (
         <BackendLayout
             pageContent={
                 <>
-                    <div class="row mb-5">
-                        <div class="col-md-4">
-                            <form action="/admin/tampil-semua-post" method="POST" class="d-flex bg-white border">
-                                <input class="form-control bg-white border-0" type="search" placeholder="Search" aria-label="Search" name="search" />
-                                <button class="btn btn-primary px-3 rounded-0"><span class="ti-search"></span></button>
-                            </form>
-                        </div>
-                    </div>
-
                     <div class="row">
                         <div class="col-lg">
                             <table class="table table-bordered table-striped overflow-auto">
@@ -30,30 +33,44 @@ export default function PostsPage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>
-                                            <img src="../img/post/defaultimg2.png" alt="post" style={{ maxWidth: "75px" }} />
-                                        </td>
-                                        <td><a href="/admin/post/<%= post.slug %> ">Post Title</a></td>
-                                        <td class="post-body">Lorem ipsum dolor si amet</td>
-                                        <td>
-                                            <div class="tag-list my-2">
-                                                <a class="text-dark" href="/admin/tag/tag-name"><span class="btn btn-sm btn-light mb-1"><span class="ti-tag"></span> tag</span></a>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <small>
-                                                one minute ago.
-                                            </small><br />
-                                        </td>
-                                        <td class="d-flex">
-                                            <a href="/admin/posts/post-slug/update" class="btn btn-warning mr-2"><span class="ti-pencil-alt"></span> Ubah</a>
-                                            <form action="/admin/posts/post-slug/archive" method="POST">
-                                                <button type="submit" class="btn btn-outline-danger" onClick="return confirm('Yakin ingin mengarsipkan post ini?"><span class="ti-archive"></span> Arsip</button>
-                                            </form>
-                                        </td>
-                                    </tr>
+                                    {posts.map((post, i) => {
+                                        return (
+                                            <tr>
+                                                <th scope="row">{++i}</th>
+                                                <td>
+                                                    <img src="../img/post/defaultimg2.png" alt="post" style={{ maxWidth: "75px" }} />
+                                                </td>
+                                                <td>
+                                                    <Link href={`/admin/post/${post.slug}`}>
+                                                        <a>{post.title}</a>
+                                                    </Link>
+                                                </td>
+                                                <td class="post-body">{post.content}</td>
+                                                <td>
+                                                    <div class="tag-list my-2">
+                                                        {post.tags.map(tag => {
+                                                            return (
+                                                                <Link href={`/admin/tag/${tag}`}>
+                                                                    <a class="text-dark"><span class="btn btn-sm btn-light mb-1"><span class="ti-tag"></span> {tag}</span></a>
+                                                                </Link>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <Time created_at={post.created_at} />
+                                                </td>
+                                                <td class="d-flex">
+                                                    <Link href={`/admin/posts/${post.slug}/update`}>
+                                                        <a class="btn btn-warning mr-2"><span class="ti-pencil-alt"></span> Ubah</a>
+                                                    </Link>
+                                                    <form action="/admin/posts/post-slug/archive" method="POST">
+                                                        <button type="submit" class="btn btn-outline-danger" onClick="return confirm('Yakin ingin mengarsipkan post ini?"><span class="ti-archive"></span> Arsip</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
