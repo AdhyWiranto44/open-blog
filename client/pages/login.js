@@ -8,24 +8,26 @@ import { useUser } from '@auth0/nextjs-auth0';
 import Navbar from '../components/auth/Navbar';
 import Footer from '../components/frontend/Footer';
 import { login } from '../actions/login';
+import axios from 'axios';
 
 
 export default function Login() {
-    const [ username, setUsername ] = useState("");
-    const [ password, setPassword ] = useState("");
-    const loginInfo = useSelector(state => state.login);
-    const dispatch = useDispatch();
+    const url = "http://localhost:4000/login";
     const router = useRouter();
-    const { user, error, isLoading } = useUser();
+    const [ loginData, setLoginData ] = useState({
+        "username": null,
+        "password": null,
+    });
 
     function handleLogin(e) {
         e.preventDefault();
-        dispatch(login(username, password));
-        if (loginInfo.success == true) {
-            router.push('/admin/dashboard');
-        } else {
-            console.log("Username / Password Salah!");
-        }
+        axios.post(url, loginData)
+            .then((res) => {
+                router.push("/admin/dashboard");
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     return (
@@ -53,10 +55,10 @@ export default function Login() {
                         <h4 className="card-title text-center mb-5 font-weight-bold">Login</h4>
                         <form method="POST" className="text-center" onSubmit={handleLogin}>
                             <div className="form-group">
-                                <input type="username" className="form-control bg-white" id="username" name="username" placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)} autofocus />
+                                <input type="username" className="form-control bg-white" id="username" name="username" placeholder="username" onChange={(e) => setLoginData({...loginData, username: e.target.value})} autofocus />
                             </div>
                             <div className="form-group">
-                                <input type="password" className="form-control bg-white" id="password" name="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                                <input type="password" className="form-control bg-white" id="password" name="password" placeholder="password" onChange={(e) => setLoginData({...loginData, password: e.target.value})} required />
                             </div>
                             <button type="submit" className="btn btn-primary w-100 my-3 font-weight-bold">Login</button>
                             <small>

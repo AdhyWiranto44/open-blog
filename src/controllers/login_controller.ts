@@ -72,6 +72,28 @@ class LoginController {
             ).sendResponse();
         }
     }
+
+    checkLoginSession = (req, res) => {
+        const userLogin = req.session.username;
+        try {
+            if (typeof userLogin !== 'undefined') {
+                return new ApiResponse(
+                    res, 200, true, 
+                    `Already logged in.`
+                ).sendResponse();
+            } else {
+                return new ApiResponse(
+                    res, 406, false, 
+                    `Not logged in.`
+                ).sendResponse();
+            }
+        } catch(err) {
+            return new ApiResponse(
+                res, 500, false, 
+                err.message
+            ).sendResponse();
+        }
+    }
 }
 
 

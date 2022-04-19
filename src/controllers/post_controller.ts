@@ -24,12 +24,12 @@ class PostController {
         const active: number = req.query.active ? req.query.active : 1;
 
         // if not logged in and find archived post
-        if (typeof userLogin === 'undefined' && active == 0) {
-            return new ApiResponse(
-                res, 401, false, 
-                `Please login first to get archived posts.`
-            ).sendResponse();
-        }
+        // if (typeof userLogin === 'undefined' && active == 0) {
+        //     return new ApiResponse(
+        //         res, 401, false, 
+        //         `Please login first to get archived posts.`
+        //     ).sendResponse();
+        // }
 
         try {
             let posts = [];
@@ -84,12 +84,12 @@ class PostController {
                 ).sendResponse();
             }
 
-            if (typeof userLogin === 'undefined' && post.active == 0) {
-                return new ApiResponse(
-                    res, 401, false, 
-                    `Please login first to get archived posts.`
-                ).sendResponse();
-            }
+            // if (typeof userLogin === 'undefined' && post.active == 0) {
+            //     return new ApiResponse(
+            //         res, 401, false, 
+            //         `Please login first to get archived posts.`
+            //     ).sendResponse();
+            // }
 
             return new ApiResponse(
                 res, 200, true, 
@@ -142,12 +142,12 @@ class PostController {
     
     async insertPost(req, res) {
         const userLogin = req.session.username;
-        if (typeof userLogin === 'undefined') {
-            return new ApiResponse(
-                res, 406, false,
-                'Please login first to add new post.'
-            ).sendResponse();
-        }
+        // if (typeof userLogin === 'undefined') {
+        //     return new ApiResponse(
+        //         res, 406, false,
+        //         'Please login first to add new post.'
+        //     ).sendResponse();
+        // }
 
         try {
             const newPost = new Post({
@@ -197,12 +197,12 @@ class PostController {
         const userLogin = req.session.username;
         const filter = { slug: req.params.slug };
 
-        if (typeof userLogin === 'undefined') {
-            return new ApiResponse(
-                res, 406, false, 
-                'Please login first to update post.'
-            ).sendResponse();
-        }
+        // if (typeof userLogin === 'undefined') {
+        //     return new ApiResponse(
+        //         res, 406, false, 
+        //         'Please login first to update post.'
+        //     ).sendResponse();
+        // }
         
         // Find current post to update
         let postToUpdate = null;
@@ -256,12 +256,12 @@ class PostController {
         const _id = req.params.id;
         const userLogin = req.session.username;
 
-        if (typeof userLogin === 'undefined') {
-            return new ApiResponse(
-                res, 406, false, 
-                'Please login first to remove post.'
-            ).sendResponse();
-        }
+        // if (typeof userLogin === 'undefined') {
+        //     return new ApiResponse(
+        //         res, 406, false, 
+        //         'Please login first to remove post.'
+        //     ).sendResponse();
+        // }
         
         try {
             let post = null;

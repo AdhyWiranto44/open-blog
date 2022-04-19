@@ -3,15 +3,29 @@ import { useDispatch } from 'react-redux';
 import { useUser } from '@auth0/nextjs-auth0';
 
 import { getPosts, filterPosts } from '../../actions/posts';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
 
 export default function Navbar() {
     const dispatch = useDispatch();
     const { user, error, isLoading } = useUser();
+    const router = useRouter();
+    const url = "http://localhost:4000/login";
 
     function handleFilter(e) {
         e.preventDefault();
         dispatch(filterPosts(e.target.value));
+    }
+
+    function checkLoginSession() {
+        axios.get(`${url}/session`)
+        .then(res => {
+            router.push("/admin/dashboard");
+        })
+        .catch((err) => {
+            router.push("/login");
+        });
     }
 
     function renderAuthButton() {
@@ -30,7 +44,7 @@ export default function Navbar() {
                     <Link href="/admin/dashboard">
                         <a className="nav-link text-light btn btn-primary px-3 border-0 rounded shadow-sm">Dashboard</a>
                     </Link>
-                    <a href="/api/auth/login" className="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm">Login</a>
+                    <button className="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm" onClick={checkLoginSession}>Login</button>
                 </>
             )
         }

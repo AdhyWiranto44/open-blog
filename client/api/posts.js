@@ -8,3 +8,5 @@ export const getPost = (slug) => axios.get(`${url}/${slug}`);
 export const filterPosts = (filter) => axios.get(`${url}?title=${filter}`);
 export const findByTag = (tag) => axios.get(`${url}/tags/${tag}`);
 export const insertPost = (newPost) => axios.post(url, newPost);
+export const updatePost = (slug, updatedPost) => axios.patch(`${url}/${slug}`, updatedPost);
+export const removePost = (id) => axios.delete(`${url}/${id}`);
