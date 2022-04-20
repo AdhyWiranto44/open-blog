@@ -3,16 +3,21 @@ import BackendLayout from "../../../layouts/backend";
 import Link from "next/link";
 import Time from "../../../components/frontend/Time";
 import { getPosts, updatePost } from "../../../api/posts";
+import Searchbar from "../../../components/backend/SearchBar";
 
 export default function PostsPage() {
   const [posts, setPosts] = useState([]);
 
-  useEffect( async () => {
-    await getPosts().then(({data}) => {
+  const handleGetPosts = async (title = "") => {
+    await getPosts(title).then(({data}) => {
       setPosts([...data.data.posts]);
     }).catch( err => {
       console.log(err);
     })
+  }
+
+  useEffect(() => {
+    handleGetPosts();
     console.log(posts.length);
   }, []);
 
@@ -24,10 +29,21 @@ export default function PostsPage() {
     });
   }
 
+  const handleFilter = (e) => {
+    e.preventDefault();
+    handleGetPosts(e.target.value);
+  }
+
   return (
     <BackendLayout
       pageContent={
         <>
+          <div class="row mb-5">
+            <div class="col-md-4">
+              <Searchbar handleFilter={(e) => handleFilter(e)} />
+            </div>
+          </div>
+
           <div class="row">
             <div class="col-lg">
             {

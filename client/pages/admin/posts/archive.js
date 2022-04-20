@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getArchivePosts } from "../../../actions/posts";
 import { removePost, updatePost } from "../../../api/posts";
+import Searchbar from "../../../components/backend/SearchBar";
 import Time from "../../../components/frontend/Time";
 import BackendLayout from "../../../layouts/backend";
 
@@ -30,28 +31,18 @@ export default function ArchivePostPage() {
     });
   }
 
+  const handleFilter = (e) => {
+    e.preventDefault();
+    dispatch(getArchivePosts(e.target.value));
+  }
+
   return (
     <BackendLayout
       pageContent={
         <>
           <div class="row mb-5">
             <div class="col-md-4">
-              <form
-                action="/admin/arsip-post"
-                method="POST"
-                class="d-flex bg-white border"
-              >
-                <input
-                  class="form-control bg-white border-0"
-                  type="search"
-                  placeholder="Search"
-                  aria-label="Search"
-                  name="search"
-                />
-                <button class="btn btn-primary px-3 rounded-0">
-                  <span class="ti-search"></span>
-                </button>
-              </form>
+              <Searchbar handleFilter={(e) => handleFilter(e)} />
             </div>
           </div>
 

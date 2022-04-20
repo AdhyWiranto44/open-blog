@@ -10,9 +10,9 @@ export const getPosts = () => async (dispatch) => {
     }
 };
 
-export const getArchivePosts = () => async (dispatch) => {
+export const getArchivePosts = (title = "") => async (dispatch) => {
     try {
-        const { data } = await api.getArchivePosts();
+        const { data } = await api.getArchivePosts(title);
   
         dispatch({ type: "GET_ARCHIVE_POSTS", payload: data.data.posts });
     } catch (error) {
