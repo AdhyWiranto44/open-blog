@@ -10,25 +10,16 @@ import Cookies from "js-cookie";
 
 export default function Navbar() {
   const dispatch = useDispatch();
-  const { user, error, isLoading } = useUser();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
-  const url = "http://localhost:4000/login";
 
   function handleFilter(e) {
     e.preventDefault();
     dispatch(filterPosts(e.target.value));
   }
-
-  function checkLoginSession() {
-    axios
-      .get(`${url}/session`)
-      .then((res) => {
-        router.push("/admin/dashboard");
-      })
-      .catch((err) => {
-        router.push("/login");
-      });
+  
+  const handleLogout = () => {
+    Cookies.remove("X-OPEN-BLOG-TOKEN");
+    window.location.reload();
   }
 
   function renderAuthButton() {
@@ -41,23 +32,25 @@ export default function Navbar() {
               Dashboard
             </a>
           </Link>
-          <a
-            href="/api/auth/logout"
+          <button
+            type="button"
             className="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm"
+            onClick={handleLogout}
           >
             Logout
-          </a>
+          </button>
         </>
       );
     } else {
       return (
         <>
-          <button
-            className="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm"
-            onClick={checkLoginSession}
-          >
-            Login
-          </button>
+          <Link href="/login">
+            <a
+              className="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm"
+            >
+              Login
+            </a>
+          </Link>
         </>
       );
     }
