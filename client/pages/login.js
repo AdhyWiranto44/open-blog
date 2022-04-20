@@ -1,13 +1,10 @@
 import Link from "next/link";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useUser } from "@auth0/nextjs-auth0";
+import { useState } from "react";
 
 import Navbar from "../components/auth/Navbar";
 import Footer from "../components/frontend/Footer";
-import { login } from "../actions/login";
 import axios from "axios";
 import Cookies from "js-cookie";
 
@@ -24,7 +21,7 @@ export default function Login() {
     await axios.post(url, loginData)
       .then((res) => {
         const token = res.data.data.token;
-        Cookies.set("X-OPEN-BLOG-TOKEN", token);
+        Cookies.set("X-OPEN-BLOG-TOKEN", token, { expires: 1/12 });
         router.push("/admin/dashboard");
       })
       .catch((err) => {

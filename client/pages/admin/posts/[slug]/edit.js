@@ -3,8 +3,11 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getPost, updatePost } from "../../../../api/posts";
 import BackendLayout from '../../../../layouts/backend';
+import Cookies from "js-cookie";
+
 
 export default function EditForm() {
+  const token = Cookies.get("X-OPEN-BLOG-TOKEN");
   const [formUpdate, setFormUpdate] = useState({
     "title": null,
     "content": null,
@@ -35,9 +38,9 @@ export default function EditForm() {
     setFormUpdate({...post});
   }, []);
 
-  const handleUpdatePost = (e) => {
+  const handleUpdatePost = (e, token) => {
     e.preventDefault();
-    updatePost(slug, formUpdate);
+    updatePost(slug, token, formUpdate);
     history.back();
   }
 
@@ -48,7 +51,7 @@ export default function EditForm() {
           <div class="col-md-8">
             <div class="card shadow-sm border-0 p-3">
               <div class="card-body">
-              <form action={`/admin/post/${post.slug}`} method="POST" onSubmit={(e) => {handleUpdatePost(e)}}>
+              <form action={`/admin/post/${post.slug}`} method="POST" onSubmit={(e) => {handleUpdatePost(e, token)}}>
                 <div class="form-group">
                   <input type="text" class="form-control bg-light" id="title" name="title" placeholder="title" value={formUpdate.title} onChange={(e) => setFormUpdate({...formUpdate, "title": e.target.value})} autofocus required />
                 </div>

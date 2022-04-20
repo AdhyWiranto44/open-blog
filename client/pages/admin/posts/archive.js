@@ -6,17 +6,19 @@ import { removePost, updatePost } from "../../../api/posts";
 import Searchbar from "../../../components/backend/SearchBar";
 import Time from "../../../components/frontend/Time";
 import BackendLayout from "../../../layouts/backend";
+import Cookies from "js-cookie";
 
 export default function ArchivePostPage() {
+  const token = Cookies.get("X-OPEN-BLOG-TOKEN");
   const posts = useSelector((state) => state.posts);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getArchivePosts());
+    dispatch(getArchivePosts("", token));
   }, [dispatch]);
 
   const handleActivatePost = (slug) => {
-    updatePost(slug, { "active": 1 }).then(() => {
+    updatePost(slug, token, { "active": 1 }).then(() => {
       window.location.reload();
     }).catch( err => {
       console.log(err);
@@ -24,7 +26,7 @@ export default function ArchivePostPage() {
   }
 
   const handleRemovePost = (id) => {
-    removePost(id).then(() => {
+    removePost(id, token).then(() => {
       window.location.reload();
     }).catch( err => {
       console.log(err);
@@ -33,7 +35,7 @@ export default function ArchivePostPage() {
 
   const handleFilter = (e) => {
     e.preventDefault();
-    dispatch(getArchivePosts(e.target.value));
+    dispatch(getArchivePosts(e.target.value, token));
   }
 
   return (
@@ -48,10 +50,8 @@ export default function ArchivePostPage() {
 
           <div class="row">
             <div class="col-lg">
-              {posts.length < 1 ? (
-                <h1>Post not found</h1>
-              ) : (
-                <table class="table table-striped table-bordered overflow-auto">
+              {
+                posts.length < 1 ? <h1>Post not found</h1> : <table class="table table-striped table-bordered overflow-auto">
                   <thead class="thead-dark">
                     <tr>
                       <th scope="col">No</th>
@@ -125,7 +125,7 @@ export default function ArchivePostPage() {
                     })}
                   </tbody>
                 </table>
-              )}
+              }
             </div>
           </div>
         </>

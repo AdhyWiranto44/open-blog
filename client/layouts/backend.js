@@ -1,9 +1,21 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import Navbar from "../components/backend/Navbar";
 import Sidebar from "../components/backend/Sidebar";
+import Cookies from "js-cookie";
 
 
 export default function BackendLayout({pageContent}) {
+  const router = useRouter();
+  const token = Cookies.get("X-OPEN-BLOG-TOKEN");
+
+  useEffect(() => {
+    if (!token || token === "") {
+      router.push("/login");
+    }
+  }, []);
+
     return (
         <div className="bg-light">
             <Head>

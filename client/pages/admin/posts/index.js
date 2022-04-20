@@ -4,8 +4,11 @@ import Link from "next/link";
 import Time from "../../../components/frontend/Time";
 import { getPosts, updatePost } from "../../../api/posts";
 import Searchbar from "../../../components/backend/SearchBar";
+import Cookies from "js-cookie";
+
 
 export default function PostsPage() {
+  const token = Cookies.get("X-OPEN-BLOG-TOKEN");
   const [posts, setPosts] = useState([]);
 
   const handleGetPosts = async (title = "") => {
@@ -22,7 +25,7 @@ export default function PostsPage() {
   }, []);
 
   const handleArchivePost = (slug) => {
-    updatePost(slug, { "active": 0 }).then(() => {
+    updatePost(slug, token, { "active": 0 }).then(() => {
       window.location.reload();
     }).catch( err => {
       console.log(err);
