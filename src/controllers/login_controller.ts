@@ -44,7 +44,7 @@ class LoginController {
                   "uid": randomBytes(16).toString('hex'),
                   "username": user.username,
                 }
-                const encoded = sign(payload, process.env.SECRET, { expiresIn: "2h" })
+                const encoded = sign(payload, process.env.SECRET, { expiresIn: process.env.TOKEN_EXPIRED_IN })
                 // Cookies.set( "X-OPEN-BLOG-TOKEN", encoded, { expires: 1 } )
                 // console.log(Cookies.get( "X-OPEN-BLOG-TOKEN"))
                 return new ApiResponse(

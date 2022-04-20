@@ -32,13 +32,15 @@ class PostController {
             ).sendResponse();
         }
 
-        try {
-          verify(userLogin, process.env.SECRET);
-        } catch (err: any) {
-          return new ApiResponse(
-            res, 401, false, 
-            `User not registered.`
-          ).sendResponse();
+        if (typeof userLogin !== 'undefined') {
+          try {
+            verify(userLogin, process.env.SECRET);
+          } catch (err: any) {
+            return new ApiResponse(
+              res, 401, false, 
+              `User not registered.`
+            ).sendResponse();
+          }
         }
 
         try {
@@ -77,8 +79,8 @@ class PostController {
     }
 
     async getPost(req, res) {
-        const userLogin = req.session.username;
-        const slug = req.params.slug;
+        const userLogin: string = req.query.token;
+        const slug: string = req.params.slug;
     
         try {
             let post = null;
@@ -94,12 +96,23 @@ class PostController {
                 ).sendResponse();
             }
 
-            // if (typeof userLogin === 'undefined' && post.active == 0) {
-            //     return new ApiResponse(
-            //         res, 401, false, 
-            //         `Please login first to get archived posts.`
-            //     ).sendResponse();
-            // }
+            if (typeof userLogin === 'undefined' && post.active == 0) {
+                return new ApiResponse(
+                    res, 401, false, 
+                    `Please login first to get archived posts.`
+                ).sendResponse();
+            }
+
+            if (typeof userLogin !== 'undefined') {
+              try {
+                verify(userLogin, process.env.SECRET);
+              } catch (err: any) {
+                return new ApiResponse(
+                  res, 401, false, 
+                  `User not registered.`
+                ).sendResponse();
+              }
+            }
 
             return new ApiResponse(
                 res, 200, true, 
@@ -115,11 +128,20 @@ class PostController {
     }
 
     async getPostsByTag(req, res) {
-        const userLogin = req.session.username;
+        const userLogin: string = req.query.token;
         const filter = { tag: req.params.tag }
 
         if (typeof userLogin === 'undefined') {
             filter['active'] = 1;
+        } else {
+          try {
+            verify(userLogin, process.env.SECRET);
+          } catch (err: any) {
+            return new ApiResponse(
+              res, 401, false, 
+              `User not registered.`
+            ).sendResponse();
+          }
         }
 
         try {
@@ -151,13 +173,22 @@ class PostController {
     }
     
     async insertPost(req, res) {
-        const userLogin = req.session.username;
-        // if (typeof userLogin === 'undefined') {
-        //     return new ApiResponse(
-        //         res, 406, false,
-        //         'Please login first to add new post.'
-        //     ).sendResponse();
-        // }
+        const userLogin: string = req.query.token;
+        if (typeof userLogin === 'undefined') {
+            return new ApiResponse(
+                res, 406, false,
+                'Please login first to add new post.'
+            ).sendResponse();
+        } else {
+          try {
+            verify(userLogin, process.env.SECRET);
+          } catch (err: any) {
+            return new ApiResponse(
+              res, 401, false, 
+              `User not registered.`
+            ).sendResponse();
+          }
+        }
 
         try {
             const newPost = new Post({
@@ -204,15 +235,24 @@ class PostController {
     }
 
     async updatePost(req, res) {
-        const userLogin = req.session.username;
+        const userLogin: string = req.query.token;
         const filter = { slug: req.params.slug };
 
-        // if (typeof userLogin === 'undefined') {
-        //     return new ApiResponse(
-        //         res, 406, false, 
-        //         'Please login first to update post.'
-        //     ).sendResponse();
-        // }
+        if (typeof userLogin === 'undefined') {
+            return new ApiResponse(
+                res, 406, false, 
+                'Please login first to update post.'
+            ).sendResponse();
+        } else {
+          try {
+            verify(userLogin, process.env.SECRET);
+          } catch (err: any) {
+            return new ApiResponse(
+              res, 401, false, 
+              `User not registered.`
+            ).sendResponse();
+          }
+        }
         
         // Find current post to update
         let postToUpdate = null;
@@ -264,14 +304,23 @@ class PostController {
 
     async removePost(req, res) {
         const _id = req.params.id;
-        const userLogin = req.session.username;
+        const userLogin: string = req.query.token;
 
-        // if (typeof userLogin === 'undefined') {
-        //     return new ApiResponse(
-        //         res, 406, false, 
-        //         'Please login first to remove post.'
-        //     ).sendResponse();
-        // }
+        if (typeof userLogin === 'undefined') {
+            return new ApiResponse(
+                res, 406, false, 
+                'Please login first to remove post.'
+            ).sendResponse();
+        } else {
+          try {
+            verify(userLogin, process.env.SECRET);
+          } catch (err: any) {
+            return new ApiResponse(
+              res, 401, false, 
+              `User not registered.`
+            ).sendResponse();
+          }
+        }
         
         try {
             let post = null;
