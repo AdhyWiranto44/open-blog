@@ -1,30 +1,40 @@
 import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
-import { getPosts } from '../actions/posts';
-import { getTags } from '../actions/tags';
 import Tag from '../components/frontend/Tag';
 import Post from '../components/frontend/Post';
 import FrontendLayout from '../layouts/frontend';
-import Head from 'next/head';
-import Navbar from '../components/frontend/Navbar';
-import Footer from '../components/frontend/Footer';
-import MobileSearchBar from '../components/frontend/MobileSearchBar';
+import { getPosts } from '../api/posts';
+import { getTags } from '../api/tags';
 
 
 export default function Home() {
-    const posts = useSelector(state => state.posts);
-    const tags = useSelector(state => state.tags);
-    const dispatch = useDispatch();
+    const [posts, setPosts] = useState([]);
+    const [tags, setTags] = useState([]);
+
+    const handleGetPosts = () => {
+      getPosts().then(({data}) => {
+        setPosts([...data.data.posts]);
+      }).catch(err => {
+        console.log(err);
+      });
+    }
+
+    const handleGetTags = () => {
+      getTags().then(({data}) => {
+        setTags([...data.data.tags]);
+      }).catch(err => {
+        console.log(err);
+      });
+    }
 
     useEffect(() => {
-        dispatch(getPosts());
-    }, [dispatch]);
+      handleGetPosts();
+    }, []);
 
     useEffect(() => {
-        dispatch(getTags());
-    }, [dispatch]);
+      handleGetTags();
+    }, []);
 
     return (
         <FrontendLayout
@@ -39,7 +49,7 @@ export default function Home() {
                             })}
                         </div>
                         <div className="col-md-8">
-                            {!posts.length ? <h2>Loading ...</h2> : posts.map(post => {
+                            {!posts.length ? <h2>Post not found</h2> : posts.map(post => {
                                 return <Post key={post._id} post={post} />
                             })}
                         </div>
