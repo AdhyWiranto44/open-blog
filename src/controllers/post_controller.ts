@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Post from '../models/post';
 import ApiResponse from '../helpers/api_response';
+import { verify } from 'jsonwebtoken';
 // const Comment = require('../models/comment');
 // const multer = require('multer'); // Upload image
 // const {arrDay, arrMonth} = require('../helpers/dates');
@@ -19,17 +20,26 @@ class PostController {
     constructor() {}
 
     async getPosts(req, res) {
-        const userLogin: string = req.session.username;
+        const userLogin: string = req.query.token;
         const title: string = req.query.title;
         const active: number = req.query.active ? req.query.active : 1;
 
         // if not logged in and find archived post
-        // if (typeof userLogin === 'undefined' && active == 0) {
-        //     return new ApiResponse(
-        //         res, 401, false, 
-        //         `Please login first to get archived posts.`
-        //     ).sendResponse();
-        // }
+        if (typeof userLogin === 'undefined' && active == 0) {
+            return new ApiResponse(
+                res, 401, false, 
+                `Please login first to get archived posts.`
+            ).sendResponse();
+        }
+
+        try {
+          verify(userLogin, process.env.SECRET);
+        } catch (err: any) {
+          return new ApiResponse(
+            res, 401, false, 
+            `User not registered.`
+          ).sendResponse();
+        }
 
         try {
             let posts = [];
