@@ -1,8 +1,6 @@
 import Link from "next/link";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getArchivePosts } from "../../../actions/posts";
-import { removePost, updatePost } from "../../../api/posts";
+import { useEffect, useState } from "react";
+import { removePost, updatePost, getArchivePosts } from "../../../api/posts";
 import Searchbar from "../../../components/backend/SearchBar";
 import Time from "../../../components/frontend/Time";
 import BackendLayout from "../../../layouts/backend";
@@ -10,12 +8,19 @@ import Cookies from "js-cookie";
 
 export default function ArchivePostPage() {
   const token = Cookies.get("X-OPEN-BLOG-TOKEN");
-  const posts = useSelector((state) => state.posts);
-  const dispatch = useDispatch();
+  const [posts, setPosts] = useState([]);
+
+  const handleGetArchivePosts = async (title = "") => {
+    await getArchivePosts(title, token).then(({data}) => {
+      setPosts([...data.data.posts]);
+    }).catch( err => {
+      console.log(err);
+    })
+  }
 
   useEffect(() => {
-    dispatch(getArchivePosts("", token));
-  }, [dispatch]);
+    handleGetArchivePosts("");
+  }, []);
 
   const handleActivatePost = (slug) => {
     updatePost(slug, token, { "active": 1 }).then(() => {
@@ -35,7 +40,7 @@ export default function ArchivePostPage() {
 
   const handleFilter = (e) => {
     e.preventDefault();
-    dispatch(getArchivePosts(e.target.value, token));
+    handleGetArchivePosts(e.target.value, token);
   }
 
   return (
