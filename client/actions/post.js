@@ -10,9 +10,9 @@ export const getPost = (slug) => async (dispatch) => {
     }
 }
 
-export const insertPost = (newPost) => async (dispatch) => {
+export const insertPost = (token, newPost) => async (dispatch) => {
     try {
-        const { data } = await api.insertPost(newPost);
+        const { data } = await api.insertPost(token, newPost);
         
         dispatch({ type: "INSERT_POST", payload: data.data.post });
     } catch (error) {

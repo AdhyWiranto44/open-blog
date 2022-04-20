@@ -7,6 +7,6 @@ export const getArchivePosts = (title = "", token = "") => axios.get(`${url}?act
 export const getPost = (slug) => axios.get(`${url}/${slug}`);
 export const filterPosts = (filter) => axios.get(`${url}?title=${filter}`);
 export const findByTag = (tag) => axios.get(`${url}/tags/${tag}`);
-export const insertPost = (newPost) => axios.post(url, newPost);
+export const insertPost = (token, newPost) => axios.post(`${url}?token=${token}`, newPost);
 export const updatePost = (slug, token, updatedPost) => axios.patch(`${url}/${slug}?token=${token}`, updatedPost);
 export const removePost = (id, token) => axios.delete(`${url}/${id}?token=${token}`);
