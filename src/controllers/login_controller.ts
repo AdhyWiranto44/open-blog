@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 import User from '../models/user';
 import ApiResponse from '../helpers/api_response';
+import { randomBytes } from 'crypto';
+import { sign } from 'jsonwebtoken';
 
 
 class LoginController {
@@ -12,13 +14,14 @@ class LoginController {
             password: req.body.password
         }
 
-        const userLogin = req.session.username;
-        if (typeof userLogin !== 'undefined') {
-            return new ApiResponse(
-                res, 406, false, 
-                `Already logged in as ${userLogin}`
-            ).sendResponse();
-        }
+        // const userLogin = req.session.username;
+        
+        // if (typeof userLogin !== 'undefined') {
+        //     return new ApiResponse(
+        //         res, 406, false, 
+        //         `Already logged in as ${userLogin}`
+        //     ).sendResponse();
+        // }
         
         User.findOne({username: user.username}).exec()
             .then((foundUser) => {
@@ -36,10 +39,18 @@ class LoginController {
                     ).sendResponse();
                 }
                 
-                req.session.username = user.username;
+                // req.session.username = user.username;
+                const payload = {
+                  "uid": randomBytes(16).toString('hex'),
+                  "username": user.username,
+                }
+                const encoded = sign(payload, process.env.SECRET, { expiresIn: "2h" })
+                // Cookies.set( "X-OPEN-BLOG-TOKEN", encoded, { expires: 1 } )
+                // console.log(Cookies.get( "X-OPEN-BLOG-TOKEN"))
                 return new ApiResponse(
                     res, 200, true, 
-                    `Success logged in.`
+                    `Success logged in.`,
+                    { "token": encoded }
                 ).sendResponse();
             })
             .catch(err => {
