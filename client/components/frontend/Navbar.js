@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 
 export default function Navbar() {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   function handleFilter(e) {
     e.preventDefault();
@@ -26,11 +27,13 @@ export default function Navbar() {
     if (token && token != "") {
       return (
         <>
-          <Link href="/admin/dashboard">
-            <a className="nav-link text-light btn btn-primary px-3 border-0 rounded shadow-sm">
-              Dashboard
-            </a>
-          </Link>
+          <button
+            type="button"
+            className="nav-link text-light btn btn-primary px-3 border-0 rounded shadow-sm mr-md-2 my-2 my-md-0"
+            onClick={() => router.push("/admin/dashboard")}
+          >
+            Dashboard
+          </button>
           <button
             type="button"
             className="nav-link text-light btn btn-dark px-3 border-0 rounded shadow-sm"
