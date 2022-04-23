@@ -8,7 +8,7 @@ class UserController {
     constructor() {}
 
     async getUsers(req, res) {
-        const userLogin = req.session.username;
+        const userLogin = req.query.token;
 
         // if not logged in and find archived post
         if (typeof userLogin === 'undefined') {
@@ -145,7 +145,7 @@ class UserController {
     }
 
     async updateUser(req, res) {
-        const userLogin = req.session.username;
+        const userLogin = req.query.token;
         const filter = { username: req.params.username };
         const formInput = {
             username: req.body.username,
@@ -212,7 +212,7 @@ class UserController {
 
     async removeUser(req, res) {
         const _id = req.params.id;
-        const userLogin = req.session.username;
+        const userLogin = req.query.token;
 
         if (typeof userLogin === 'undefined') {
             return new ApiResponse(
