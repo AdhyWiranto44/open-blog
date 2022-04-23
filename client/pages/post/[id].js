@@ -10,30 +10,20 @@ import BodyFull from "../../components/frontend/BodyFull";
 import Time from "../../components/frontend/Time";
 import Tag from "../../components/frontend/Tag";
 import DefaultImage from "../../components/frontend/DefaultImage";
-import { getPosts } from "../../api/posts";
+import { getPosts } from "../../actions/posts";
 import { getPost } from "../../actions/post";
 import FrontendLayout from "../../layouts/frontend";
 
 export default function Post() {
-  const [posts, setPosts] = useState([]);
+  const posts = useSelector((state) => state.posts);
   const post = useSelector((state) => state.post);
   const dispatch = useDispatch();
   const router = useRouter();
   const slug = router.query.id;
 
-  const handleGetPosts = () => {
-    getPosts()
-      .then(({ data }) => {
-        setPosts([...data.data.posts]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   useEffect(() => {
-    handleGetPosts();
-  }, []);
+    dispatch(getPosts());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getPost(slug));
@@ -91,8 +81,8 @@ export default function Post() {
             </div>
             <div className="col-lg-4">
               <h6 className="mb-3 font-weight-bold">Other Posts</h6>
-              {!posts.length ? (
-                <h2>Post not found</h2>
+              { !posts.length ? (
+                <h5>Post not found</h5>
               ) : (
                 posts.map((post, i) => {
                   if (i < 3) {
