@@ -94,7 +94,7 @@ class UserController {
     }
     
     async insertUser(req, res) {
-        const userLogin = req.session.username;
+        const userLogin: string = req.query.token;
         const formInput: any = {
             username: req.body.username,
             password: req.body.password,
