@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import Post from '../models/post';
 import ApiResponse from '../helpers/api_response';
 import { verify } from 'jsonwebtoken';
+import { readFileSync } from 'fs';
 // const Comment = require('../models/comment');
-// const multer = require('multer'); // Upload image
 // const {arrDay, arrMonth} = require('../helpers/dates');
 // const showAlert = require('../helpers/alert.js');
 // const storage = multer.diskStorage({
@@ -14,341 +14,350 @@ import { verify } from 'jsonwebtoken';
 //       cb(null, file.originalname)
 //     }
 //   })
-// const upload = multer({dest: '../public/img/post', storage})
 
 class PostController {
-    constructor() {}
+  constructor() { }
 
-    async getPosts(req, res) {
-        const userLogin: string = req.query.token;
-        const title: string = req.query.title;
-        const active: number = req.query.active ? req.query.active : 1;
+  async getPosts(req, res) {
+    const userLogin: string = req.query.token;
+    const title: string = req.query.title;
+    const active: number = req.query.active ? req.query.active : 1;
 
-        // if not logged in and find archived post
-        if (typeof userLogin === 'undefined' && active == 0) {
-            return new ApiResponse(
-                res, 401, false, 
-                `Please login first to get archived posts.`
-            ).sendResponse();
-        }
-
-        if (typeof userLogin !== 'undefined') {
-          try {
-            verify(userLogin, process.env.SECRET);
-          } catch (err: any) {
-            return new ApiResponse(
-              res, 401, false, 
-              `User not registered.`
-            ).sendResponse();
-          }
-        }
-
-        try {
-            let posts = [];
-            let filter = { active }
-
-            if (typeof title !== 'undefined') {
-                filter['title'] = {$regex: ".*"+title+".*", $options: 'i'};
-            }
-
-            // find posts whether available or unavailable
-            await Post.find(filter).exec()
-                .then(foundPosts => {
-                    posts = foundPosts;
-                });
-
-            // if post not found
-            if (posts.length < 1) {
-                return new ApiResponse(
-                    res, 404, false, 
-                    `Posts not found.`
-                ).sendResponse();
-            }
-
-            return new ApiResponse(
-                res, 200, true, 
-                `Found posts.`,
-                { posts }
-            ).sendResponse();
-        } catch(err) {
-            return new ApiResponse(
-                res, 500, false, 
-                err.message
-            ).sendResponse();
-        }
+    // if not logged in and find archived post
+    if (typeof userLogin === 'undefined' && active == 0) {
+      return new ApiResponse(
+        res, 401, false,
+        `Please login first to get archived posts.`
+      ).sendResponse();
     }
 
-    async getPost(req, res) {
-        const userLogin: string = req.query.token;
-        const slug: string = req.params.slug;
-    
-        try {
-            let post = null;
-            await Post.findOne({slug}).exec()
-            .then(foundPost => {
-                post = foundPost;
-            });
-
-            if (post == null) {
-                return new ApiResponse(
-                    res, 404, false, 
-                    `Post not found.`
-                ).sendResponse();
-            }
-
-            if (typeof userLogin === 'undefined' && post.active == 0) {
-                return new ApiResponse(
-                    res, 401, false, 
-                    `Please login first to get archived posts.`
-                ).sendResponse();
-            }
-
-            if (typeof userLogin !== 'undefined') {
-              try {
-                verify(userLogin, process.env.SECRET);
-              } catch (err: any) {
-                return new ApiResponse(
-                  res, 401, false, 
-                  `User not registered.`
-                ).sendResponse();
-              }
-            }
-
-            return new ApiResponse(
-                res, 200, true, 
-                `Found post by slug ${slug}.`,
-                { post }
-            ).sendResponse();
-        } catch(err) {
-            return new ApiResponse(
-                res, 500, false, 
-                err.message
-            ).sendResponse();
-        }
+    if (typeof userLogin !== 'undefined') {
+      try {
+        verify(userLogin, process.env.SECRET);
+      } catch (err: any) {
+        return new ApiResponse(
+          res, 401, false,
+          `User not registered.`
+        ).sendResponse();
+      }
     }
 
-    async getPostsByTag(req, res) {
-        const userLogin: string = req.query.token;
-        const filter = { tag: req.params.tag }
+    try {
+      let posts = [];
+      let filter = { active }
 
-        if (typeof userLogin === 'undefined') {
-            filter['active'] = 1;
-        } else {
-          try {
-            verify(userLogin, process.env.SECRET);
-          } catch (err: any) {
-            return new ApiResponse(
-              res, 401, false, 
-              `User not registered.`
-            ).sendResponse();
-          }
-        }
+      if (typeof title !== 'undefined') {
+        filter['title'] = { $regex: ".*" + title + ".*", $options: 'i' };
+      }
 
-        try {
-            let posts = [];
-            await Post.find(filter).exec()
-                .then(foundPosts => {
-                    posts = foundPosts.filter(post => post.tags.includes(filter['tag']));
-                });
+      // find posts whether available or unavailable
+      await Post.find(filter).exec()
+        .then(foundPosts => {
+          posts = foundPosts;
+        });
 
-            // if post not found
-            if (posts.length < 1) {
-                return new ApiResponse(
-                    res, 404, false, 
-                    `Post not found.`
-                ).sendResponse();
-            }
+      // if post not found
+      if (posts.length < 1) {
+        return new ApiResponse(
+          res, 404, false,
+          `Posts not found.`
+        ).sendResponse();
+      }
 
-            return new ApiResponse(
-                res, 200, true, 
-                `Found posts.`,
-                { posts }
-            ).sendResponse();
-        } catch(err) {
-            return new ApiResponse(
-                res, 500, false, 
-                err.message
-            ).sendResponse();
-        }
+      return new ApiResponse(
+        res, 200, true,
+        `Found posts.`,
+        { posts }
+      ).sendResponse();
+    } catch (err) {
+      return new ApiResponse(
+        res, 500, false,
+        err.message
+      ).sendResponse();
     }
-    
-    async insertPost(req, res) {
-        const userLogin: string = req.query.token;
-        if (typeof userLogin === 'undefined') {
-            return new ApiResponse(
-                res, 406, false,
-                'Please login first to add new post.'
-            ).sendResponse();
-        } else {
-          try {
-            verify(userLogin, process.env.SECRET);
-          } catch (err: any) {
-            return new ApiResponse(
-              res, 401, false, 
-              `User not registered.`
-            ).sendResponse();
-          }
-        }
+  }
 
+  async getPost(req, res) {
+    const userLogin: string = req.query.token;
+    const slug: string = req.params.slug;
+
+    try {
+      let post = null;
+      await Post.findOne({ slug }).exec()
+        .then(foundPost => {
+          post = foundPost;
+        });
+
+      if (post == null) {
+        return new ApiResponse(
+          res, 404, false,
+          `Post not found.`
+        ).sendResponse();
+      }
+
+      if (typeof userLogin === 'undefined' && post.active == 0) {
+        return new ApiResponse(
+          res, 401, false,
+          `Please login first to get archived posts.`
+        ).sendResponse();
+      }
+
+      if (typeof userLogin !== 'undefined') {
         try {
-            const newPost = new Post({
-                title: req.body.title,
-                slug: req.body.title.replace(/\s+/g, '-').toLowerCase(),
-                content: req.body.content,
-                img: req.file ? req.file.originalname : "",
-                tags: req.body.tags.split(","),
-                author: "Admin",
-                active: 1,
-                created_at: new Date().getTime(),
-                updated_at: new Date().getTime()
-            });
-
-            const slug = newPost.slug;
-            let post = null;
-
-            // Check duplicate post by slug
-            await Post.findOne({slug}).exec()
-                .then(foundPost => {
-                    post = foundPost
-                });
-            
-            // If post with slug already available
-            if (post !== null) {
-                return new ApiResponse(
-                    res, 406, false, 
-                    `Post with slug ${slug} have already available.`
-                ).sendResponse();
-            } else { // Else, continue to create post
-                newPost.save();
-            }
-
-            return new ApiResponse(
-                res, 201, true, 
-                'New post created.'
-            ).sendResponse();
-        } catch(err) {
-            return new ApiResponse(
-                res, 500, false, 
-                err.message
-            ).sendResponse();
+          verify(userLogin, process.env.SECRET);
+        } catch (err: any) {
+          return new ApiResponse(
+            res, 401, false,
+            `User not registered.`
+          ).sendResponse();
         }
+      }
+
+      return new ApiResponse(
+        res, 200, true,
+        `Found post by slug ${slug}.`,
+        { post }
+      ).sendResponse();
+    } catch (err) {
+      return new ApiResponse(
+        res, 500, false,
+        err.message
+      ).sendResponse();
+    }
+  }
+
+  async getPostsByTag(req, res) {
+    const userLogin: string = req.query.token;
+    const filter = { tag: req.params.tag }
+
+    if (typeof userLogin === 'undefined') {
+      filter['active'] = 1;
+    } else {
+      try {
+        verify(userLogin, process.env.SECRET);
+      } catch (err: any) {
+        return new ApiResponse(
+          res, 401, false,
+          `User not registered.`
+        ).sendResponse();
+      }
     }
 
-    async updatePost(req, res) {
-        const userLogin: string = req.query.token;
-        const filter = { slug: req.params.slug };
+    try {
+      let posts = [];
+      await Post.find(filter).exec()
+        .then(foundPosts => {
+          posts = foundPosts.filter(post => post.tags.includes(filter['tag']));
+        });
 
-        if (typeof userLogin === 'undefined') {
-            return new ApiResponse(
-                res, 406, false, 
-                'Please login first to update post.'
-            ).sendResponse();
-        } else {
-          try {
-            verify(userLogin, process.env.SECRET);
-          } catch (err: any) {
-            return new ApiResponse(
-              res, 401, false, 
-              `User not registered.`
-            ).sendResponse();
-          }
-        }
-        
-        // Find current post to update
-        let postToUpdate = null;
-        await Post.findOne(filter).exec()
-            .then(foundPost => {
-                postToUpdate = foundPost
-            })
-            .catch(err => {
-                console.error(err.message);
-            });
+      // if post not found
+      if (posts.length < 1) {
+        return new ApiResponse(
+          res, 404, false,
+          `Post not found.`
+        ).sendResponse();
+      }
 
-        const update = {
-            title: req.body.title !== undefined ? req.body.title : postToUpdate.title,
-            content: req.body.content !== undefined ? req.body.content : postToUpdate.content,
-            img: req.body.img !== undefined ? req.body.img : postToUpdate.img,
-            tags: req.body.tags !== undefined ? req.body.tags.split(",") : postToUpdate.tags,
-            author: req.body.author !== undefined ? req.body.author : postToUpdate.author,
-            active: req.body.active !== undefined ? parseInt(req.body.active) : postToUpdate.active,
-            views: req.body.views !== undefined ? parseInt(req.body.views) : postToUpdate.views,
-            vote: req.body.vote !== undefined ? parseInt(req.body.vote) : postToUpdate.vote,
-            updated_at: new Date().getTime(),
-        };
+      return new ApiResponse(
+        res, 200, true,
+        `Found posts.`,
+        { posts }
+      ).sendResponse();
+    } catch (err) {
+      return new ApiResponse(
+        res, 500, false,
+        err.message
+      ).sendResponse();
+    }
+  }
+
+  async insertPost(req, res) {
+    const userLogin: string = req.query.token;
+    if (typeof userLogin === 'undefined') {
+      return new ApiResponse(
+        res, 406, false,
+        'Please login first to add new post.'
+      ).sendResponse();
+    } else {
+      try {
+        verify(userLogin, process.env.SECRET);
+      } catch (err: any) {
+        return new ApiResponse(
+          res, 401, false,
+          `User not registered.`
+        ).sendResponse();
+      }
+    }
+
+    try {
+      // Prepare image upload
+      console.log(req.file);
       
-        try {
-            let post = null;
-            await Post.findOneAndUpdate(filter, update).exec()
-                .then(oldPost => {
-                    post = oldPost;
-                });
 
-            if (post === null) {
-                return new ApiResponse(
-                    res, 404, false, 
-                    `Post with slug ${filter['slug']} not found.`
-                ).sendResponse();
-            }
+      const newPost = new Post({
+        title: req.body.title,
+        slug: req.body.title.replace(/\s+/g, '-').toLowerCase(),
+        content: req.body.content,
+        img: req.file ? {
+          data: readFileSync(`../../uploads/img/${req.file.filename}`),
+          contentType: req.file.mimetype
+        } : {
+          data: "",
+          contentType: ""
+        },
+        tags: req.body.tags.split(","),
+        author: "Admin",
+        active: 1,
+        created_at: new Date().getTime(),
+        updated_at: new Date().getTime()
+      });
 
-            return new ApiResponse(
-                res, 201, true, 
-                `Success update post with slug ${filter['slug']}.`
-            ).sendResponse();
-        } catch(err) {
-            return new ApiResponse(
-                res, 500, false, 
-                err.message
-            ).sendResponse();
-        }
+      const slug = newPost.slug;
+      let post = null;
+
+      // Check duplicate post by slug
+      await Post.findOne({ slug }).exec()
+        .then(foundPost => {
+          post = foundPost
+        });
+
+      // If post with slug already available
+      if (post !== null) {
+        return new ApiResponse(
+          res, 406, false,
+          `Post with slug ${slug} have already available.`
+        ).sendResponse();
+      } else { // Else, continue to create post
+        newPost.save();
+      }
+
+      return new ApiResponse(
+        res, 201, true,
+        'New post created.'
+      ).sendResponse();
+    } catch (err) {
+      return new ApiResponse(
+        res, 500, false,
+        err.message
+      ).sendResponse();
+    }
+  }
+
+  async updatePost(req, res) {
+    const userLogin: string = req.query.token;
+    const filter = { slug: req.params.slug };
+
+    if (typeof userLogin === 'undefined') {
+      return new ApiResponse(
+        res, 406, false,
+        'Please login first to update post.'
+      ).sendResponse();
+    } else {
+      try {
+        verify(userLogin, process.env.SECRET);
+      } catch (err: any) {
+        return new ApiResponse(
+          res, 401, false,
+          `User not registered.`
+        ).sendResponse();
+      }
     }
 
-    async removePost(req, res) {
-        const _id = req.params.id;
-        const userLogin: string = req.query.token;
+    // Find current post to update
+    let postToUpdate = null;
+    await Post.findOne(filter).exec()
+      .then(foundPost => {
+        postToUpdate = foundPost
+      })
+      .catch(err => {
+        console.error(err.message);
+      });
 
-        if (typeof userLogin === 'undefined') {
-            return new ApiResponse(
-                res, 406, false, 
-                'Please login first to remove post.'
-            ).sendResponse();
-        } else {
-          try {
-            verify(userLogin, process.env.SECRET);
-          } catch (err: any) {
-            return new ApiResponse(
-              res, 401, false, 
-              `User not registered.`
-            ).sendResponse();
-          }
-        }
-        
-        try {
-            let post = null;
-            await Post.findByIdAndRemove({_id}).exec()
-                .then(deletedPost => {
-                    post = deletedPost;
-                });
-            
-            if (post === null) {
-                return new ApiResponse(
-                    res, 404, false, 
-                    'Post not found.'
-                ).sendResponse();
-            }
+    const update = {
+      title: req.body.title !== undefined ? req.body.title : postToUpdate.title,
+      content: req.body.content !== undefined ? req.body.content : postToUpdate.content,
+      img: req.body.img !== undefined ? req.body.img : postToUpdate.img,
+      tags: req.body.tags !== undefined ? req.body.tags.split(",") : postToUpdate.tags,
+      author: req.body.author !== undefined ? req.body.author : postToUpdate.author,
+      active: req.body.active !== undefined ? parseInt(req.body.active) : postToUpdate.active,
+      views: req.body.views !== undefined ? parseInt(req.body.views) : postToUpdate.views,
+      vote: req.body.vote !== undefined ? parseInt(req.body.vote) : postToUpdate.vote,
+      updated_at: new Date().getTime(),
+    };
 
-            return new ApiResponse(
-                res, 201, true, 
-                'Success deleted post.',
-                { post }
-            ).sendResponse();
+    try {
+      let post = null;
+      await Post.findOneAndUpdate(filter, update).exec()
+        .then(oldPost => {
+          post = oldPost;
+        });
 
-        } catch(err) {
-            return new ApiResponse(
-                res, 500, false, 
-                err.message
-            ).sendResponse();
-        }
+      if (post === null) {
+        return new ApiResponse(
+          res, 404, false,
+          `Post with slug ${filter['slug']} not found.`
+        ).sendResponse();
+      }
+
+      return new ApiResponse(
+        res, 201, true,
+        `Success update post with slug ${filter['slug']}.`
+      ).sendResponse();
+    } catch (err) {
+      return new ApiResponse(
+        res, 500, false,
+        err.message
+      ).sendResponse();
     }
+  }
+
+  async removePost(req, res) {
+    const _id = req.params.id;
+    const userLogin: string = req.query.token;
+
+    if (typeof userLogin === 'undefined') {
+      return new ApiResponse(
+        res, 406, false,
+        'Please login first to remove post.'
+      ).sendResponse();
+    } else {
+      try {
+        verify(userLogin, process.env.SECRET);
+      } catch (err: any) {
+        return new ApiResponse(
+          res, 401, false,
+          `User not registered.`
+        ).sendResponse();
+      }
+    }
+
+    try {
+      let post = null;
+      await Post.findByIdAndRemove({ _id }).exec()
+        .then(deletedPost => {
+          post = deletedPost;
+        });
+
+      if (post === null) {
+        return new ApiResponse(
+          res, 404, false,
+          'Post not found.'
+        ).sendResponse();
+      }
+
+      return new ApiResponse(
+        res, 201, true,
+        'Success deleted post.',
+        { post }
+      ).sendResponse();
+
+    } catch (err) {
+      return new ApiResponse(
+        res, 500, false,
+        err.message
+      ).sendResponse();
+    }
+  }
 }
 
 

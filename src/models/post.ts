@@ -4,7 +4,10 @@ const postSchema = new mongoose.Schema({
     title: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     content: { type: String, required: true },
-    img: String,
+    img: {
+      data: Buffer,
+      contentType: String
+    },
     tags: [String],
     author: { type: String, required: true },
     active: { type: Number, required: true, enum: [0,1] },

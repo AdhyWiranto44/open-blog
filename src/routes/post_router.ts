@@ -1,4 +1,4 @@
-import express from 'express';
+import multer from 'multer';
 const router = require('express').Router();
 // const multer = require('multer'); // Upload image
 import PostController from '../controllers/post_controller';
@@ -10,13 +10,13 @@ import PostController from '../controllers/post_controller';
 //       cb(null, file.originalname)
 //     }
 //   })
-// const upload = multer({dest: '../public/img/post', storage})
+const upload = multer({dest: `../../uploads/img/`});
 
 
 router.get("/posts", new PostController().getPosts);
 router.get("/posts/:slug", new PostController().getPost);
 router.get("/posts/tags/:tag", new PostController().getPostsByTag);
-router.post("/posts", new PostController().insertPost);
+router.post("/posts", upload.single('image'), new PostController().insertPost);
 router.patch("/posts/:slug", new PostController().updatePost);
 router.delete("/posts/:id", new PostController().removePost);
 

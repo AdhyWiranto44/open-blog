@@ -14,11 +14,19 @@ export default function AddPostForm() {
     title: null,
     content: null,
     tags: null,
+    img: null
   });
 
   const addNewPost = (e) => {
     e.preventDefault();
-    dispatch(insertPost(token, newPost));
+    
+    const formData = new FormData();
+    formData.append("title", newPost.title);
+    formData.append("content", newPost.content);
+    formData.append("tags", newPost.tags);
+    formData.append("image", newPost.img);
+
+    dispatch(insertPost(token, formData));
     router.push("/admin/posts");
   };
 
@@ -32,6 +40,7 @@ export default function AddPostForm() {
                 <form
                   action="/admin/posts/tambah"
                   method="POST"
+                  encType="multiple/form-data"
                   onSubmit={(e) => {
                     addNewPost(e);
                   }}
@@ -74,6 +83,18 @@ export default function AddPostForm() {
                       }
                       placeholder="tags: nodejs, express, etc"
                       required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input
+                      type="file"
+                      accept=".png, .jpg, .jpeg"
+                      class="form-control bg-light"
+                      id="image"
+                      name="image"
+                      onChange={(e) =>
+                        setNewPost({...newPost, img: e.target.files[0]})
+                      }
                     />
                   </div>
                   <a href="/admin/posts" class="btn btn-outline-secondary mr-2">
