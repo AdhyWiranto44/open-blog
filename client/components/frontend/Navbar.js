@@ -10,7 +10,6 @@ import Cookies from "js-cookie";
 
 export default function Navbar() {
   const dispatch = useDispatch();
-  const router = useRouter();
 
   function handleFilter(e) {
     e.preventDefault();
