@@ -81,23 +81,13 @@ export default function ArchivePostPage() {
                             />
                           </td>
                           <td>
-                            <Link href={`/admin/post/${post.slug}`}>
-                              <a>{post.title}</a>
-                            </Link>
+                            {post.title}
                           </td>
                           <td class="post-body">{post.content}</td>
                           <td>
                             <div class="tag-list my-2">
-                              {post.tags.map((tag) => {
-                                return (
-                                  <Link href={`/admin/tag/${tag}`}>
-                                    <a class="text-dark">
-                                      <span class="btn btn-sm btn-light mb-1">
-                                        <span class="ti-tag"></span> {tag}
-                                      </span>
-                                    </a>
-                                  </Link>
-                                );
+                              {post.tags.map((tag, i, tags) => {
+                                return (<>{tag + (i !== tags.length - 1 ? ", " : "")}</>);
                               })}
                             </div>
                           </td>
