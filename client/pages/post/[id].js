@@ -13,6 +13,7 @@ import DefaultImage from "../../components/frontend/DefaultImage";
 import { getPosts } from "../../actions/posts";
 import { getPost } from "../../actions/post";
 import FrontendLayout from "../../layouts/frontend";
+import Cookies from "js-cookie";
 
 export default function Post() {
   const posts = useSelector((state) => state.posts);
@@ -28,6 +29,19 @@ export default function Post() {
   useEffect(() => {
     dispatch(getPost(slug));
   }, [dispatch]);
+
+  const renderEditButton = () => {
+    if (Cookies.get("X-OPEN-BLOG-TOKEN")) {
+      return (
+        <a
+          className="btn btn-sm btn-danger mb-3"
+          href="/admin/mengubah-post/<%= currentPost.slug %>"
+        >
+          <span className="ti-pencil-alt"></span> Ubah
+        </a>
+      );
+    }
+  }
 
   return (
     <FrontendLayout
@@ -57,12 +71,7 @@ export default function Post() {
             <div className="col-lg-8">
               <div className="row">
                 <div className="col-lg border-bottom mb-4">
-                  <a
-                    className="btn btn-sm btn-danger mb-3"
-                    href="/admin/mengubah-post/<%= currentPost.slug %>"
-                  >
-                    <span className="ti-pencil-alt"></span> Ubah
-                  </a>
+                  { renderEditButton() }
                   <div className="card mb-3 border-0 bg-transparent">
                     <DefaultImage />
                     <div className="card-body px-0">
