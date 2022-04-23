@@ -5,6 +5,7 @@ import Time from "../../../components/frontend/Time";
 import { getPosts, updatePost } from "../../../api/posts";
 import Searchbar from "../../../components/backend/SearchBar";
 import Cookies from "js-cookie";
+import defaultImage from "../../../public/img/post/defaultimg2.png";
 
 
 export default function PostsPage() {
@@ -69,7 +70,7 @@ export default function PostsPage() {
                         <th scope="row">{++i}</th>
                         <td>
                           <img
-                            src="../img/post/defaultimg2.png"
+                            src={defaultImage.src}
                             alt="post"
                             style={{ maxWidth: "75px" }}
                           />

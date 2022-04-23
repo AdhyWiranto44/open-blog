@@ -5,6 +5,7 @@ import Searchbar from "../../../components/backend/SearchBar";
 import Time from "../../../components/frontend/Time";
 import BackendLayout from "../../../layouts/backend";
 import Cookies from "js-cookie";
+import defaultImage from "../../../public/img/post/defaultimg2.png";
 
 export default function ArchivePostPage() {
   const token = Cookies.get("X-OPEN-BLOG-TOKEN");
@@ -75,7 +76,7 @@ export default function ArchivePostPage() {
                           <th scope="row">{++i}</th>
                           <td>
                             <img
-                              src="../img/post/defaultimg2.png"
+                              src={defaultImage.src}
                               alt="post"
                               style={{ maxWidth: "75px" }}
                             />
